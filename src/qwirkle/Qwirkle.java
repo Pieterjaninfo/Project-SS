@@ -1,4 +1,4 @@
-package Qwirkle;
+package qwirkle;
 
 public class Qwirkle {
 
