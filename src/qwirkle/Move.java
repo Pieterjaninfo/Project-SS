@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Move {
 
-	//@ private invariant points != null;
+	//@ private invariant points >= 0;
 	private int points;
 	//@private invariant tileList != null;
 	private Map<Integer, Map<Integer, Tile>> tileList;
@@ -20,7 +20,8 @@ public class Move {
 	 * Retrieves the amount of points for doing a move.
 	 * @return the amount of points
 	 */
-	public int getPoints() {
+	//@ ensures points >= 0;
+	/*@ pure */ public int getPoints() {
 		return points;
 	}
 	
@@ -30,6 +31,7 @@ public class Move {
 	 * @param x the x coordinate
 	 * @param y the y coordinate
 	 */
+	//@ \forall Tile t; ??????????????????????
 	public void addTile(Tile tile, int x, int y) {
 		if (!tileList.containsKey(x)) {
 			tileList.put(x, new HashMap<Integer, Tile>());
@@ -38,7 +40,7 @@ public class Move {
 	}
 	
 	
-	public Map<Integer, Map<Integer, Tile>> getTiles() {
+	/*@ pure */ public Map<Integer, Map<Integer, Tile>> getTiles() {
 		return tileList;
 	}
 	

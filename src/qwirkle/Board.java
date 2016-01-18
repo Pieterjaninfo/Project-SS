@@ -28,8 +28,34 @@ public class Board {
 	public boolean isValidMove() {
 		return false;
 	}
-	
-	public void doMove() {
+	/**
+	 * Checks if the move is allowed to be made, and if it is allowed, it does the move.
+	 */
+	public void doMove(Move move) {
+		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = new HashMap<Integer, Map<Integer, Tile>>();
+		for (Integer key : board.keySet()) {
+			Map<Integer, Tile> valueMap = new HashMap<Integer, Tile>(board.get(key));
+			shallowBoardCopy.put(key, valueMap);
+		}
+		
+		boolean running = true;
+		
+		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
+		for (Integer x : placedTiles.keySet()) {
+			for (Integer y : placedTiles.get(x).keySet()) {
+				if (containsTile(x, y)) {
+					running = false;
+				}
+			}
+		}
+		if (!running) {
+			//System.out.println("Move is not valid");
+			return;
+		}
+		
+		
+		
+		
 		
 	}
 }

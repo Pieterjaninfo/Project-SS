@@ -4,11 +4,15 @@ public class Tile {
 
 	Pattern vertPattern;
 	Pattern horizPattern;
+	Color color;
+	Shape shape;
 	
 	
-	public Tile() {
+	public Tile(Color color, Shape shape) {
 		vertPattern = null;
 		horizPattern = null;
+		this.color = color;
+		this.shape = shape;
 	}
 	
 	
