@@ -3,6 +3,12 @@ package networking;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to check the queue for games.
+ * @author Bart Meyers
+ *
+ */
+
 public class ServerQueue implements Runnable{
 	
 	private List<ClientHandler> twoPlayer;
@@ -28,7 +34,15 @@ public class ServerQueue implements Runnable{
 		
 	@Override
 	public void run() {
-		
+		while (true) {
+			if (fourPlayer.size() > 4) {
+				// TODO start a game with four of the players (first four in the list)
+			} else if (threePlayer.size() > 3) {
+				// TODO start a game with three of the players (first three in the list)
+			} else if (twoPlayer.size() > 2) {
+				// TODO start a game with two of the players (first two in the list)
+			}
+		}
 	}
 
 }

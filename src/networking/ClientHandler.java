@@ -37,6 +37,7 @@ public class ClientHandler implements Runnable {
     private static final String SERVER_LEADERBOARD = "LEADERBOARDOK";
     private static final String CLIENT_LOBBY = "LOBBY";
     private static final String SERVER_LOBBY = "LOBBYOK";*/
+	private static final String SERVER_IDENTIFY = null;
     
     public ClientHandler(Server serverArg, Socket socketArg) throws IOException {
     	this.in = new BufferedReader(new InputStreamReader(socketArg.getInputStream()));
@@ -44,6 +45,9 @@ public class ClientHandler implements Runnable {
     	this.server = serverArg;    	
     }
 
+    /**
+     * Will read the input from the client and starts the operation according to the protocol.
+     */
 	public void run() {
 		try {
 			while (true) {
@@ -54,13 +58,12 @@ public class ClientHandler implements Runnable {
 					identification(input.substring(CLIENT_IDENTIFY.length()));
 				} else if (input.startsWith(CLIENT_QUEUE)) {
 					queue(input.substring(CLIENT_QUEUE.length()));
+				} else if (input.startsWith(CLIENT_MOVE_PUT)) {
+					
+				} else if (input.startsWith(CLIENT_MOVE_TRADE)) {
+					
 				}
 			}
-			
-			
-			
-			
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,9 +71,14 @@ public class ClientHandler implements Runnable {
 		
 	}
 	
+	/**
+	 * Sends the message to the client.
+	 * @param msg message to be send to the client
+	 */
 	public void sendMessage(String msg) {
     	try {
-			out.write(msg + "\n");
+			out.write(msg);
+			out.newLine();
 			out.flush();
 
 		} catch (IOException e) {
@@ -78,6 +86,9 @@ public class ClientHandler implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Shuts down the connection with this client and shuts down this ClientHandler.
+	 */
 	private void shutdown() {
         server.removeHandler(this);
         //server.broadcast("[" + clientName + " has left]");
@@ -90,28 +101,49 @@ public class ClientHandler implements Runnable {
 		}
     }
     
+	/**
+	 * Sends a message to the clients if the server is disconnected.
+	 */
     public void serverDisconnect() {
-    	sendMessage("Server eshut down");
+    	sendMessage("Server shut down");
     }
     
+    /**
+     * Returns the name of the client that belongs to the ClientHandler.
+     * @return
+     */
     public String getName() {
     	return clientName;
     }
     
+    /**
+     * Sets the input to be the clientName.
+     * @param input
+     */
     public void identification(String input) {
-    	clientName = input;
-    	if (server.nameExists(clientName)) {
-    		
-    	}
+    	if (input.matches("[a-zA-Z0-9-_]{2,16}")) {
+    		sendMessage(SERVER_ERROR + " " + Error.NAME_INVALID);
+    	} else {
+    		if (server.nameExists(clientName)) {
+        		sendMessage(SERVER_ERROR + " " + Error.NAME_USED);
+        	} else {
+            	clientName = input;
+            	sendMessage(SERVER_IDENTIFY);
+        	}
+    	} 
     }
     
+    /**
+     * adds the client from this ClientHandler to the queues that are given as input.
+     * @param input The queues the client wants to enter, comma separated values
+     */
     public void queue(String input) {
     	String[] n = input.split(",");
     	for (String a : n) {
     		if (a == "1" || a == "2" || a == "3") {
     			server.addToQueue(this, a);
     		} else {
-    			//throw new Error.QUEUE_INVALID;
+    			sendMessage(SERVER_ERROR + " " + Error.QUEUE_INVALID);
     		}
     	}
     }
