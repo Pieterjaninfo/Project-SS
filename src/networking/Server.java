@@ -9,21 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import util.*;
+/**
+ * Server class that will run the server for Quirkle games.
+ * @author Bart Meyers
+ *
+ */
 
 public class Server implements Runnable {
 
 	private static final String USAGE
 		   = "usage: " + Server.class.getName() + " <port>";
+	private static ServerQueue queue = new ServerQueue();
 
-	/** Start the Server-application. */
-	public static void main(String[] args) {
+
+	/**
+	 * Start the server and wait for the user to type exit to exit the server.
+	 * @param args
+	 */
+	public static void main(String[] args) { // TODO Change name if we want to start from UI.
 		if (args.length != 1) {
 			System.out.println(USAGE);
 			System.exit(0);
 		}
 		try {
-			Server server = new Server(Integer.parseInt(args[0]));	
+			Server server = new Server(Integer.parseInt(args[0]));
+			(new Thread(queue)).start();
 			(new Thread(server)).start();
 			server.exit();
 			server.shutdown();
@@ -46,7 +56,7 @@ public class Server implements Runnable {
     /** Constructs a new Server object. */
     public Server(int portArg) {
     	this.port = portArg;
-    	threads = new ArrayList();
+    	threads = new ArrayList<ClientHandler>();
 
     	
     	try {
@@ -131,7 +141,7 @@ public class Server implements Runnable {
     }
     
     public boolean nameExists(String name) {
-    	Vector<ClientHandler> threadsCopy = new Vector(threads);
+    	Vector<ClientHandler> threadsCopy = new Vector<ClientHandler>(threads);
     	for (ClientHandler a : threadsCopy) {
     		if (a.getName().equals(name)) {
     			return true;
@@ -140,8 +150,8 @@ public class Server implements Runnable {
     	return false;
     }
     
-    addToQueue() {
-    	
+	public void addToQueue(ClientHandler client, String n) {
+		queue.addToQueue(client, n);
     }
     
 }
