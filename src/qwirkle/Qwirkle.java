@@ -9,9 +9,12 @@ public class Qwirkle {
 	
 	private static UI ui;
 	private Board board;
+	private Bag bag;
+	private Player[] players;
 	
 	public Qwirkle() {
-		board = new Board(); // I think??
+		board = new Board(); // I think???
+		//bag = new Bag(); Singleplayer only???
 	}
 
 	/**
@@ -26,10 +29,21 @@ public class Qwirkle {
 
 	}
 	
+	/**
+	 * Starts a singleplayer game.
+	 */
 	public void startSingleplayer() {
+		bag = new Bag();
+		String[] playersA = ui.getPlayers();
+		for (int i = 0; i < playersA.length; i++) {
+			players[i] = new HumanPlayer(playersA[i]);
+		}
 		// TODO implement
 	}
 	
+	/**
+	 * Starts a multiplayer game.
+	 */
 	public void startMultiplayer() {
 		try {
 			Client client = new Client(ui.getHost(), ui.getPort());
