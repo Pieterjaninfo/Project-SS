@@ -42,6 +42,7 @@ public class Move {
 	
 	/*@ pure */ public Map<Integer, Map<Integer, Tile>> getTiles() {
 		return tileList;
+		
 	}
 	
 }
