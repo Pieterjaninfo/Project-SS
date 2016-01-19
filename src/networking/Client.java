@@ -1,11 +1,19 @@
 package networking;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+
 /**
- * 
+ * Client class for the Quirkle game.
  * @author Bart Meyers
  */
 
-public class Client {
+public class Client implements Runnable{
 	
 	// List of protocol commands.
     private static final String CLIENT_IDENTIFY = "IDENTIFY";
@@ -31,13 +39,102 @@ public class Client {
     private static final String SERVER_LEADERBOARD = "LEADERBOARDOK";
     private static final String CLIENT_LOBBY = "LOBBY";
     private static final String SERVER_LOBBY = "LOBBYOK";*/
+	
+    private Socket socket;
+	private BufferedReader in;
+	private BufferedWriter out;
+	private boolean running = true;
+	private String clientName;
+    
+    public Client(InetAddress host, int port)
+			throws IOException {
+        try {
+        	this.socket = new Socket(host, port);
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        	this.out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        } catch (java.net.ConnectException e) {
+        	System.out.println("Couldn't connect to server");
+        	e.printStackTrace();
+        }
+	}
+    
+    /**
+     * Method to start the client.
+     */
+    public void begin() {
+    	
+    	try {
+			(new Thread(this)).start();
+			// TODO fix what the client has to do icm UI and controller.
+			do {
+				Thread.sleep(500);
+			} while (this.isRunning());
+			this.shutdown();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}   	
+    }
     
     
-	
-	
-	
-	
-	
-	
-
+    
+    @Override
+	public void run() {
+		
+    	
+    	// TODO add functionality.
+    	
+		
+	}
+    
+    /**
+     * Print a message to the standard output.
+     * @param message message to be printed
+     */
+    // TODO change so that it will communicate with the UI.
+    private static void print(String message) {
+		System.out.println(message);
+	}
+    
+    /**
+     * Send message to the ClientHandler from the server.
+     * @param msg the message to be send
+     */
+    public void sendMessage(String msg) {
+		try {
+    		out.write(msg + "\n");
+    		out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}	
+	}
+    
+    /**
+     * Shuts down the server.
+     */
+    public void shutdown() {
+		print("Closing socket connection...");
+		try {
+			out.close();
+			in.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+    
+    /**
+     * Returns if the server is running.
+     * @return
+     */
+    public boolean isRunning() {
+		return running;
+	}
+    
+    public void quitClient() {
+    	running = false;
+    }
+    
+    
 }
