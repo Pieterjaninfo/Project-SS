@@ -15,9 +15,13 @@ public class Tile {
 		this.shape = shape;
 	}
 	
-	
+	/**
+	 * Checks if the color and the shape are equal, if so it returns true, else it return false.
+	 * @param tile The tile you want to compare
+	 * @return true if the tile shape and color are equal
+	 */
 	public boolean equals(Tile tile) {
-		return false;
+		return tile.getShape() == shape && tile.getColor() == color; 
 	}
 	
 	/**
@@ -36,7 +40,20 @@ public class Tile {
 		return horizPattern;
 	}
 	
+	public Color getColor() {
+		return color;
+	}
 	
+	public Shape getShape() {
+		return shape;
+	}
 	
+	public void setVertPattern(Pattern vertP) {
+		this.vertPattern = vertP;
+	}
+	
+	public void setHorizPattern(Pattern horizP) {
+		this.horizPattern = horizP;
+	}
 	
 }
