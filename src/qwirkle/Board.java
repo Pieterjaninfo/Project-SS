@@ -13,8 +13,8 @@ public class Board {
 	
 	/**
 	 * Check is the board contains a tile on the given coordinate.
-	 * @param x the x coordinate
-	 * @param y the y coordinate
+	 * @param x The x coordinate
+	 * @param y The y coordinate
 	 * @return true if there exists a tile on the given coordinate.
 	 */
 	public boolean containsTile(int x, int y) {
@@ -34,9 +34,13 @@ public class Board {
 	 */
 	public void doMove(Move move) {
 		checkDoMove(move);
+		// TODO method not finished
 	}
 
-	
+	/**
+	 * Makes a shallow board copy of the board.
+	 * @return The shallow board copy
+	 */
 	public Map<Integer, Map<Integer, Tile>> makeBoardCopy() {
 		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = new HashMap<Integer, Map<Integer, Tile>>();
 		for (Integer key : board.keySet()) {
@@ -46,6 +50,11 @@ public class Board {
 		return shallowBoardCopy;
 	}
 	
+	/**
+	 * Checks if the move is allowed to be done.
+	 * @param move The move you want to do
+	 * @return true if the move is allowed to be done, else returns false
+	 */
 	private boolean checkDoMove(Move move) {
 		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = makeBoardCopy();
 		
@@ -69,6 +78,7 @@ public class Board {
 				//check blablabla	
 				}
 				
+				//TODO finish this method
 				
 			}
 		
@@ -76,11 +86,19 @@ public class Board {
 		return true;
 	}
 	
+	/**
+	 * Returns all tiles that are placed on the board.
+	 * @return all tiles on the board
+	 */
 	public Map<Integer, Map<Integer, Tile>> getAllTiles() {
 		return board;
 	}
 	
-
+/**
+ * Checks if there are no tiles on the coordinates where the move wants to put the tiles.
+ * @param move The move you want to do
+ * @return true if all the tile spots are free
+ */
 	private boolean isPlaceFree(Move move) {
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
 		for (Integer x : placedTiles.keySet()) {
@@ -93,7 +111,12 @@ public class Board {
 		return true;
 	}
 	
-	
+	/**
+	 * Returns the tile on the given x and y coordinate, or null when there is no tile on the given coordinate.
+	 * @param x The x coordinate
+	 * @param y The y coorinate
+	 * @return the tile on the coordinate, or null if there isn't a tile there
+	 */
 	public Tile getTile(int x, int y) {
 		Tile tile = null;
 		if (containsTile(x, y)) {
@@ -102,6 +125,13 @@ public class Board {
 		return tile;
 	}
 	
+	/**
+	 * Checks if the tile is allowed to be placed on the given coordinates.
+	 * @param tile The tile you want to place
+	 * @param x The x coordinate where you want to place the tile
+	 * @param y The y coordinate where you want to place the tile
+	 * @return true if the tile is allowed to be placed
+	 */
 	public boolean canPlaceTile(Tile tile, int x, int y) {
 
 		return false;
