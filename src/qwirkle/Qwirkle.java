@@ -2,6 +2,10 @@ package qwirkle;
 
 import java.io.IOException;
 
+import ss.week5.tictactoe.ComputerPlayer;
+import ss.week5.tictactoe.HumanPlayer;
+import ss.week5.tictactoe.Mark;
+import ss.week5.tictactoe.Strategy;
 import ui.*;
 import networking.*;
 
@@ -36,7 +40,25 @@ public class Qwirkle {
 		bag = new Bag();
 		String[] playersA = ui.getPlayers();
 		for (int i = 0; i < playersA.length; i++) {
-			players[i] = new HumanPlayer(playersA[i]);
+			if (playersA[i].startsWith("AI ")) {
+				String strat = "qwirkle." 
+          			  + playersA[i].replaceFirst("AI ", "") + "Strategy";
+          	try {
+          		Class.forName(strat);
+          		Behaviour behaviour = (Behaviour) Class.forName(strat).newInstance();
+              	players[i] = new AIPlayer(behaviour);
+          	} catch (ClassNotFoundException e) {
+          		System.out.println("Strategy doesn't exist.");
+          	} catch (InstantiationException | IllegalAccessException e) {
+          		System.out.println("Error with class acces");
+				} 
+			} else {
+				players[i] = new HumanPlayer(playersA[i]);
+			}
+		}
+			
+			
+			//players[i] = new HumanPlayer(playersA[i]);
 		}
 		// TODO implement
 	}
@@ -47,11 +69,21 @@ public class Qwirkle {
 	public void startMultiplayer() {
 		try {
 			Client client = new Client(ui.getHost(), ui.getPort());
+			
+			//------------------------------------------------------------------------------
+			//For testing purposes only
+			client.sendMessage("QUIT");
+			//------------------------------------------------------------------------------
+					
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// TODO implement
+		
+		
 	}
 
 }

@@ -53,7 +53,10 @@ public class Server implements Runnable {
     private Socket sock = null;
     private static boolean running = true;
 	    
-    /** Constructs a new Server object. */
+    /** 
+     * Constructs a new Server object. 
+     */
+    //@ requires portArg != null; portArg.instanceOf(Integer);
     public Server(int portArg) {
     	this.port = portArg;
     	threads = new ArrayList<ClientHandler>();
@@ -67,9 +70,9 @@ public class Server implements Runnable {
 		}
     }
 	    
-	    /**
-	     * if 'exit' is entered in the standard input the server will exit.
-	     */
+    /**
+     * if 'exit' is entered in the standard input the server will exit.
+     */
     public void exit() {
     	System.out.println("to exit server type 'exit'");
         String antw = null;
@@ -81,10 +84,13 @@ public class Server implements Runnable {
             } catch (IOException e) {
 				e.printStackTrace();
             }
+        	if (antw.equals("exit")) {
+            	running = false;
+            }
         }
-        if (antw.equals("exit")) {
-        	running = false;
-        }
+        
+        
+        System.exit(0);
     }
     
     /**
@@ -124,22 +130,38 @@ public class Server implements Runnable {
 		}
     }
 	    
-	    /**
-	     * Prints the message to the standard output.
-	     * @param message
-	     */
+    /**
+     * Prints the message to the standard output.
+     * @param message
+     */
     public void print(String message) {
         System.out.println(message);
     }
-	    
+    
+    /**
+     * Adds a handler to the handlerlist.
+     * @param handler
+     */
+	//@ requires handler != null;
 	public void addHandler(ClientHandler handler) {
     	threads.add(handler);
     } 
-	    
+	
+	/**
+	 * Removes handler from the handlerlist.
+	 * @param handler
+	 */
+	//@ requires handler != null;
     public void removeHandler(ClientHandler handler) {
     	threads.remove(handler);
     }
     
+    /**
+     * Checks if the name is already in use on this server.
+     * @param name
+     * @return
+     */
+    //@ requires name != null;
     public boolean nameExists(String name) {
     	Vector<ClientHandler> threadsCopy = new Vector<ClientHandler>(threads);
     	for (ClientHandler a : threadsCopy) {
@@ -150,6 +172,11 @@ public class Server implements Runnable {
     	return false;
     }
     
+    /**
+     * Adds the client in the specified queue.
+     * @param client
+     * @param n
+     */
 	public void addToQueue(ClientHandler client, String n) {
 		queue.addToQueue(client, n);
     }

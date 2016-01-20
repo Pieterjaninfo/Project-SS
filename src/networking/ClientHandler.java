@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable {
 	
 	/**
 	 * Sends the message to the client.
-	 * @param msg message to be send to the client
+	 * @param msg Message to be send to the client
 	 */
 	public void sendMessage(String msg) {
     	try {
@@ -112,7 +112,7 @@ public class ClientHandler implements Runnable {
      * Returns the name of the client that belongs to the ClientHandler.
      * @return
      */
-    public String getName() {
+    /* pure */public String getName() {
     	return clientName;
     }
     
@@ -120,6 +120,7 @@ public class ClientHandler implements Runnable {
      * Sets the input to be the clientName.
      * @param input
      */
+    //@ requires input != null; input.matches("[a-zA-Z0-9-_]{2,16}")
     public void identification(String input) {
     	if (input.matches("[a-zA-Z0-9-_]{2,16}")) {
     		sendMessage(SERVER_ERROR + " " + Error.NAME_INVALID);
@@ -137,6 +138,7 @@ public class ClientHandler implements Runnable {
      * adds the client from this ClientHandler to the queues that are given as input.
      * @param input The queues the client wants to enter, comma separated values
      */
+    // requires input != null;
     public void queue(String input) {
     	String[] n = input.split(",");
     	for (String a : n) {
