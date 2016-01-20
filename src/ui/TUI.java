@@ -111,17 +111,19 @@ public class TUI implements UI {
 	 * Gets the names of the players.
 	 */
 	@Override
-	public String[] getPlayers() { // TODO change such that it can be used by the multiplayer
-		System.out.println("How many players (2-4)?");
-		int in = input.nextInt();
-		String[] result = new String[in];
-		input.nextLine();
+	public String getPlayer(int number) { // TODO change such that it can be used by the multiplayer
+		String result = "";
 		System.out.println("For AI players use: AI 'StrategyName'");
-		for (int i = 0; i < in; i++) {
-			System.out.printf("Enter player %d:\n", i + 1);
-			result[i] = input.nextLine();
-		}
+		System.out.printf("Enter player %d:\n", number + 1);
+		result = input.nextLine();
 		//System.out.println("result: " + result[0] + result[1]);
 		return result;
+	}
+	
+	public int getPlayerCount() {
+		System.out.println("How many players (2-4)?");
+		int in = input.nextInt();		// TODO catch error if isn't int
+		input.nextLine();
+		return in;
 	}
 }

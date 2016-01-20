@@ -12,7 +12,8 @@ public interface UI {
 	public void showError(String msg);	
 	public InetAddress getHost();
 	public int getPort();
-	public String[] getPlayers();
+	public String getPlayer(int number);
+	public int getPlayerCount();
 	
 	
 }

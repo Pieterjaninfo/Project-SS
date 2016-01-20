@@ -1,11 +1,9 @@
 package qwirkle;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import ss.week5.tictactoe.ComputerPlayer;
-import ss.week5.tictactoe.HumanPlayer;
-import ss.week5.tictactoe.Mark;
-import ss.week5.tictactoe.Strategy;
 import ui.*;
 import networking.*;
 
@@ -14,7 +12,7 @@ public class Qwirkle {
 	private static UI ui;
 	private Board board;
 	private Bag bag;
-	private Player[] players;
+	private List<Player> players = new ArrayList<Player>();
 	
 	public Qwirkle() {
 		board = new Board(); // I think???
@@ -38,27 +36,29 @@ public class Qwirkle {
 	 */
 	public void startSingleplayer() {
 		bag = new Bag();
-		String[] playersA = ui.getPlayers();
-		for (int i = 0; i < playersA.length; i++) {
-			if (playersA[i].startsWith("AI ")) {
-				String strat = "qwirkle." 
-          			  + playersA[i].replaceFirst("AI ", "") + "Strategy";
-          	try {
-          		Class.forName(strat);
-          		Behaviour behaviour = (Behaviour) Class.forName(strat).newInstance();
-              	players[i] = new AIPlayer(behaviour);
-          	} catch (ClassNotFoundException e) {
-          		System.out.println("Strategy doesn't exist.");
-          	} catch (InstantiationException | IllegalAccessException e) {
-          		System.out.println("Error with class acces");
-				} 
-			} else {
-				players[i] = new HumanPlayer(playersA[i]);
+		int playerCount = ui.getPlayerCount();
+		for (int i = 0; i < playerCount; i++) {
+			String player = ui.getPlayer(i);
+			while (true) {
+				if (player.startsWith("AI ")) {
+					String strat = "qwirkle." 
+	          			  + player.replaceFirst("AI ", "") + "Behaviour";
+					try {
+		          		Class.forName(strat);
+		          		Behaviour behaviour = (Behaviour) Class.forName(strat).newInstance();
+		              	players.add(new AIPlayer(behaviour));
+		              	break;
+		          	} catch (ClassNotFoundException e) {
+		          		ui.showError(String.format("Strategy of player %d doesn't exist.", i + 1));
+		          		player = ui.getPlayer(i);
+		          	} catch (InstantiationException | IllegalAccessException e) {
+		          		ui.showError(String.format("Error with class acces"));
+					}
+				} else {
+					players.add(new HumanPlayer(player));
+					break;
+				}
 			}
-		}
-			
-			
-			//players[i] = new HumanPlayer(playersA[i]);
 		}
 		// TODO implement
 	}
