@@ -63,7 +63,7 @@ public class Board {
 				Tile rightTile = getTile(x + 1, y);
 				//Vertical patterns
 				Tile upTile = getTile(x, y + 1);
-				Tile downTile = getTile(x, y - 1);				
+				Tile downTile = getTile(x, y - 1);
 				
 				if (leftTile != null) {
 				//check blablabla	
@@ -76,7 +76,9 @@ public class Board {
 		return true;
 	}
 	
-	
+	public Map<Integer, Map<Integer, Tile>> getAllTiles() {
+		return board;
+	}
 	
 
 	private boolean isPlaceFree(Move move) {
@@ -101,9 +103,7 @@ public class Board {
 	}
 	
 	public boolean canPlaceTile(Tile tile, int x, int y) {
-		
-		
-		
+
 		return false;
 	}
 	

@@ -28,7 +28,7 @@ public class Tile {
 	 * Returns the vertical pattern of the tile.
 	 * @return the vertical pattern
 	 */
-	public Pattern getVertPattern() {
+	/*@ pure */ public Pattern getVertPattern() {
 		return vertPattern;
 	}
 	
@@ -36,22 +36,42 @@ public class Tile {
 	 * Returns the horizontal pattern of the tile.
 	 * @return the horizontal pattern
 	 */
-	public Pattern getHorizPattern() {
+	/*@ pure */ public Pattern getHorizPattern() {
 		return horizPattern;
 	}
 	
-	public Color getColor() {
+	/**
+	 * Returns the color of the tile.
+	 */
+	//@ ensures \result != null;
+	/*@ pure */ public Color getColor() {
 		return color;
 	}
 	
-	public Shape getShape() {
+	/**
+	 * Returns the shape of the tile.
+	 */
+	//@ ensures \result != null;
+	/*@ pure */ public Shape getShape() {
 		return shape;
 	}
 	
+	/**
+	 * Sets the vertical pattern of the tile.
+	 * @param vertP The vertical pattern that the tile will have
+	 */
+	//@ requires vertP != null;
+	//@ ensures \getVertPattern() == vertP;
 	public void setVertPattern(Pattern vertP) {
 		this.vertPattern = vertP;
 	}
 	
+	/**
+	 * Sets the horizontal pattern of the tile.
+	 * @param horizP The horizontal pattern that the tile will have
+	 */
+	//@ requires horizP != null;
+	//@ ensures \getHorizPattern() == horizP;
 	public void setHorizPattern(Pattern horizP) {
 		this.horizPattern = horizP;
 	}

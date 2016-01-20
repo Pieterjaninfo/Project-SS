@@ -8,6 +8,8 @@ public class ColorPattern implements Pattern {
 	private List<Tile> tiles;
 	// contains all different shapes
 	private Color color;
+	// contains all shapes of the tiles
+	private List<Shape> shapes;
 	
 	
 	public ColorPattern() {
