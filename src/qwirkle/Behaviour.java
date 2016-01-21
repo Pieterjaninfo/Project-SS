@@ -11,6 +11,12 @@ public interface Behaviour {
 	 */
 	public Move determineMove(Board b, List<Tile> hand);
 	
+	/**
+	 * Returns the name of the Behaviour.
+	 * @return a string
+	 */
+	public String getName();
+	
 	
 	
 	

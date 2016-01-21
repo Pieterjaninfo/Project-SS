@@ -46,7 +46,8 @@ public class Board {
 	 * @return the shallow board copy
 	 */
 	public Map<Integer, Map<Integer, Tile>> makeBoardCopy() {
-		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = new HashMap<Integer, Map<Integer, Tile>>();
+		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = 
+				  new HashMap<Integer, Map<Integer, Tile>>();
 		for (Integer key : board.keySet()) {
 			Map<Integer, Tile> valueMap = new HashMap<Integer, Tile>(board.get(key));
 			shallowBoardCopy.put(key, valueMap);
@@ -80,7 +81,7 @@ public class Board {
 				Tile downTile = getTile(x, y - 1);
 				
 				if (leftTile != null) {
-				//check blablabla	
+				// TODO implement
 				}
 				
 				//TODO finish this method

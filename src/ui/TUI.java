@@ -61,7 +61,7 @@ public class TUI implements UI {
 	 * Print the error message to the output.
 	 */
 	@Override
-	public void showError(String msg) {
+	public void showMessage(String msg) {
 		System.out.println(msg);
 	}
 	

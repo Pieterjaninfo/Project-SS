@@ -66,14 +66,9 @@ public class SimpleBehaviour implements Behaviour {
 							}
 						}
 					}
-					
-					
 				}	
 			}	
 		}
-		
-		
-		
 		return null;
 	}
 

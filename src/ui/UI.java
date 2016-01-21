@@ -9,7 +9,7 @@ public interface UI {
 	public void showBoard();
 	public void showHand();
 	public void startup();
-	public void showError(String msg);	
+	public void showMessage(String msg);	
 	public InetAddress getHost();
 	public int getPort();
 	public String getPlayer(int number);

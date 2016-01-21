@@ -61,13 +61,14 @@ public class Qwirkle {
 		              	players.add(new AIPlayer(behaviour));
 		              	break;
 		          	} catch (ClassNotFoundException e) {
-		          		ui.showError(String.format("Strategy of player %d doesn't exist.", i + 1));
+		          		ui.showMessage(String.format("Strategy of player %d doesn't exist.", 
+		          				  i + 1));
 		          		player = ui.getPlayer(i);
 		          	} catch (InstantiationException | IllegalAccessException e) {
-		          		ui.showError(String.format("Error with class acces"));
+		          		ui.showMessage(String.format("Error with class acces"));
 					}
 				} else {
-					players.add(new HumanPlayer(player));
+					players.add(new HumanPlayer(player, this));
 					break;
 				}
 			}
@@ -95,6 +96,10 @@ public class Qwirkle {
 		// TODO implement
 		
 		
+	}
+	
+	public void sendMessage(String msg) {
+		ui.showMessage(msg);
 	}
 
 }
