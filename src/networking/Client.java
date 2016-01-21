@@ -85,7 +85,7 @@ public class Client implements Runnable{
 	public void run() {
     	// TODO implement protocol and game.
 		try {
-	    	out.write(CLIENT_IDENTIFY + ui.getPlayer(1));
+	    	out.write(CLIENT_IDENTIFY + ui.getPlayer(1)); // TODO if name AI is already in use add a number to the end...
 	    	
 			in.readLine();
 		} catch (IOException e) {
