@@ -4,7 +4,9 @@ public class Tile {
 
 	Pattern vertPattern;
 	Pattern horizPattern;
+	//@ private invariant color != null;
 	Color color;
+	//@ private invariant shape != null;
 	Shape shape;
 	
 	
@@ -20,6 +22,7 @@ public class Tile {
 	 * @param tile The tile you want to compare
 	 * @return true if the tile shape and color are equal
 	 */
+	//@ requires tile != null;
 	public boolean equals(Tile tile) {
 		return tile.getShape() == shape && tile.getColor() == color; 
 	}

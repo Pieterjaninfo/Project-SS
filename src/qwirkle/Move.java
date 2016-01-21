@@ -5,9 +5,11 @@ import java.util.Map;
 
 public class Move {
 
+	// TODO better fucking JML needed ;c
+	
 	//@ private invariant points >= 0;
 	private int points;
-	//@private invariant tileList != null;
+	//@ private invariant tileList != null;
 	private Map<Integer, Map<Integer, Tile>> tileList;
 	
 	
@@ -24,12 +26,16 @@ public class Move {
 	/*@ pure */ public int getPoints() {
 		return points;
 	}
+
+	/*@ pure */ public Map<Integer, Map<Integer, Tile>> getTiles() {
+		return tileList;	
+	}
 	
 	/**
 	 * Adds the specified tile at the specified coordinates.
-	 * @param tile the tile you want to add
-	 * @param x the x coordinate
-	 * @param y the y coordinate
+	 * @param tile The tile you want to add
+	 * @param x The x coordinate
+	 * @param y The y coordinate
 	 */
 	//@ \forall Tile t; ??????????????????????
 	public void addTile(Tile tile, int x, int y) {
@@ -37,12 +43,6 @@ public class Move {
 			tileList.put(x, new HashMap<Integer, Tile>());
 		}
 		tileList.get(x).put(y, tile);
-	}
-	
-	
-	/*@ pure */ public Map<Integer, Map<Integer, Tile>> getTiles() {
-		return tileList;
-		
 	}
 	
 }

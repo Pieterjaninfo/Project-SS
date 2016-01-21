@@ -17,6 +17,8 @@ public class Board {
 	 * @param y The y coordinate
 	 * @return true if there exists a tile on the given coordinate.
 	 */
+	//@ requires x != null;
+	//@ requires y != null;
 	public boolean containsTile(int x, int y) {
 		return board.containsKey(x) && board.get(x).containsKey(y);
 	}
@@ -26,12 +28,14 @@ public class Board {
 	 * @return
 	 */
 	public boolean isValidMove() {
+		// TODO method may not be required
 		return false;
 	}
 	
 	/**
 	 * Checks if the move is allowed to be made, and if it is allowed, it does the move.
 	 */
+	//@ requires move != null;
 	public void doMove(Move move) {
 		checkDoMove(move);
 		// TODO method not finished
@@ -39,7 +43,7 @@ public class Board {
 
 	/**
 	 * Makes a shallow board copy of the board.
-	 * @return The shallow board copy
+	 * @return the shallow board copy
 	 */
 	public Map<Integer, Map<Integer, Tile>> makeBoardCopy() {
 		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = new HashMap<Integer, Map<Integer, Tile>>();
@@ -55,6 +59,7 @@ public class Board {
 	 * @param move The move you want to do
 	 * @return true if the move is allowed to be done, else returns false
 	 */
+	//@ requires move != null;
 	private boolean checkDoMove(Move move) {
 		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = makeBoardCopy();
 		
@@ -94,11 +99,12 @@ public class Board {
 		return board;
 	}
 	
-/**
- * Checks if there are no tiles on the coordinates where the move wants to put the tiles.
- * @param move The move you want to do
- * @return true if all the tile spots are free
- */
+	/**
+	 * Checks if there are no tiles on the coordinates where the move wants to put the tiles.
+	 * @param move The move you want to do
+	 * @return true if all the tile spots are free
+	 */
+	//@ requires move != null;
 	private boolean isPlaceFree(Move move) {
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
 		for (Integer x : placedTiles.keySet()) {
@@ -117,6 +123,8 @@ public class Board {
 	 * @param y The y coorinate
 	 * @return the tile on the coordinate, or null if there isn't a tile there
 	 */
+	//@ requires x != null;
+	//@ requires y != null;
 	public Tile getTile(int x, int y) {
 		Tile tile = null;
 		if (containsTile(x, y)) {
@@ -132,6 +140,9 @@ public class Board {
 	 * @param y The y coordinate where you want to place the tile
 	 * @return true if the tile is allowed to be placed
 	 */
+	//@ requires tile != null;
+	//@ require x != null;
+	//@ requires y != null;
 	public boolean canPlaceTile(Tile tile, int x, int y) {
 
 		return false;
