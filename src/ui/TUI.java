@@ -104,7 +104,9 @@ public class TUI implements UI {
 	public int getPort() {
 		// TODO Auto-generated method stub
 		System.out.println("Enter the port");
-		return input.nextInt();
+		int in = input.nextInt();
+		input.nextLine();
+		return in;
 	}
 	
 	/**
@@ -114,8 +116,19 @@ public class TUI implements UI {
 	public String getPlayer(int number) { // TODO change such that it can be used by the multiplayer
 		String result = "";
 		System.out.println("For AI players use: AI 'StrategyName'");
-		System.out.printf("Enter player %d:\n", number + 1);
-		result = input.nextLine();
+		if (number == 1) {
+			do {
+				System.out.printf("Enter name:\n");
+				result = input.nextLine();
+				if (!result.matches("[a-zA-Z0-9-_]{2,16}")) {
+					System.out.println("Name not supported, please choose a different name.");
+				}
+			} while (!result.matches("[a-zA-Z0-9-_]{2,16}"));
+		} else {
+			System.out.printf("Enter player %d:\n", number + 1);
+			result = input.nextLine();
+		}
+		
 		//System.out.println("result: " + result[0] + result[1]);
 		return result;
 	}

@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import ui.UI;
+
 /**
  * Client class for the Quirkle game.
  * @author Bart Meyers
@@ -45,6 +47,7 @@ public class Client implements Runnable{
 	private BufferedWriter out;
 	private boolean running = true;
 	private String clientName;
+	private UI ui;
     
     public Client(InetAddress host, int port)
 			throws IOException {
@@ -61,8 +64,8 @@ public class Client implements Runnable{
     /**
      * Method to start the client.
      */
-    public void begin() {
-    	
+    public void begin(UI ui) {
+    	this.ui = ui;
     	try {
 			(new Thread(this)).start();
 			// TODO fix what the client has to do icm UI and controller.
@@ -80,10 +83,15 @@ public class Client implements Runnable{
     
     @Override
 	public void run() {
-		
-    	
-    	// TODO add functionality.
-    	
+    	// TODO implement protocol and game.
+		try {
+	    	out.write(CLIENT_IDENTIFY + ui.getPlayer(1));
+	    	
+			in.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    	
 		
 	}
     

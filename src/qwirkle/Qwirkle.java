@@ -36,6 +36,18 @@ public class Qwirkle {
 	 */
 	public void startSingleplayer() {
 		bag = new Bag();
+		addPlayers();
+		// TODO give tiles to players
+		// TODO determine first player from list of players.
+		// TODO make first move
+		// TODO let the next players make the move in the order of the list
+		// while the game is not over.
+	}
+
+	/*
+	 * Calls the UI to get the amount and names (and behaviours for AiPlayers).
+	 */
+	private void addPlayers() {
 		int playerCount = ui.getPlayerCount();
 		for (int i = 0; i < playerCount; i++) {
 			String player = ui.getPlayer(i);
@@ -60,7 +72,6 @@ public class Qwirkle {
 				}
 			}
 		}
-		// TODO implement
 	}
 	
 	/**
@@ -69,7 +80,7 @@ public class Qwirkle {
 	public void startMultiplayer() {
 		try {
 			Client client = new Client(ui.getHost(), ui.getPort());
-			
+			client.begin(ui);
 			//------------------------------------------------------------------------------
 			//For testing purposes only
 			client.sendMessage("QUIT");
