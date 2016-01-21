@@ -89,16 +89,16 @@ public class Client implements Runnable{
     
     /**
      * Print a message to the standard output.
-     * @param message message to be printed
+     * @param message Message to be printed
      */
-    // TODO change so that it will communicate with the UI.
     private static void print(String message) {
 		System.out.println(message);
+    	// TODO print to the UI.
 	}
     
     /**
      * Send message to the ClientHandler from the server.
-     * @param msg the message to be send
+     * @param msg The message to be send
      */
     public void sendMessage(String msg) {
 		try {
