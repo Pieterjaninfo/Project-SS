@@ -1,44 +1,55 @@
 package qwirkle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HumanPlayer implements Player {
 	
 	private String name;
 	private Qwirkle game;
+	protected List<Tile> hand;
+	private int score;
 
 	public HumanPlayer(String name, Qwirkle game) {
 		this.name = name;
 		this.game = game;
+		this.score = 0;
+		this.hand = new ArrayList<Tile>();
 	}
 	
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
 
 	@Override
 	public List<Tile> getHand() {
-		// TODO Auto-generated method stub
-		return null;
+		return hand;
 	}
 
 	@Override
 	public Move determineMove() {
-		// TODO Auto-generated method stub
+		// TODO ask user what he wants to do, trade or do a move
+		
+		// TODO do move
+		// TODO do trade
 		return null;
+	}
+
+	@Override
+	public int getScore() {
+		return score;
 	}
 	
 
 	/*
-	 * niet lezen en schrijven naar system.output maar de Qwirkle.java aanropen
+	 * Niet lezen en schrijven naar system.output maar de Qwirkle.java aanroepen
 	 * dezelfde game van Qwirkle krijgen
 	 * 
-	 * zodra move is aangemaakt, dan 
+	 * Zodra move is aangemaakt, dan 
 	 * 
 	 * 
-	 * determine move vraag wat keuze is
+	 * dDtermine move vraagt wat keuze is
 	 * make move -> geef aan move -> 
 	 */
 }

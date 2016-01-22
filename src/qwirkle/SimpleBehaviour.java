@@ -1,8 +1,8 @@
 package qwirkle;
 //import java.util.Random;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.ArrayList;
+//import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +23,9 @@ public class SimpleBehaviour implements Behaviour {
 	public Move determineMove(Board b, List<Tile> hand) {
 		Move moves = new Move();
 		
-		Map<Integer, Map<Integer, Tile>> possibleSpots = new HashMap<Integer, Map<Integer, Tile>>();
+		/*Map<Integer, Map<Integer, Tile>> possibleSpots = 
+		 *	  new HashMap<Integer, Map<Integer, Tile>>();
+		 */
 		
 		Map<Integer, Map<Integer, Tile>> boardTiles = b.getAllTiles();
 		
@@ -70,6 +72,10 @@ public class SimpleBehaviour implements Behaviour {
 			}	
 		}
 		return null;
+	}
+	
+	public String getName() {
+		return "Simple Behaviour";
 	}
 
 }

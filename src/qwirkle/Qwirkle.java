@@ -58,7 +58,7 @@ public class Qwirkle {
 					try {
 		          		Class.forName(strat);
 		          		Behaviour behaviour = (Behaviour) Class.forName(strat).newInstance();
-		              	players.add(new AIPlayer(behaviour));
+		              	players.add(new AIPlayer(behaviour, board));
 		              	break;
 		          	} catch (ClassNotFoundException e) {
 		          		ui.showMessage(String.format("Strategy of player %d doesn't exist.", 

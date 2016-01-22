@@ -131,7 +131,9 @@ public class ColorPattern implements Pattern {
 			Tile aTile = patternTiles.get(0);
 			boolean isVertPattern = false;
 			
-			if (aTile.getVertPattern() != null) {
+			
+			//old:  if (aTile.getVertPattern() != null)
+			if (aTile.getVertPattern() == this) {
 				isVertPattern = true;
 			}
 
