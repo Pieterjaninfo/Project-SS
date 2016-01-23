@@ -54,7 +54,7 @@ public class TUI implements UI {
 				System.out.println("invalid choice");
 			}
 		}
-		// TODO startup prints and reads, simple implementation needs improvement.
+		// TODO startup prints and reads, simple implementation needs improvement?
 	}
 
 	/**

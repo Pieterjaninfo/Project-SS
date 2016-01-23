@@ -37,7 +37,10 @@ public class Qwirkle {
 	public void startSingleplayer() {
 		bag = new Bag();
 		addPlayers();
-		// TODO give tiles to players
+		// give tiles to players
+		for (Player player : players) {
+			player.setStartingHand(bag.giveStartingHand()); // TODO Add setStartinghand to Player
+		}
 		// TODO determine first player from list of players.
 		// TODO make first move
 		// TODO let the next players make the move in the order of the list
