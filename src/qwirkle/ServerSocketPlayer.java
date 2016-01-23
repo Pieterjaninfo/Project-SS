@@ -50,8 +50,50 @@ public class ServerSocketPlayer implements Player{
 				}
 			}
 		}
+		/*
+		for (Tile a : hand) {
+			System.out.println("hand: " + a.toString());
+		}
+		for (Tile b : list) {
+			System.out.println("list: " + b.toString());
+		}*/
+		int[] a = new int[12];
+		for (Tile tile : list) {
+			if (tile.getShape() == Shape.CROSS) {
+				a[0] += 1;
+			} else if (tile.getShape() == Shape.SQUARE) {
+				a[1] += 1;
+			} else if (tile.getShape() == Shape.CIRCLE) {
+				a[2] += 1;
+			} else if (tile.getShape() == Shape.DIAMOND) {
+				a[3] += 1;
+			} else if (tile.getShape() == Shape.STAR) {
+				a[4] += 1;
+			} else if (tile.getShape() == Shape.CLOVER) {
+				a[5] += 1;
+			}
+			if (tile.getColor() == Color.RED) {
+				a[6] += 1;
+			} else if (tile.getColor() == Color.ORANGE) {
+				a[7] += 1;
+			} else if (tile.getColor() == Color.YELLOW) {
+				a[8] += 1;
+			} else if (tile.getColor() == Color.GREEN) {
+				a[9] += 1;
+			} else if (tile.getColor() == Color.BLUE) {
+				a[10] += 1;
+			} else if (tile.getColor() == Color.PURPLE) {
+				a[11] += 1;
+			}
+		}
+		int largest = 0;
+		for (int i = 0; i < 12; i++) {
+			if (largest < a[i]) {
+				largest = a[i];
+			}
+		}
 		
-		return list.size();
+		return largest;
 	}
 
 }
