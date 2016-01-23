@@ -24,6 +24,7 @@ public class Client implements Runnable{
     private static final String CLIENT_MOVE_PUT = "MOVE_PUT";
     private static final String CLIENT_MOVE_TRADE = "MOVE_TRADE";
     private static final String SERVER_IDENITFY = "IDENTIFYOK";
+    private static final String SERVER_QUEUE = "QUEUEOK";
     private static final String SERVER_GAMESTART = "GAMESTART";
     private static final String SERVER_GAMEEND = "GAMEEND";
     private static final String SERVER_TURN = "TURN";
@@ -41,6 +42,8 @@ public class Client implements Runnable{
     private static final String SERVER_LEADERBOARD = "LEADERBOARDOK";
     private static final String CLIENT_LOBBY = "LOBBY";
     private static final String SERVER_LOBBY = "LOBBYOK";*/
+    private static final String NAME_REGEX = "^[A-Za-z0-9-_]{2,16}$";
+    private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
 	
     private Socket socket;
 	private BufferedReader in;

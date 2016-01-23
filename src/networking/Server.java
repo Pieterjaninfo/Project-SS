@@ -180,5 +180,11 @@ public class Server implements Runnable {
 	public void addToQueue(ClientHandler client, String n) {
 		queue.addToQueue(client, n);
     }
+	
+	public void makeMove(String move) {
+		
+	}
+	
+	
     
 }

@@ -20,6 +20,7 @@ public class ClientHandler implements Runnable {
     private static final String CLIENT_MOVE_PUT = "MOVE_PUT";
     private static final String CLIENT_MOVE_TRADE = "MOVE_TRADE";
     private static final String SERVER_IDENITFY = "IDENTIFYOK";
+    private static final String SERVER_QUEUE = "QUEUEOK";
     private static final String SERVER_GAMESTART = "GAMESTART";
     private static final String SERVER_GAMEEND = "GAMEEND";
     private static final String SERVER_TURN = "TURN";
@@ -37,7 +38,8 @@ public class ClientHandler implements Runnable {
     private static final String SERVER_LEADERBOARD = "LEADERBOARDOK";
     private static final String CLIENT_LOBBY = "LOBBY";
     private static final String SERVER_LOBBY = "LOBBYOK";*/
-	private static final String SERVER_IDENTIFY = null;
+	private static final String NAME_REGEX = "^[A-Za-z0-9-_]{2,16}$";
+    private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
     
     public ClientHandler(Server serverArg, Socket socketArg) throws IOException {
     	this.in = new BufferedReader(new InputStreamReader(socketArg.getInputStream()));
@@ -59,7 +61,7 @@ public class ClientHandler implements Runnable {
 				} else if (input.startsWith(CLIENT_QUEUE)) {
 					queue(input.substring(CLIENT_QUEUE.length()));
 				} else if (input.startsWith(CLIENT_MOVE_PUT)) {
-					
+					server.makeMove(input.substring(CLIENT_MOVE_PUT.length()));
 				} else if (input.startsWith(CLIENT_MOVE_TRADE)) {
 					
 				}
@@ -68,7 +70,7 @@ public class ClientHandler implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		shutdown();
 	}
 	
 	/**
@@ -112,7 +114,7 @@ public class ClientHandler implements Runnable {
      * Returns the name of the client that belongs to the ClientHandler.
      * @return
      */
-    /* pure */public String getName() {
+    /* pure */ public String getName() {
     	return clientName;
     }
     
@@ -122,14 +124,14 @@ public class ClientHandler implements Runnable {
      */
     //@ requires input != null; input.matches("[a-zA-Z0-9-_]{2,16}")
     public void identification(String input) {
-    	if (input.matches("[a-zA-Z0-9-_]{2,16}")) {
-    		sendMessage(SERVER_ERROR + " " + Error.NAME_INVALID);
+    	if (input.matches(NAME_REGEX)) {
+    		error(Error.NAME_INVALID);
     	} else {
     		if (server.nameExists(clientName)) {
-        		sendMessage(SERVER_ERROR + " " + Error.NAME_USED);
+        		error(Error.NAME_USED);
         	} else {
             	clientName = input;
-            	sendMessage(SERVER_IDENTIFY);
+            	sendMessage(SERVER_IDENITFY);
         	}
     	} 
     }
@@ -141,13 +143,29 @@ public class ClientHandler implements Runnable {
     // requires input != null;
     public void queue(String input) {
     	String[] n = input.split(",");
+    	Boolean goodQueue = true;
     	for (String a : n) {
     		if (a == "1" || a == "2" || a == "3") {
-    			server.addToQueue(this, a);
+    			
     		} else {
-    			sendMessage(SERVER_ERROR + " " + Error.QUEUE_INVALID);
+    			error(Error.QUEUE_INVALID);
+    			goodQueue = false;
+    			break;
     		}
     	}
+    	if (goodQueue) {
+    		for (String a : n) {
+            	server.addToQueue(this, a);
+        	}
+    		sendMessage(SERVER_QUEUE);
+    	}
+    }
+    
+    public void error(Error error) {
+    	sendMessage(SERVER_ERROR + " " + error);
     }
 	
+    public void gameStart(String msg) {
+    	sendMessage(SERVER_GAMESTART + " " + msg);
+    }
 }

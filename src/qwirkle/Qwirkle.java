@@ -7,7 +7,7 @@ import java.util.List;
 import ui.*;
 import networking.*;
 
-public class Qwirkle {
+public class Qwirkle implements Runnable{
 	
 	private static UI ui;
 	private Board board;
@@ -19,6 +19,18 @@ public class Qwirkle {
 		//bag = new Bag(); Singleplayer only???
 	}
 
+	/**
+	 * Constructor used for the server that receives a list of clients and starts the game with these players.
+	 * @param clients
+	 */
+	public Qwirkle(List<ClientHandler> clients) {
+		for (ClientHandler client : clients) {
+			players.add(new SocketPlayer(client.getName(), this)); //TODO implement SocketPlayer
+		}
+		board = new Board();
+		bag = new Bag();
+	}
+	
 	/**
 	 * Starts the game.
 	 * @param args
@@ -103,6 +115,15 @@ public class Qwirkle {
 	
 	public void sendMessage(String msg) {
 		ui.showMessage(msg);
+	}
+
+	/**
+	 * Controller for the serverside game
+	 */
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
