@@ -73,7 +73,11 @@ public class Board {
 			return false;
 		}
 		
+		
+		
+		
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
+		
 		for (Integer x : placedTiles.keySet()) {
 			for (Integer y : placedTiles.get(x).keySet()) {
 				Tile thisTile = placedTiles.get(x).get(y);
