@@ -25,7 +25,7 @@ public class Qwirkle implements Runnable{
 	 */
 	public Qwirkle(List<ClientHandler> clients) {
 		for (ClientHandler client : clients) {
-			players.add(new SocketPlayer(client.getName(), this)); //TODO implement SocketPlayer
+			players.add(new SocketPlayer(client.getName(), this));
 		}
 		board = new Board();
 		bag = new Bag();
@@ -91,26 +91,16 @@ public class Qwirkle implements Runnable{
 	}
 	
 	/**
-	 * Starts a multiplayer game.
+	 * Starts a multiplayer game for client.
 	 */
 	public void startMultiplayer() {
 		try {
 			Client client = new Client(ui.getHost(), ui.getPort());
 			client.begin(ui);
-			//------------------------------------------------------------------------------
-			//For testing purposes only
-			client.sendMessage("QUIT");
-			//------------------------------------------------------------------------------
-					
-			
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// TODO implement
-		
-		
 	}
 	
 	public void sendMessage(String msg) {
@@ -118,12 +108,34 @@ public class Qwirkle implements Runnable{
 	}
 
 	/**
-	 * Controller for the serverside game
+	 * Controller for the server game.
 	 */
 	@Override
 	public void run() {
+		for (Player player : players) {
+			player.setStartingHand(bag.giveStartingHand());
+		}
+		
+		// TODO determine first player...
+		// TODO let first player make move
+		// TODO let next player make move...etc...
+		
+		
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Player determineFirstMove() {
+		int startSize = 0;
+		Player startingPlayer;
+		for (Player player : players) {
+			int playerStartSize = player.largestStartSize();
+			if (playerStartSize > startSize) {
+				startSize = playerStartSize;
+				startingPlayer = player;
+			}
+		}
+		return startingPlayer;
 	}
 
 }
