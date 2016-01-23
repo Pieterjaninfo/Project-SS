@@ -74,6 +74,10 @@ public class SimpleBehaviour implements Behaviour {
 		return null;
 	}
 	
+	/**
+	 * Returns the behaviour name "Simple Behaviour".
+	 */
+	@Override
 	public String getName() {
 		return "Simple Behaviour";
 	}

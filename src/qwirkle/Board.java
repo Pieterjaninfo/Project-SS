@@ -37,8 +37,13 @@ public class Board {
 	 */
 	//@ requires move != null;
 	public void doMove(Move move) {
-		checkDoMove(move);
-		// TODO method not finished
+		if (checkDoMove(move)) {
+			// TODO method not finished
+			
+			// TODO 
+		}
+			
+		
 	}
 
 	/**
@@ -119,9 +124,10 @@ public class Board {
 	}
 	
 	/**
-	 * Returns the tile on the given x and y coordinate, or null when there is no tile on the given coordinate.
+	 * Returns the tile on the given x and y coordinate, 
+	 * 	  or null when there is no tile on the given coordinate.
 	 * @param x The x coordinate
-	 * @param y The y coorinate
+	 * @param y The y coordinate
 	 * @return the tile on the coordinate, or null if there isn't a tile there
 	 */
 	//@ requires x != null;
@@ -145,8 +151,27 @@ public class Board {
 	//@ require x != null;
 	//@ requires y != null;
 	public boolean canPlaceTile(Tile tile, int x, int y) {
-
+		// TODO if board is empty -> true
+		if (getBoardSize() <= 0) {
+			return true;
+		}
+		
+		if (containsTile(x, y)) {
+			return false;
+		}
+		 
+		// TODO check if can merge with vertPattern-> 
+		
+		// TODO then check if can merge with horizPattern ->true
 		return false;
+	}
+	
+	/**
+	 * Returns the amount of tiles that are currently placed on the board.
+	 * @return the amount of tiles on the board
+	 */
+	public int getBoardSize() {
+		return board.size();
 	}
 	
 	
