@@ -42,17 +42,13 @@ public class ServerSocketPlayer implements Player{
 	@Override
 	public int largestStartSize() {
 		List<Tile> list = new ArrayList<Tile>();
-		List<Tile> list1 = new ArrayList<Tile>();
-		list.add(hand.get(0));
-		for (Tile tile : hand) {
-			for (Tile tile1 : list) {
-				if (!tile.equals(tile1)){
-					//list.add(tile1);
-					System.out.println(tile1.toString());
-					
+		list.addAll(this.getHand());
+		for (int i = 0; i < getHand().size(); i++) {
+			for (int j = 0; j < getHand().size(); j++) {
+				if (i != j && hand.get(i).equals(hand.get(j)) && list.contains(hand.get(i))){
+					list.remove(hand.get(j));					
 				}
 			}
-			
 		}
 		
 		return list.size();

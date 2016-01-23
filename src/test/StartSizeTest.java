@@ -36,6 +36,7 @@ public class StartSizeTest {
 	@Test
 	public void Testduplicate() {
 		assertEquals(4, a.largestStartSize());
+		assertEquals(6, a.getHand().size());
 	}
 	
 }
