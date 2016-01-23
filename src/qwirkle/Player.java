@@ -24,4 +24,16 @@ public interface Player {
 	 * @return the score of the player
 	 */
 	public int getScore();
+	
+	/**
+	 * Sets the starting hand of the player.
+	 * @param startingHand
+	 */
+	public void setStartingHand(List<Tile> startingHand);
+	
+	/**
+	 * returns the largest row that can be created with the tiles in the hand.
+	 * @return
+	 */
+	public int largestStartSize();
 }

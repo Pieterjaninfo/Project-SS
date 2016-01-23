@@ -79,4 +79,8 @@ public class Tile {
 		this.horizPattern = horizP;
 	}
 	
+	public String toString() {
+		return String.format("Shape: %s,Color: %s", shape, color);
+	}
+	
 }
