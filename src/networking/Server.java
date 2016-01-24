@@ -181,10 +181,10 @@ public class Server implements Runnable {
 		queue.addToQueue(client, n);
     }
 	
-	public void makeMove(String move) {
-		
+	public void gameBroadcast(List<ClientHandler> gameClients, String msg) {
+		for (ClientHandler client : gameClients) {
+			client.sendMessage(msg);
+		}
 	}
-	
-	
     
 }

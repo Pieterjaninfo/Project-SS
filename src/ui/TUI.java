@@ -2,9 +2,11 @@ package ui;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Scanner;
 
 import qwirkle.Qwirkle;
+import qwirkle.Tile;
 
 /**
  * Textual user interface for the Qwirkle game.
@@ -12,6 +14,8 @@ import qwirkle.Qwirkle;
  *
  */
 public class TUI implements UI {
+	
+	private static final String HORIZONTAL_SEPERATOR = "+----";
 
 	private Scanner input; 
 	private Qwirkle game;
@@ -76,7 +80,8 @@ public class TUI implements UI {
 	 * Shows the hand of the player.
 	 */
 	@Override
-	public void showHand() {
+	public void showHand(List<Tile> tiles) {
+		
 		// TODO Auto-generated method stub
 		
 	}
@@ -139,4 +144,5 @@ public class TUI implements UI {
 		input.nextLine();
 		return in;
 	}
+
 }

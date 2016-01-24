@@ -6,12 +6,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.List;
+
+import qwirkle.Qwirkle;
 
 public class ClientHandler implements Runnable {
 	private Server server;
     private BufferedReader in;
     private BufferedWriter out;
-    private String clientName;
+    private String clientName = null;
     
     // List of protocol commands.
     private static final String CLIENT_IDENTIFY = "IDENTIFY";
@@ -41,6 +44,9 @@ public class ClientHandler implements Runnable {
 	private static final String NAME_REGEX = "^[A-Za-z0-9-_]{2,16}$";
     private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
     
+    private Boolean moveExpected = false;
+    private Qwirkle game;
+    
     public ClientHandler(Server serverArg, Socket socketArg) throws IOException {
     	this.in = new BufferedReader(new InputStreamReader(socketArg.getInputStream()));
     	this.out = new BufferedWriter(new OutputStreamWriter(socketArg.getOutputStream()));
@@ -56,14 +62,18 @@ public class ClientHandler implements Runnable {
 				String input = in.readLine();
 				if (input.startsWith(CLIENT_QUIT)) {
 					break;
-				} else if (input.startsWith(CLIENT_IDENTIFY)) {
-					identification(input.substring(CLIENT_IDENTIFY.length()));
+				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
+					identification(input.substring(CLIENT_IDENTIFY.length()) + 1);
+				} else if (clientName == null) {
+					error(Error.ILLEGAL_STATE);
 				} else if (input.startsWith(CLIENT_QUEUE)) {
 					queue(input.substring(CLIENT_QUEUE.length()));
-				} else if (input.startsWith(CLIENT_MOVE_PUT)) {
-					server.makeMove(input.substring(CLIENT_MOVE_PUT.length()));
-				} else if (input.startsWith(CLIENT_MOVE_TRADE)) {
-					
+				} else if (input.startsWith(CLIENT_MOVE_PUT) && moveExpected) {
+					game.makeMove(input.substring(CLIENT_MOVE_PUT.length()));
+				} else if (input.startsWith(CLIENT_MOVE_TRADE) && moveExpected) {
+					game.tradeMove(input.substring(CLIENT_MOVE_TRADE.length()));
+				} else {
+					error(Error.ILLEGAL_STATE);
 				}
 			}
 		} catch (IOException e) {
@@ -165,7 +175,17 @@ public class ClientHandler implements Runnable {
     	sendMessage(SERVER_ERROR + " " + error);
     }
 	
-    public void gameStart(String msg) {
+    public void gameStart(String msg, Qwirkle game) {
     	sendMessage(SERVER_GAMESTART + " " + msg);
+    	this.game = game;
+    }
+    
+    public void gameBroadcast(List<ClientHandler> gameClients, String msg) {
+    	server.gameBroadcast(gameClients, msg);
+    }
+    
+    public void turn(List<ClientHandler> gameClients, String playerName) {
+    	gameBroadcast(gameClients, SERVER_TURN + " " + playerName);
+    	moveExpected = true;
     }
 }
