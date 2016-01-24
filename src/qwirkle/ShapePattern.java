@@ -96,6 +96,14 @@ public class ShapePattern implements Pattern {
 	public boolean equals(Pattern pattern) {
 		return pattern instanceof ShapePattern;
 	}
+	
+	/**
+	 * Returns the amount of tiles in the Shape Pattern.
+	 */
+	@Override
+	public int getSize() {
+		return tiles.size();
+	}
 
 	//----------------------- Commands -------------------------
 	
@@ -137,5 +145,7 @@ public class ShapePattern implements Pattern {
 			colors.add(tile.getColor());
 		}
 	}
+	
+	
 	
 }

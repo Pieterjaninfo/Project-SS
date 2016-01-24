@@ -47,4 +47,9 @@ public interface Pattern {
 	//@ requires tile != null;
 	public void addTile(Tile tile);
 
+	/**
+	 * Returns the amount of tiles in the pattern.
+	 */
+	//@ ensures \result >= 0 && \result <= 6;
+	public int getSize();
 }

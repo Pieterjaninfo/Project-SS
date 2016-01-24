@@ -105,6 +105,14 @@ public class ColorPattern implements Pattern {
 		return shapes;
 	}
 	
+	/**
+	 * Returns the amount of tiles in the Color Pattern.
+	 */
+	@Override
+	public int getSize() {
+		return tiles.size();
+	}
+	
 	//----------------------- Commands -------------------------
 
 	
