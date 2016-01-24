@@ -22,7 +22,7 @@ public class StartSizeTest {
 	@Before
 	public void setUp() {
 		List<Tile> list = new ArrayList<Tile>();
-		list.add(new Tile(Color.BLUE, Shape.CIRCLE));
+		list.add(new Tile(Color.PURPLE, Shape.CIRCLE));
 		list.add(new Tile(Color.GREEN, Shape.CIRCLE));
 		list.add(new Tile(Color.BLUE, Shape.CIRCLE));
 		list.add(new Tile(Color.RED, Shape.CIRCLE));
@@ -36,6 +36,7 @@ public class StartSizeTest {
 	@Test
 	public void Testduplicate() {
 		assertEquals(4, a.largestStartSize());
+		assertEquals(6, a.getHand().size());
 	}
 	
 }
