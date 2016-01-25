@@ -38,7 +38,7 @@ public class SimpleBehaviour implements Behaviour {
 							if (b.canPlaceTile(handTile, x - 1, y)) {
 								moves.addTile(handTile, x - 1, y);
 								return moves;
-							}		
+							}
 						}
 					}
 					

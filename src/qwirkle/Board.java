@@ -41,10 +41,163 @@ public class Board {
 	 */
 	//@ requires move != null;
 	public void doMove(Move move) {
-		if (checkDoMove(move)) {
-			// TODO method not finished
+		if (checkMove(move)) {
 			
-			// TODO 
+			Map<Integer, Map<Integer, Tile>> moveTilesMap = move.getTiles();
+			
+			
+			if (moveTilesMap.size() == 1) {
+				for (Integer x : moveTilesMap.keySet()) {
+					if (moveTilesMap.get(x).keySet().size() == 1) {
+						//move contains one tile
+						for (Integer y : moveTilesMap.get(x).keySet()) {
+							Tile thisTile = moveTilesMap.get(x).get(y);
+							
+							if (canPlaceTile(thisTile, x, y)) {
+								//Horizontal patterns
+								Tile leftTile = getTile(x - 1, y);
+								Tile rightTile = getTile(x + 1, y);
+								
+								//merge tile with both left and right side
+								if (leftTile != null && rightTile != null) {
+										
+									Pattern leftPattern = leftTile.getHorizPattern();
+									Pattern rightPattern = rightTile.getHorizPattern();
+									if (leftPattern != null && rightPattern != null) {
+										// there is left and right pattern - merge these
+										leftPattern.merge(rightPattern);
+										leftPattern.addTile(thisTile);
+									} else if (leftPattern != null) {
+										// there is only left pattern
+										leftPattern.addTile(thisTile);
+										leftPattern.addTile(rightTile);
+									} else if (rightPattern != null) {
+										// there is only right pattern
+										rightPattern.addTile(thisTile);
+										rightPattern.addTile(leftTile);
+									} else {
+										// both tiles have no pattern
+										if (leftTile.getColor() == thisTile.getColor()) {
+											// color pattern
+											ColorPattern colorPattern = new ColorPattern(thisTile.getColor());
+											colorPattern.addTile(thisTile);
+											colorPattern.addTile(leftTile);
+											colorPattern.addTile(rightTile);
+										} else {
+											// shape pattern
+											ShapePattern shapePattern = new ShapePattern(thisTile.getShape());
+											shapePattern.addTile(leftTile);
+											shapePattern.addTile(leftTile);
+											shapePattern.addTile(rightTile);
+											
+										}
+									}
+					
+								} else if (leftTile != null) {
+									//only a tile to the left
+									
+									
+									
+									
+									
+								}
+								// HORIZONTAL PATTERN SHOULD BE MERGABLE NOW
+								/*
+								
+								//Vertical patterns
+								Tile upTile = getTile(x, y + 1);
+								Tile downTile = getTile(x, y - 1);
+								
+								// check if individual tile can be merged with upper tile
+								if (upTile != null) {
+									if (upTile.getVertPattern() != null) {
+										// upper tile is in a pattern
+										if (!upTile.getVertPattern().canAddTile(thisTile)) {
+											return false;
+										}
+									} else {
+										// upper tile has no pattern
+										if (upTile.equals(thisTile)) {
+											return false;
+										}
+									}
+								}
+								
+								// check if individual tile can be merged with lower tile
+								if (downTile != null) {
+									if (downTile.getVertPattern() != null) {
+										// lower tile is in a pattern
+										if (!downTile.getVertPattern().canAddTile(thisTile)) {
+											return false;
+										}
+									} else {
+										// lower tile has no pattern
+										if (downTile.equals(thisTile)) {
+											return false;
+										}
+									}
+								}
+								
+								//check if tile can be merged with both upper and lower side
+								if (upTile != null && downTile != null) {
+									
+									Pattern upPattern = upTile.getVertPattern();
+									Pattern downPattern = downTile.getVertPattern();
+									if (upPattern != null && downPattern != null) {
+										// there is upper and lower pattern
+										if (!upPattern.canMerge(downPattern) || 
+												  upPattern.getSize() + downPattern.getSize() > 5) {
+											return false;
+										}
+									} else if (upPattern != null) {
+										// there is only upper pattern
+										if (!upPattern.canAddTile(downTile) || upPattern.getSize() > 4) {
+											return false;
+										}
+									} else if (downPattern != null) {
+										// there is only lower pattern
+										if (!downPattern.canAddTile(upTile) || downPattern.getSize() > 4) {
+											return false;
+										}
+									} else {
+										// both tiles have no pattern
+										if (upTile.equals(downTile)) {
+											return false;
+										}
+									}	
+								}
+								
+								// VERTICAL PATTERN SHOULD BE MERGABLE NOW
+								 * */
+							}
+							
+						}
+						
+					} 
+				}
+			} else {
+				//move contains more tiles
+				
+				if (moveTilesMap.size() == 1) {
+					//move contains one X, multiple Y
+				} else {
+					//move contains multiple Y
+					
+					//TODO check if multiple Y-> false;
+				}
+			}
+			
+			
+			
+			for (Integer x : moveTilesMap.keySet()) {
+				for (Integer y : moveTilesMap.get(x).keySet()) {
+					Tile thisTile = moveTilesMap.get(x).get(y);
+					
+					
+					
+					
+				}
+			}
 		}
 			
 		
@@ -70,7 +223,7 @@ public class Board {
 	 * @return true if the move is allowed to be done, else returns false
 	 */
 	//@ requires move != null;
-	private boolean checkDoMove(Move move) {
+	public boolean checkMove(Move move) {
 		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = makeBoardCopy();
 		
 		if (!isPlaceFree(move)) {
@@ -105,7 +258,8 @@ public class Board {
 								} 
 							} else {
 								//left tile has no pattern
-								if (leftTile.equals(leftTile)) {
+								if (leftTile.equals(thisTile) || leftTile.getColor() != thisTile.getColor() 
+										  && leftTile.getShape() != thisTile.getShape()) {
 									return false;
 								}
 							}	
@@ -119,7 +273,8 @@ public class Board {
 								}
 							} else {
 								// right tile has no pattern
-								if (rightTile.equals(thisTile)) {
+								if (rightTile.equals(thisTile) || rightTile.getColor() != thisTile.getColor() 
+										  && rightTile.getShape() != thisTile.getShape()) {
 									return false;
 								}
 							}
@@ -149,7 +304,8 @@ public class Board {
 								}
 							} else {
 								// both tiles have no pattern
-								if (leftTile.equals(rightTile)) {
+								if (leftTile.equals(rightTile) || rightTile.getColor() != leftTile.getColor() 
+										  && rightTile.getShape() != leftTile.getShape()) {
 									return false;
 								}
 							}
@@ -461,7 +617,7 @@ public class Board {
 							
 							// VERTICAL PATTERN SHOULD BE MERGABLE NOW
 						
-						
+							
 						
 						
 						}
@@ -706,7 +862,6 @@ public class Board {
 	//@ require x != null;
 	//@ requires y != null;
 	public boolean canPlaceTile(Tile tile, int x, int y) {
-		// TODO if board is empty -> true
 		if (getBoardSize() <= 0) {
 			return true;
 		}
@@ -714,11 +869,144 @@ public class Board {
 		if (containsTile(x, y)) {
 			return false;
 		}
-		 
-		// TODO check if can merge with vertPattern-> 
 		
-		// TODO then check if can merge with horizPattern ->true
-		return false;
+		//---------------duplicate code----------------------------
+		Tile thisTile = tile;
+		
+		//Horizontal patterns
+		Tile leftTile = getTile(x - 1, y);
+		Tile rightTile = getTile(x + 1, y);
+		
+		//check if individual tile can be merged with left side
+		if (leftTile != null) {
+			if (leftTile.getHorizPattern() != null) {
+				// left tile is in a pattern
+				if (!leftTile.getHorizPattern().canAddTile(thisTile)) {
+					return false;
+				} 
+			} else {
+				//left tile has no pattern
+				if (leftTile.equals(leftTile)) {
+					return false;
+				}
+			}	
+		}
+		//check if individual tile can be merged with right side
+		if (rightTile != null) {
+			if (rightTile.getHorizPattern() != null) {
+				// right tile is in a pattern
+				if (!rightTile.getHorizPattern().canAddTile(thisTile)) {
+					return false;
+				}
+			} else {
+				// right tile has no pattern
+				if (rightTile.equals(thisTile)) {
+					return false;
+				}
+			}
+		}
+		//check if tile can merge with both left and right side
+		if (leftTile != null && rightTile != null) {
+				
+			Pattern leftPattern = leftTile.getHorizPattern();
+			Pattern rightPattern = rightTile.getHorizPattern();
+			if (leftPattern != null && rightPattern != null) {
+				// there is left and right pattern
+				if (!leftPattern.canMerge(rightPattern) || 
+						  leftPattern.getSize() + rightPattern.getSize() > 5) {
+					return false;
+				}
+			} else if (leftPattern != null) {
+				// there is only left pattern
+				if (!leftPattern.canAddTile(rightTile) || 
+						  leftPattern.getSize() > 4) {
+					return false;
+				}
+			} else if (rightPattern != null) {
+				// there is only right pattern
+				if (!rightPattern.canAddTile(leftTile) || 
+						  rightPattern.getSize() > 4) {
+					return false;
+				}
+			} else {
+				// both tiles have no pattern
+				if (leftTile.equals(rightTile)) {
+					return false;
+				}
+			}
+
+		}
+		// HORIZONTAL PATTERN SHOULD BE MERGABLE NOW
+		
+		
+		//Vertical patterns
+		Tile upTile = getTile(x, y + 1);
+		Tile downTile = getTile(x, y - 1);
+		
+		// check if individual tile can be merged with upper tile
+		if (upTile != null) {
+			if (upTile.getVertPattern() != null) {
+				// upper tile is in a pattern
+				if (!upTile.getVertPattern().canAddTile(thisTile)) {
+					return false;
+				}
+			} else {
+				// upper tile has no pattern
+				if (upTile.equals(thisTile)) {
+					return false;
+				}
+			}
+		}
+		
+		// check if individual tile can be merged with lower tile
+		if (downTile != null) {
+			if (downTile.getVertPattern() != null) {
+				// lower tile is in a pattern
+				if (!downTile.getVertPattern().canAddTile(thisTile)) {
+					return false;
+				}
+			} else {
+				// lower tile has no pattern
+				if (downTile.equals(thisTile)) {
+					return false;
+				}
+			}
+		}
+		
+		//check if tile can be merged with both upper and lower side
+		if (upTile != null && downTile != null) {
+			
+			Pattern upPattern = upTile.getVertPattern();
+			Pattern downPattern = downTile.getVertPattern();
+			if (upPattern != null && downPattern != null) {
+				// there is upper and lower pattern
+				if (!upPattern.canMerge(downPattern) || 
+						  upPattern.getSize() + downPattern.getSize() > 5) {
+					return false;
+				}
+			} else if (upPattern != null) {
+				// there is only upper pattern
+				if (!upPattern.canAddTile(downTile) || upPattern.getSize() > 4) {
+					return false;
+				}
+			} else if (downPattern != null) {
+				// there is only lower pattern
+				if (!downPattern.canAddTile(upTile) || downPattern.getSize() > 4) {
+					return false;
+				}
+			} else {
+				// both tiles have no pattern
+				if (upTile.equals(downTile)) {
+					return false;
+				}
+			}	
+		}
+		
+		// VERTICAL PATTERN SHOULD BE MERGABLE NOW
+
+	
+		return true;
+
 	}
 	
 	/**
