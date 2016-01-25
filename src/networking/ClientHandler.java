@@ -188,4 +188,20 @@ public class ClientHandler implements Runnable {
     	gameBroadcast(gameClients, SERVER_TURN + " " + playerName);
     	moveExpected = true;
     }
+    
+    public void movePutOk() {
+    	sendMessage(SERVER_MOVE_PUT);
+    }
+    
+    public void moveTradeOk() {
+    	sendMessage(SERVER_MOVE_TRADE);
+    }
+    
+    public void gameEnd() {
+    	
+    }
+    
+    public void pass() {
+    	
+    }
 }

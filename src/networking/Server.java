@@ -26,7 +26,7 @@ public class Server implements Runnable {
 	 * Start the server and wait for the user to type exit to exit the server.
 	 * @param args
 	 */
-	public static void main(String[] args) { // TODO Change name if we want to start from UI.
+	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.out.println(USAGE);
 			System.exit(0);

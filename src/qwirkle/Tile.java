@@ -83,4 +83,9 @@ public class Tile {
 		return String.format("Shape: %s,Color: %s", shape, color);
 	}
 	
+	public String toCodedString() {
+		return String.format("%s%s", getColor().toInt(), getShape().toString());
+		
+	}
+	
 }

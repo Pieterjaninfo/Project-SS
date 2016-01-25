@@ -71,7 +71,6 @@ public class Client implements Runnable{
     	this.ui = ui;
     	try {
 			(new Thread(this)).start();
-			// TODO fix what the client has to do icm UI and controller.
 			do {
 				Thread.sleep(500);
 			} while (this.isRunning());
@@ -102,8 +101,8 @@ public class Client implements Runnable{
      * Print a message to the standard output.
      * @param message Message to be printed
      */
-    private static void print(String message) {
-		System.out.println(message);
+    private void print(String message) {
+		ui.showMessage(message);
     	// TODO print to the UI.
 	}
     

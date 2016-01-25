@@ -15,6 +15,11 @@ public class Board {
 		this.board = new HashMap<Integer, Map<Integer, Tile>>();
 	}
 	
+	// TODO remove 
+	public Board(Map<Integer, Map<Integer, Tile>> board) {
+		this.board = board;
+	}
+	
 	/**
 	 * Check is the board contains a tile on the given coordinate.
 	 * @param x The x coordinate
