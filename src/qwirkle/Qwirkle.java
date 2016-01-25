@@ -65,15 +65,22 @@ public class Qwirkle implements Runnable{
 		}
 		currentPlayer = determineFirstMove();
 		do {
-			ui.showBoard();
+			ui.showBoard(board.getAllTiles());
 			ui.showHand(currentPlayer.getHand());
-			currentPlayer.determineMove();
-
+			Move currentmove = currentPlayer.determineMove();
+			while (!board.checkMove(currentmove)) {
+				currentmove = currentPlayer.determineMove();
+			}
+			
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());			
 			
 		} while (true);
 		// TODO while the game is not over.
+	}
+	//TODO remove temp test method
+	public void showBoard() {
+		ui.showBoard(board.getAllTiles());
 	}
 
 	/**

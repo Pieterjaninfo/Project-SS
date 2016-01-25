@@ -2,6 +2,7 @@ package ui;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Map;
 
 import qwirkle.Tile;
 
@@ -12,7 +13,7 @@ public interface UI {
 	/**
 	 * Shows the hand on the standard system output.
 	 */
-	public void showBoard();
+	public void showBoard(Map<Integer, Map<Integer, Tile>> tileMap);
 	
 	/**
 	 * Shows the hand on the standard system output.

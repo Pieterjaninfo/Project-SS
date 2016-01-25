@@ -2,7 +2,10 @@ package ui;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import qwirkle.Qwirkle;
@@ -30,7 +33,42 @@ public class TUI implements UI {
 	 * Shows the current board.
 	 */
 	@Override
-	public void showBoard() {
+	public void showBoard(Map<Integer, Map<Integer, Tile>> tileMap) {
+		String print = "";
+		Integer xMin = Collections.min(tileMap.keySet());
+		Integer xMax = Collections.max(tileMap.keySet());
+		Collection<Map<Integer, Tile>> xValues = tileMap.values();
+		
+		Integer yMin = 0;
+		Integer yMax = 0;
+		for (Map<Integer, Tile> row : xValues) {
+			if (yMin > Collections.min(row.keySet())) {
+				yMin = Collections.min(row.keySet());
+			}
+			if (yMax < Collections.max(row.keySet())) {
+				yMax = Collections.max(row.keySet());
+			}
+		}
+				
+		for (int j = yMax; j >= yMin; j--) {
+			for (int i = xMin; i <= xMax; i++) {
+				print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
+			}
+			print = String.format("%s+\n", print);
+			for (int i = xMin; i <= xMax; i++) {
+				if (tileMap.containsKey(i) && tileMap.get(i).containsKey(j)) {
+					print = String.format("%s| %s ", print, tileMap.get(i).get(j).toCodedString());
+				} else {
+					print = String.format("%s|    ", print);
+				}
+			}
+			print = String.format("%s|\n", print);
+		}
+		for (int i = xMin; i <= xMax; i++) {
+			print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
+		}
+		print = String.format("%s+\n", print);
+		System.out.print(print);
 		// TODO Auto-generated method stub
 		
 	}
