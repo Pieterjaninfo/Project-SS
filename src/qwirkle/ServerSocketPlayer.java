@@ -95,5 +95,4 @@ public class ServerSocketPlayer implements Player{
 		
 		return largest;
 	}
-
 }

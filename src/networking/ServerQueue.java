@@ -45,25 +45,29 @@ public class ServerQueue implements Runnable{
 	 */
 	@Override
 	public void run() {
+		Qwirkle game == null;
 		while (true) {
 			List<ClientHandler> players = null;
 			if (fourPlayer.size() > 4) {
 				players = fourPlayer.subList(0, 3);
-				(new Thread(new Qwirkle(players))).start();
+				game = new Qwirkle(players);
+				(new Thread(game)).start();
 			} else if (threePlayer.size() > 3) {
 				players = fourPlayer.subList(0, 2);
-				(new Thread(new Qwirkle(players))).start();
+				game = new Qwirkle(players);
+				(new Thread(game)).start();
 			} else if (twoPlayer.size() > 2) {
 				players = fourPlayer.subList(0, 1);
-				(new Thread(new Qwirkle(players))).start();
+				game = new Qwirkle(players);
+				(new Thread(game)).start();
 			}
-			if (players != null) {
+			if (players != null && game != null) {
 				String names = "";
 				for (ClientHandler client : players) {
 					names.format("%s %s", names, client.getName());
 				}
 				for (ClientHandler client : players) {
-					client.gameStart(names);
+					client.gameStart(names, game);
 				}
 			}
 			
