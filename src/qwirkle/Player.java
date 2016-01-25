@@ -36,4 +36,11 @@ public interface Player {
 	 * @return
 	 */
 	public int largestStartSize();
+	
+	/**
+	 * returns if the player has the tile in his hand.
+	 * @param tile The tile to check
+	 * @return
+	 */
+	public boolean tilesInHand(Move move);
 }

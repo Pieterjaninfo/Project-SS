@@ -2,6 +2,7 @@ package qwirkle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class ServerSocketPlayer implements Player{
 	
@@ -94,5 +95,19 @@ public class ServerSocketPlayer implements Player{
 		}
 		
 		return largest;
+	}
+
+	@Override
+	public boolean tilesInHand(Move move) {
+		List<Tile> moveTiles = move.getTileList();
+		Vector<Tile> handV = new Vector<Tile>(getHand());
+		for (Tile moveTile : moveTiles) {
+			if (handV.contains(moveTile)) {
+				handV.remove(moveTile);
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 }

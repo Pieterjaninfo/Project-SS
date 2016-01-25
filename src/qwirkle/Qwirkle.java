@@ -157,10 +157,35 @@ public class Qwirkle implements Runnable{
 		return startingPlayer;
 	}
 	
+	/**
+	 * makes the move for the current player.
+	 */
 	public void makeMove() {
 		currentPlayer.determineMove();
 		firstMove = false;
 	}
+	/**
+	 * Makes move for the current player.
+	 * @param move The move in the for of the string, as determined in the protocol.
+	 */
+	public void makeMove(String move) {
+		Move moves = new Move();
+		String[] moveArray = move.split(" ");
+		for (String move1 : moveArray) {
+			Tile tile = codeToTile(move1.split("@")[0]);
+			int x = Integer.parseInt(move1.split("@")[1].split(",")[0]);
+			int y = Integer.parseInt(move1.split("@")[1].split(",")[1]);
+			moves.addTile(tile, x, y);
+		}
+		if (currentPlayer.tilesInHand(moves)) {
+			clientPlayerMap.get(currentPlayer).error(Error.MOVE_TILES_UNOWNED);
+		} else if (board.checkMove(moves)) {
+			board.doMove(moves);
+		} else {
+			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
+		}
+	}
+	
 	/**
 	 * Makes the trade move if the player can make the trade and if it isn't the first turn.
 	 * @param handTiles String from protocol that contains the tilecodes of the tiles being traded.

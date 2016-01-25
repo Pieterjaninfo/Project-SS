@@ -67,9 +67,9 @@ public class ClientHandler implements Runnable {
 				} else if (clientName == null) {
 					error(Error.ILLEGAL_STATE);
 				} else if (input.startsWith(CLIENT_QUEUE)) {
-					queue(input.substring(CLIENT_QUEUE.length()));
+					queue(input.substring(CLIENT_QUEUE.length() + 1));
 				} else if (input.startsWith(CLIENT_MOVE_PUT) && moveExpected) {
-					game.makeMove(input.substring(CLIENT_MOVE_PUT.length()));
+					game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1));
 				} else if (input.startsWith(CLIENT_MOVE_TRADE) && moveExpected) {
 					game.tradeMove(input.substring(CLIENT_MOVE_TRADE.length()));
 				} else {
