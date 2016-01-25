@@ -45,7 +45,7 @@ public class ServerQueue implements Runnable{
 	 */
 	@Override
 	public void run() {
-		Qwirkle game == null;
+		Qwirkle game = null;
 		while (true) {
 			List<ClientHandler> players = null;
 			if (fourPlayer.size() > 4) {

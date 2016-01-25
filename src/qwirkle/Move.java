@@ -1,6 +1,9 @@
 package qwirkle;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Move {
@@ -45,4 +48,15 @@ public class Move {
 		tileList.get(x).put(y, tile);
 	}
 	
+	public List<Tile> getTileList() {
+		List<Tile> result = new ArrayList<Tile>();
+		Collection<Map<Integer, Tile>> map = getTiles().values();
+		for (Map<Integer, Tile> a : map) {
+			for (Tile tile : a.values()) {
+				result.add(tile);
+			}
+		}
+		return result;
+	}
+
 }
