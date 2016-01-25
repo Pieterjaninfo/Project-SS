@@ -81,9 +81,21 @@ public class TUI implements UI {
 	 */
 	@Override
 	public void showHand(List<Tile> tiles) {
-		
-		// TODO Auto-generated method stub
-		
+		String print = "";
+		for (int i = 0; i < tiles.size(); i++) {
+			print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
+		}
+		print = String.format("%s+\n", print);
+		for (Tile tile : tiles) {
+			print = String.format("%s| %s ", print, tile.toCodedString());
+		}
+		print = String.format("%s|\n", print);
+		for (int i = 0; i < tiles.size(); i++) {
+			print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
+		}
+		print = String.format("%s+\n", print);
+
+		System.out.print(print);
 	}
 
 	/**
