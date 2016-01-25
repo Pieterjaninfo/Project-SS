@@ -120,6 +120,10 @@ public class Qwirkle implements Runnable{
 		}
 	}
 	
+	/**
+	 * Prints the message to the ui.
+	 * @param msg The message to be printed
+	 */
 	public void sendMessage(String msg) {
 		ui.showMessage(msg);
 	}
@@ -135,15 +139,27 @@ public class Qwirkle implements Runnable{
 		currentPlayer = determineFirstMove();
 		//clientPlayerMap.get(currentPlayer).gameBroadcast(clients, );
 		firstMove = true;
-		clientPlayerMap.get(currentPlayer).turn(clients, currentPlayer.getName());
-		
-		// TODO let next player make move...etc...
-		
-		
+		do {
+			clientPlayerMap.get(currentPlayer).turn(clients, currentPlayer.getName());
+			// TODO if player can't play send pass.
+			try {
+				this.wait(); // TODO might not work test needed
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
+					  % players.size());
+		} while (true); // TODO while game runs
 		// TODO Auto-generated method stub
 		
 	}
 	
+	
+	/**
+	 * Determines the player that can make the first move.
+	 * @return
+	 */
 	public Player determineFirstMove() {
 		int startSize = 0;
 		Player startingPlayer = null;
@@ -181,6 +197,8 @@ public class Qwirkle implements Runnable{
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_TILES_UNOWNED);
 		} else if (board.checkMove(moves)) {
 			board.doMove(moves);
+			clientPlayerMap.get(currentPlayer).movePutOk();
+			this.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
 		}
@@ -201,11 +219,18 @@ public class Qwirkle implements Runnable{
 		}		
 		if (bag.canTradeTiles(tileList)) {
 			bag.tradeTiles(tileList);
+			clientPlayerMap.get(currentPlayer).moveTradeOk();
+			this.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
 		}
 	}
 	
+	/**
+	 * Converts the tilecode as used in the protocol to a Tile.
+	 * @param tile The tilecode as used in the protocol
+	 * @return a Tile
+	 */
 	public Tile codeToTile(String tile) {
 		int tileCode = Integer.parseInt(tile);
 		int shape = tileCode % 6;
@@ -215,6 +240,11 @@ public class Qwirkle implements Runnable{
 		return new Tile(colorEnum, shapeEnum);
 	}
 
+	/**
+	 * Converts a Tile to the tilecode as used in the protocol.
+	 * @param tile The Tile to be converted
+	 * @return a string
+	 */
 	public String tileToCode(Tile tile) {
 		return String.format("%d", tile.getColor().toInt() * 6 + tile.getShape().toInt());
 	}

@@ -115,10 +115,11 @@ public class TUI implements UI {
 	}
 	
 	/**
-	 * Gets the names of the players.
+	 * Asks the names of a player.
+	 * @param number The player number from whom to get the name
 	 */
 	@Override
-	public String getPlayer(int number) { // TODO change such that it can be used by the multiplayer
+	public String getPlayer(int number) {
 		String result = "";
 		System.out.println("For AI players use: AI 'StrategyName'");
 		if (number == 1) {
@@ -138,6 +139,9 @@ public class TUI implements UI {
 		return result;
 	}
 	
+	/**
+	 * Asks the amount of players.
+	 */
 	public int getPlayerCount() {
 		System.out.println("How many players (2-4)?");
 		int in = input.nextInt();		// TODO catch error if isn't int
