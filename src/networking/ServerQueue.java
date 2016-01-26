@@ -11,16 +11,16 @@ import qwirkle.Qwirkle;
  *
  */
 
-public class ServerQueue implements Runnable{
+public class ServerQueue implements Runnable {
 	
 	private List<ClientHandler> twoPlayer;
     private List<ClientHandler> threePlayer;
     private List<ClientHandler> fourPlayer;
     
     ServerQueue() {
-    	twoPlayer = new ArrayList();
-    	threePlayer = new ArrayList();
-    	fourPlayer = new ArrayList();
+    	twoPlayer = new ArrayList<ClientHandler>();
+    	threePlayer = new ArrayList<ClientHandler>();
+    	fourPlayer = new ArrayList<ClientHandler>();
     }
 
 	/**
@@ -64,14 +64,12 @@ public class ServerQueue implements Runnable{
 			if (players != null && game != null) {
 				String names = "";
 				for (ClientHandler client : players) {
-					names.format("%s %s", names, client.getName());
+					names = String.format("%s %s", names, client.getName());
 				}
 				for (ClientHandler client : players) {
 					client.gameStart(names, game);
 				}
 			}
-			
 		}
 	}
-
 }

@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable {
     private static final String CLIENT_LOBBY = "LOBBY";
     private static final String SERVER_LOBBY = "LOBBYOK";*/
 	private static final String NAME_REGEX = "^[A-Za-z0-9-_]{2,16}$";
-    private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
+    //private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
     
     private Boolean moveExpected = false;
     private Qwirkle game;
@@ -155,9 +155,7 @@ public class ClientHandler implements Runnable {
     	String[] n = input.split(",");
     	Boolean goodQueue = true;
     	for (String a : n) {
-    		if (a == "1" || a == "2" || a == "3") {
-    			
-    		} else {
+    		if (!(a == "1" || a == "2" || a == "3")) {
     			error(Error.QUEUE_INVALID);
     			goodQueue = false;
     			break;
@@ -175,9 +173,9 @@ public class ClientHandler implements Runnable {
     	sendMessage(SERVER_ERROR + " " + error);
     }
 	
-    public void gameStart(String msg, Qwirkle game) {
+    public void gameStart(String msg, Qwirkle gameA) {
     	sendMessage(SERVER_GAMESTART + " " + msg);
-    	this.game = game;
+    	this.game = gameA;
     }
     
     public void gameBroadcast(List<ClientHandler> gameClients, String msg) {

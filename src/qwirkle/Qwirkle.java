@@ -236,6 +236,7 @@ public class Qwirkle implements Runnable{
 	
 	/**
 	 * Makes the trade move if the player can make the trade and if it isn't the first turn.
+	 * Sends the correct messages to the clienthandler to be send to the clients.
 	 * @param handTiles String from protocol that contains the tilecodes of the tiles being traded.
 	 */
 	public void tradeMove(String handTiles) {
