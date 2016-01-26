@@ -35,8 +35,6 @@ public class ServerQueue implements Runnable {
     		threePlayer.add(client);
     	} else if (n == "3") {
     		fourPlayer.add(client);
-    	} else {
-    		client.error(Error.QUEUE_INVALID);
     	}
     }
 		

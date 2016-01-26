@@ -60,6 +60,9 @@ public class ClientHandler implements Runnable {
 		try {
 			while (true) {
 				String input = in.readLine();
+				if (input == null) {
+					break;
+				}
 				if (input.startsWith(CLIENT_QUIT)) {
 					break;
 				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
@@ -137,7 +140,7 @@ public class ClientHandler implements Runnable {
     	if (input.matches(NAME_REGEX)) {
     		error(Error.NAME_INVALID);
     	} else {
-    		if (server.nameExists(clientName)) {
+    		if (server.nameExists(clientName, this)) {
         		error(Error.NAME_USED);
         	} else {
             	clientName = input;
@@ -154,8 +157,9 @@ public class ClientHandler implements Runnable {
     public void queue(String input) {
     	String[] n = input.split(",");
     	Boolean goodQueue = true;
+
     	for (String a : n) {
-    		if (!(a == "1" || a == "2" || a == "3")) {
+    		if (!(a.equals("1") || a.equals("2") || a.equals("3"))) {
     			error(Error.QUEUE_INVALID);
     			goodQueue = false;
     			break;
