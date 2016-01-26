@@ -27,7 +27,8 @@ public class Qwirkle implements Runnable{
 	}
 
 	/**
-	 * Constructor used for the server that receives a list of clients and starts the game with these players.
+	 * Constructor used for the server that receives a list of 
+	 * clients and starts the game with these players.
 	 * @param clients
 	 */
 	public Qwirkle(List<ClientHandler> clients) {
@@ -65,15 +66,13 @@ public class Qwirkle implements Runnable{
 		}
 		currentPlayer = determineFirstMove();
 		do {
+			ui.showMessage("Player " + currentPlayer.getName());
 			ui.showBoard(board.getAllTiles());
 			ui.showHand(currentPlayer.getHand());
-			Move currentmove = currentPlayer.determineMove();
-			while (!board.checkMove(currentmove)) {
-				currentmove = currentPlayer.determineMove();
-			}
+			makeMove();
 			
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
-					  % players.size());			
+					  % players.size());
 			firstMove = false;
 		} while (!gameOver()); //other method name??
 		// TODO while the game is not over.
@@ -288,8 +287,9 @@ public class Qwirkle implements Runnable{
 	
 	public boolean gameOver() {
 		if (bag.getSize() == 0) {
-			if (!board.canPlaceTile(currentPlayer.getHand())) {
-				// Nested statements to decrease the amount of times the canPlaceTile function will be called
+			if (!board.canPlaceATile(currentPlayer.getHand())) {
+				// Nested statements to decrease the amount 
+				// of times the canPlaceTile function will be called
 				return true;	
 			} else if (currentPlayer.getHand().isEmpty()) {
 				return true;

@@ -10,7 +10,8 @@ public class HumanPlayer implements Player {
 	private Qwirkle game;
 	protected List<Tile> hand;
 	private int score;
-	private static final String MOVE_REGEX = "^([0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})( [0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})*$";
+	private static final String MOVE_REGEX = 
+			  "^([0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})( [0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})*$";
 
 	public HumanPlayer(String name, Qwirkle game) {
 		this.name = name;

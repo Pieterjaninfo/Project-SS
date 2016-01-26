@@ -37,20 +37,31 @@ public class TUI implements UI {
 	@Override
 	public void showBoard(Map<Integer, Map<Integer, Tile>> tileMap) {
 		System.out.printf("%s%s%s\n", SEPERATOR, " Board ", SEPERATOR);
+		Integer xMin;
+		Integer xMax;
+		Integer yMin;
+		Integer yMax;
 		String print = "";
-		Integer xMin = Collections.min(tileMap.keySet());
-		Integer xMax = Collections.max(tileMap.keySet());
-		Collection<Map<Integer, Tile>> xValues = tileMap.values();
-		
-		Integer yMin = 0;
-		Integer yMax = 0;
-		for (Map<Integer, Tile> row : xValues) {
-			if (yMin > Collections.min(row.keySet())) {
-				yMin = Collections.min(row.keySet());
+		if (!tileMap.isEmpty()) {
+			xMin = Collections.min(tileMap.keySet());
+			xMax = Collections.max(tileMap.keySet());
+			Collection<Map<Integer, Tile>> xValues = tileMap.values();
+			
+			yMin = 0;
+			yMax = 0;
+			for (Map<Integer, Tile> row : xValues) {
+				if (yMin > Collections.min(row.keySet())) {
+					yMin = Collections.min(row.keySet());
+				}
+				if (yMax < Collections.max(row.keySet())) {
+					yMax = Collections.max(row.keySet());
+				}
 			}
-			if (yMax < Collections.max(row.keySet())) {
-				yMax = Collections.max(row.keySet());
-			}
+		} else {
+			yMin = 0;
+			yMax = 0;
+			xMin = 0;
+			xMax = 0;
 		}
 
 				
@@ -185,7 +196,7 @@ public class TUI implements UI {
 	public String getPlayer(int number) {
 		String result = "";
 		System.out.println("For AI players use: AI 'StrategyName'");
-		if (number == 1) {
+		/*if (number == 1) {
 			do {
 				System.out.printf("Enter name:\n");
 				result = input.nextLine();
@@ -193,10 +204,10 @@ public class TUI implements UI {
 					System.out.println("Name not supported, please choose a different name.");
 				}
 			} while (!result.matches("[a-zA-Z0-9-_]{2,16}"));
-		} else {
+		} else {*/
 			System.out.printf("Enter player %d:\n", number + 1);
 			result = input.nextLine();
-		}
+		//}
 		
 		//System.out.println("result: " + result[0] + result[1]);
 		return result;
