@@ -25,11 +25,12 @@ public class Move {
 	 * Retrieves the amount of points for doing a move.
 	 * @return the amount of points
 	 */
-	//@ ensures points >= 0;
+	//@ ensures \result >= 0;
 	/*@ pure */ public int getPoints() {
 		return points;
 	}
 
+	//@ ensures \result != null;
 	/*@ pure */ public Map<Integer, Map<Integer, Tile>> getTiles() {
 		return tileList;
 	}
@@ -40,7 +41,7 @@ public class Move {
 	 * @param x The x coordinate
 	 * @param y The y coordinate
 	 */
-	//@ \forall Tile t; ??????????????????????
+	//@ requires tile != null;
 	public void addTile(Tile tile, int x, int y) {
 		if (!tileList.containsKey(x)) {
 			tileList.put(x, new HashMap<Integer, Tile>());
@@ -48,6 +49,11 @@ public class Move {
 		tileList.get(x).put(y, tile);
 	}
 	
+	/**
+	 * Returns a list with all the tiles from the move.
+	 * @return a list of tiles with type Tile
+	 */
+	//@ensures \result != null;
 	public List<Tile> getTileList() {
 		List<Tile> result = new ArrayList<Tile>();
 		Collection<Map<Integer, Tile>> map = getTiles().values();

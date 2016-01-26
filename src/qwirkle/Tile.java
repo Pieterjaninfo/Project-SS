@@ -2,12 +2,12 @@ package qwirkle;
 
 public class Tile {
 
-	Pattern vertPattern;
-	Pattern horizPattern;
+	private Pattern vertPattern;
+	private Pattern horizPattern;
 	//@ private invariant color != null;
-	Color color;
+	private Color color;
 	//@ private invariant shape != null;
-	Shape shape;
+	private Shape shape;
 	
 	
 	public Tile(Color color, Shape shape) {
@@ -64,7 +64,6 @@ public class Tile {
 	 * @param vertP The vertical pattern that the tile will have
 	 */
 	//@ requires vertP != null;
-	//@ ensures \getVertPattern() == vertP;
 	public void setVertPattern(Pattern vertP) {
 		this.vertPattern = vertP;
 	}
@@ -74,7 +73,6 @@ public class Tile {
 	 * @param horizP The horizontal pattern that the tile will have
 	 */
 	//@ requires horizP != null;
-	//@ ensures \getHorizPattern() == horizP;
 	public void setHorizPattern(Pattern horizP) {
 		this.horizPattern = horizP;
 	}

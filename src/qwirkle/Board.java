@@ -901,7 +901,7 @@ public class Board {
 			}			
 		} else {
 			// move consists of multiple tiles to be placed
-			if (placedTiles.size() == 1) {
+			if (placedTiles.keySet().size() == 1) {
 				// move tiles have the same X (thus vertPattern)
 				for (Integer x : placedTiles.keySet()) {
 					List<Integer> ys = new ArrayList<Integer>();
