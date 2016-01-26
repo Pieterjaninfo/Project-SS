@@ -110,4 +110,14 @@ public class ServerSocketPlayer implements Player{
 		}
 		return true;
 	}
+
+	@Override
+	public void addTile(List<Tile> tiles) {
+		getHand().addAll(tiles);
+	}
+
+	@Override
+	public void removeTile(List<Tile> tiles) {
+		getHand().removeAll(tiles);
+	}
 }

@@ -56,4 +56,14 @@ public interface Player {
 	 */
 	//@ requires move != null;
 	public boolean tilesInHand(Move move);
+	
+	/**
+	 * adds the tiles to the hand.
+	 */
+	public void addTile(List<Tile> tiles);
+	
+	/**
+	 * 
+	 */
+	public void removeTile(List<Tile> tiles);
 }
