@@ -12,7 +12,7 @@ public class HumanPlayer implements Player {
 	private int score;
 	private static final String MOVE_REGEX = 
 			  "^([0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})" +
-			  "( [0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})*$";
+			  "( [0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})*$";
 	private static final String TRADE_REGEX = 
 			  "^([0-5][x,s,o,*,c,d])( [0-5][x,s,o,*,c,d])*$";
 
@@ -62,7 +62,7 @@ public class HumanPlayer implements Player {
 				String input = game.readLine("Enter the tilecodes with a space between the codes.");
 
 				while (!input.matches(TRADE_REGEX)) {
-					input = game.readLine("Incorrect format, please try again!");
+					input = game.readLine("Incorrect trade format, please try again!");
 				}
 				List<Tile> tradeIn = new ArrayList<Tile>();
 				String[] tiles = input.split(" ");
