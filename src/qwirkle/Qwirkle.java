@@ -180,8 +180,13 @@ public class Qwirkle implements Runnable{
 	 */
 	public void makeMove() {
 		while (true) {
-			Move move = currentPlayer.determineMove();			
-			if (currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
+			Move move = currentPlayer.determineMove();	
+			if (move == null) {
+				if (!firstMove) {
+					ui.showMessage("cant trade the first move");
+					return;
+				}
+			} else if (currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
 				ui.showMessage("You don't have some of the tiles you tried to place!");
 			} else if (board.checkMove(move)) {
 				board.doMove(move);
@@ -235,7 +240,6 @@ public class Qwirkle implements Runnable{
 			tileList.add(codeToTile(a));
 		}		
 		if (bag.canTradeTiles(tileList)) {
-			currentPlayer.removeTile(tileList);
 			currentPlayer.addTile(bag.tradeTiles(tileList));
 			clientPlayerMap.get(currentPlayer).moveTradeOk();
 			this.notifyAll(); // TODO might not work test needed
@@ -249,7 +253,6 @@ public class Qwirkle implements Runnable{
 			return;
 		}
 		if (bag.canTradeTiles(tradeTiles)) {
-			currentPlayer.removeTile(tradeTiles);
 			currentPlayer.addTile(bag.tradeTiles(tradeTiles));
 		}
 	}
