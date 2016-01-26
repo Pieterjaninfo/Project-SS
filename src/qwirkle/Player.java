@@ -37,22 +37,22 @@ public interface Player {
 	
 	/**
 	 * Sets the starting hand of the player.
-	 * @param startingHand 
+	 * @param startingHand The tile list you want the hand to become
 	 */
 	//@ requires startingHand != null;
 	public void setStartingHand(List<Tile> startingHand);
 	
 	/**
-	 * returns the largest row that can be created with the tiles in the hand.
+	 * Returns the largest row that can be created with the tiles in the hand.
 	 * @return the integer value of the largest possible row
 	 */
 	//@ ensures \result >= 0;
 	public int largestStartSize();
 	
 	/**
-	 * returns if the player has the tile in his hand.
-	 * @param tile The tile to check
-	 * @return
+	 * Checks if the player has all the tiles from the move in his hand.
+	 * @param move The tiles from the move you want to check
+	 * @return true if the player has all the tiles from his hand
 	 */
 	//@ requires move != null;
 	public boolean tilesInHand(Move move);

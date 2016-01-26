@@ -19,7 +19,7 @@ public class Bag {
 	 * Returns all the tiles in the bag.
 	 * @return a List of tiles with type Tile
 	 */
-	//@ ensures getSize() > 0 ==> tiles != null;
+	//@ ensures getSize() > 0 ==> \result != null;
 	public List<Tile> getTiles() {
 		return tiles;
 	}
@@ -28,7 +28,7 @@ public class Bag {
 	 * Returns how many tiles there are in the bag.
 	 */
 	//@ ensures \result >= 0;
-	public int getSize() {
+	/*@ pure */ public int getSize() {
 		return tiles.size();
 	}
 	
@@ -36,8 +36,8 @@ public class Bag {
 	 * Returns a random tile from the bag.
 	 * @return a random tile with type Tile
 	 */
-	//@ ensures 
-	public Tile getRandomTile() {
+	//@ ensures \result != null;
+	/*@ pure */ public Tile getRandomTile() {
 		Random r = new Random();
 		return tiles.get(r.nextInt(getSize()));
 	}
@@ -47,7 +47,7 @@ public class Bag {
 	 * @return true if the player is allowed to make the trade
 	 */
 	//@ requires handTiles != null;
-	public boolean canTradeTiles(List<Tile> handTiles) {
+	/*@ pure */ public boolean canTradeTiles(List<Tile> handTiles) {
 		// TODO if it is the first turn -> \result == false;
 		return getSize() >= handTiles.size();
 	}
@@ -97,7 +97,7 @@ public class Bag {
 	//@ ensures \result.size() == 6;
 	//@ ensures \result != null;
 	public List<Tile> giveStartingHand() {
-		List<Tile> startingTiles = new ArrayList<>();
+		List<Tile> startingTiles = new ArrayList<Tile>();
 		for (int i = 0; i < 6; i++) {
 			Tile aRandomTile = getRandomTile();
 			startingTiles.add(aRandomTile);

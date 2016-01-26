@@ -28,9 +28,7 @@ public class Board {
 	 * @param y The y coordinate
 	 * @return true if there exists a tile on the given coordinate.
 	 */
-	//@ requires x != null;
-	//@ requires y != null;
-	public boolean containsTile(int x, int y) {
+	/*@ pure */ public boolean containsTile(int x, int y) {
 		return board.containsKey(x) && board.get(x).containsKey(y);
 	}
 	
@@ -41,8 +39,6 @@ public class Board {
 	 * @param y The y coordinate
 	 */
 	//@ requires tile != null;
-	//@ requires x != null;
-	//@ requires y != null;
 	public void placeTile(Tile tile, int x, int y) {
 		if (!board.containsKey(x)) {
 			board.put(x, new HashMap<Integer, Tile>());
@@ -70,8 +66,7 @@ public class Board {
 	 * Returns all tiles that are placed on the board.
 	 * @return all tiles on the board
 	 */
-	//@ ensures \result == this.board;
-	public Map<Integer, Map<Integer, Tile>> getAllTiles() {
+	/*@ pure */ public Map<Integer, Map<Integer, Tile>> getAllTiles() {
 		return board;
 	}
 	
@@ -81,7 +76,7 @@ public class Board {
 	 * @return true if all the tile spots are free
 	 */
 	//@ requires move != null;
-	private boolean isPlaceFree(Move move) {
+	/*@ pure */ private boolean isPlaceFree(Move move) {
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
 		for (Integer x : placedTiles.keySet()) {
 			for (Integer y : placedTiles.get(x).keySet()) {
@@ -100,8 +95,6 @@ public class Board {
 	 * @param y The y coordinate
 	 * @return the tile on the coordinate, or null if there isn't a tile there
 	 */
-	//@ requires x != null;
-	//@ requires y != null;
 	public Tile getTile(int x, int y) {
 		Tile tile = null;
 		if (containsTile(x, y)) {
@@ -116,7 +109,7 @@ public class Board {
 	 * @return the amount of tiles on the board
 	 */
 	//@ ensures \result >= 0;
-	public int getBoardSize() {
+	/*@ pure */ public int getBoardSize() {
 		return board.size();
 	}
 	
@@ -125,7 +118,7 @@ public class Board {
 	 * @param tilesList The hand you want to check
 	 * @return true if the player can place a tile
 	 */
-	//@ requires tileList != null;
+	//@ requires tilesList != null;
 	public boolean canPlaceATile(List<Tile> tilesList) {
 		//loop through all tiles
 		for (Integer x : board.keySet()) {
@@ -146,11 +139,14 @@ public class Board {
 		return false;
 	}
 	
+	
+	
+	
+	
 	/* TODO the methods below contain a lot of duplicate code, 
 	 * these sub-codes need to be put in methods, e.g. in a separate class called
 	 * BoardChecker.java
 	 */
-	
 	
 	
 	/**
@@ -1755,8 +1751,6 @@ public class Board {
 	 * @return true if the tile is allowed to be placed
 	 */
 	//@ requires tile != null;
-	//@ require x != null;
-	//@ requires y != null;
 	public boolean canPlaceTile(Tile tile, int x, int y) {
 		if (getBoardSize() <= 0) {
 			return true;

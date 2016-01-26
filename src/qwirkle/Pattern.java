@@ -2,8 +2,6 @@ package qwirkle;
 
 public interface Pattern {
 
-	// TODO better JML code - also for ColorPattern and ShapePattern
-	
 	/**
 	 * Checks if the tile is allowed to be merged within two patterns.
 	 * @return true if tile is allowed to be merged within two patterns

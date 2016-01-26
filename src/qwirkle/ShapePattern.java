@@ -12,7 +12,7 @@ public class ShapePattern implements Pattern {
 	//@ private invariant colors != null;
 	private List<Color> colors;
 	
-	
+	//@ requires shape != null;
 	public ShapePattern(Shape shape) {
 		this.shape = shape;
 		this.tiles = new ArrayList<Tile>();
@@ -25,7 +25,8 @@ public class ShapePattern implements Pattern {
 	 * Returns the shape of the Shape Pattern.
 	 * @return the shape of type Shape
 	 */
-	public Shape getShapes() {
+	//@ ensures \result != null;
+	/*@ pure */ public Shape getShapes() {
 		return shape;
 	}
 	
@@ -33,7 +34,8 @@ public class ShapePattern implements Pattern {
 	 * Returns the list of all the colors of the tiles in the Shape Pattern.
 	 * @return a list of colors with type Color
 	 */
-	public List<Color> getColors() {
+	//@ ensures \result != null;
+	/*@ pure */ public List<Color> getColors() {
 		return colors;
 	}
 	
@@ -41,7 +43,8 @@ public class ShapePattern implements Pattern {
 	 * Returns the list of all tiles in the Shape Pattern.
 	 * @return the list of tiles with type Tile
 	 */
-	public List<Tile> getTiles() {
+	//@ ensures \result != null;
+	/*@ pure */ public List<Tile> getTiles() {
 		return tiles;
 	}
 	
@@ -49,6 +52,7 @@ public class ShapePattern implements Pattern {
 	 * Checks if the pattern can be merged into the current pattern.
 	 * @return true if the pattern can be merged into the current pattern.
 	 */
+	//@ requires pattern != null;
 	@Override
 	public boolean canMerge(Pattern pattern) {
 		if (equals(pattern) && ((ShapePattern) pattern).getShapes() == shape) {
@@ -66,8 +70,9 @@ public class ShapePattern implements Pattern {
 	 * Checks if the tile can be added to the Shape Pattern.
 	 * @return true if the tile can be added to the Shape Pattern.
 	 */
+	//@ requires tile != null;
 	@Override
-	public boolean canAddTile(Tile tile) {
+	/*@ pure */ public boolean canAddTile(Tile tile) {
 		return tile.getShape() == shape && !colors.contains(tile.getColor());
 	}
 
@@ -75,8 +80,9 @@ public class ShapePattern implements Pattern {
 	 * Retrieves the amount of points for doing the move.
 	 * @return the amount of points
 	 */
+	//@ ensures \result >= 0;
 	@Override
-	public int getPoints() {
+	/*@ pure */ public int getPoints() {
 		int result = 0;
 		
 		if (colors.size() == 6) {
@@ -92,14 +98,16 @@ public class ShapePattern implements Pattern {
 	 * @param pattern The pattern you want to compare
 	 * @return true if the pattern is a Shape Pattern
 	 */
+	//@ requires pattern != null;
 	@Override
-	public boolean equals(Pattern pattern) {
+	/*@ pure */ public boolean equals(Pattern pattern) {
 		return pattern instanceof ShapePattern;
 	}
 	
 	/**
 	 * Returns the amount of tiles in the Shape Pattern.
 	 */
+	//@ ensures \result >= 0;
 	@Override
 	public int getSize() {
 		return tiles.size();
@@ -111,6 +119,7 @@ public class ShapePattern implements Pattern {
 	 * Merges the given Shape Pattern correctly with the current Shape Pattern.
 	 * @param pattern The pattern you want to merge into this pattern
 	 */
+	//@ requires pattern != null;
 	@Override
 	public void merge(Pattern pattern) {
 		if (canMerge(pattern)) {
@@ -138,6 +147,7 @@ public class ShapePattern implements Pattern {
 	 * Adds the tile to the Shape Pattern if it is possible.
 	 * @param tile The tile you want to add to the Shape Pattern
 	 */
+	//@ requires tile != null;
 	@Override
 	public void addTile(Tile tile) {
 		if (canAddTile(tile)) {

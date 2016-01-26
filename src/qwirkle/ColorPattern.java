@@ -12,7 +12,7 @@ public class ColorPattern implements Pattern {
 	//@ private invariant shapes != null;
 	private List<Shape> shapes;
 	
-	
+	//@ requires color != null;
 	public ColorPattern(Color color) {
 		this.color = color;
 		this.tiles = new ArrayList<Tile>();
@@ -25,6 +25,7 @@ public class ColorPattern implements Pattern {
 	 * Checks if the pattern can be merged into the current pattern.
 	 * @return true if the pattern can be merged into the current pattern.
 	 */
+	//@ requires pattern != null;
 	@Override
 	public boolean canMerge(Pattern pattern) {
 		if (equals(pattern) && ((ColorPattern) pattern).getColors() == color) {
@@ -42,16 +43,9 @@ public class ColorPattern implements Pattern {
 	 * Checks if the tile can be added to the Color Pattern.
 	 * @return true if the tile can be added to the Color Pattern.
 	 */
+	//@ requires tile != null;
 	@Override
 	public boolean canAddTile(Tile tile) {
-		/*if (tile.getColor() == this.color) {
-			for (Shape shape : shapes) {
-				if (tile.getShape() == shape) {
-					return false;
-				}
-			}
-		}
-		return true;*/
 		return tile.getColor() == this.color && !shapes.contains(tile.getShape());
 	}
 
@@ -59,6 +53,7 @@ public class ColorPattern implements Pattern {
 	 * Retrieves the amount of points for doing the move.
 	 * @return the amount of points
 	 */
+	//@ ensures \result >= 0;
 	@Override
 	public int getPoints() {
 		int result = 0;
@@ -76,6 +71,7 @@ public class ColorPattern implements Pattern {
 	 * @param pattern The pattern you want to compare
 	 * @return true if the pattern is a color pattern
 	 */
+	//@ requires pattern != null;
 	@Override
 	public boolean equals(Pattern pattern) {
 		return pattern instanceof ColorPattern;
@@ -85,7 +81,8 @@ public class ColorPattern implements Pattern {
 	 * Returns the list of all tiles in the color pattern.
 	 * @return the list of tiles with type Tile
 	 */
-	public List<Tile> getTiles() {
+	//@ ensures \result != null;
+	/*@ pure */ public List<Tile> getTiles() {
 		return tiles;
 	}
 
@@ -93,7 +90,8 @@ public class ColorPattern implements Pattern {
 	 * Returns the color of the Color Pattern.
 	 * @return the color of type Color
 	 */
-	public Color getColors() {
+	//@ ensures \result != null;
+	/*@ pure */ public Color getColors() {
 		return color;
 	}
 
@@ -101,15 +99,17 @@ public class ColorPattern implements Pattern {
 	 * Returns the list of all the shapes of the tiles in the Color Pattern.
 	 * @return a list of shapes with type Shape
 	 */
-	public List<Shape> getShapes() {
+	//@ ensures \result != null;
+	/*@ pure */ public List<Shape> getShapes() {
 		return shapes;
 	}
 	
 	/**
 	 * Returns the amount of tiles in the Color Pattern.
 	 */
+	//@ ensures \result >= 0;
 	@Override
-	public int getSize() {
+	/*@ pure */ public int getSize() {
 		return tiles.size();
 	}
 	
@@ -120,6 +120,7 @@ public class ColorPattern implements Pattern {
 	 * Adds the tile to the Color Pattern if it is possible.
 	 * @param tile The tile you want to add to the color pattern
 	 */
+	//@ requires tile != null;
 	@Override
 	public void addTile(Tile tile) {
 		if (canAddTile(tile)) {
@@ -132,6 +133,7 @@ public class ColorPattern implements Pattern {
 	 * Merges the given color pattern correctly with the current color pattern.
 	 * @param pattern The pattern you want to merge into this pattern
 	 */
+	//@ requires pattern != null;
 	@Override
 	public void merge(Pattern pattern) {
 		if (canMerge(pattern)) {
