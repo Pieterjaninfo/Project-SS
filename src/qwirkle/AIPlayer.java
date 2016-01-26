@@ -153,11 +153,8 @@ public class AIPlayer implements Player {
 		}
 		getHand().removeAll(temp);	}
 
-	@Override
-	public void addScore(Move move) {
-		// TODO Auto-generated method stub
-		
-	}
+
+	
 	
 	//@ requires move != null;
 	@Override
