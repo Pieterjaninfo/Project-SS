@@ -1343,8 +1343,9 @@ public class Board {
 							} 
 						} else {
 							//left tile has no pattern
-							if (leftTile.equals(thisTile) || leftTile.getColor() != thisTile.getColor() 
-									  && leftTile.getShape() != thisTile.getShape()) {
+							if (leftTile.equals(thisTile) 
+									  || leftTile.getColor() != thisTile.getColor() 
+									    && leftTile.getShape() != thisTile.getShape()) {
 								return false;
 							}
 						}	
@@ -1358,8 +1359,9 @@ public class Board {
 							}
 						} else {
 							// right tile has no pattern
-							if (rightTile.equals(thisTile) || rightTile.getColor() != thisTile.getColor() 
-									  && rightTile.getShape() != thisTile.getShape()) {
+							if (rightTile.equals(thisTile) 
+									  || rightTile.getColor() != thisTile.getColor() 
+									    && rightTile.getShape() != thisTile.getShape()) {
 								return false;
 							}
 						}
