@@ -137,7 +137,13 @@ public class Qwirkle implements Runnable{
 	@Override
 	public void run() {
 		for (Player player : players) {
-			player.setStartingHand(bag.giveStartingHand());
+			List<Tile> startingHand = bag.giveStartingHand();
+			player.setStartingHand(startingHand);
+			String send = "";
+			for (Tile tile : startingHand) {
+				send = String.format("%s %s", send, tile.toCodedString());
+			}
+			clientPlayerMap.get(player).drawTile(send);
 		}
 		currentPlayer = determineFirstMove();
 		firstMove = true;

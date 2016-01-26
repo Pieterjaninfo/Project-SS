@@ -66,15 +66,32 @@ public class ClientHandler implements Runnable {
 				if (input.startsWith(CLIENT_QUIT)) {
 					break;
 				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
-					identification(input.substring(CLIENT_IDENTIFY.length() + 1));
+					if (input.length() <= CLIENT_IDENTIFY.length()) {
+						error(Error.INVALID_PARAMETER);						
+					} else {
+						identification(input.substring(CLIENT_IDENTIFY.length() + 1));
+					}
 				} else if (clientName == null) {
 					error(Error.ILLEGAL_STATE);
 				} else if (input.startsWith(CLIENT_QUEUE)) {
-					queue(input.substring(CLIENT_QUEUE.length() + 1));
+					if (input.length() <= CLIENT_QUEUE.length()) {
+						error(Error.INVALID_PARAMETER);						
+					} else {
+						queue(input.substring(CLIENT_QUEUE.length() + 1));
+
+					}
 				} else if (input.startsWith(CLIENT_MOVE_PUT) && moveExpected) {
-					game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1));
+					if (input.length() <= CLIENT_MOVE_PUT.length()) {
+						error(Error.INVALID_PARAMETER);						
+					} else {
+						game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1));
+					}
 				} else if (input.startsWith(CLIENT_MOVE_TRADE) && moveExpected) {
-					game.tradeMove(input.substring(CLIENT_MOVE_TRADE.length()));
+					if (input.length() <= CLIENT_MOVE_TRADE.length()) {
+						error(Error.INVALID_PARAMETER);						
+					} else {
+						game.tradeMove(input.substring(CLIENT_MOVE_TRADE.length() + 1));
+					}
 				} else {
 					error(Error.ILLEGAL_STATE);
 				}
@@ -144,7 +161,7 @@ public class ClientHandler implements Runnable {
     	if (!input.matches(NAME_REGEX)) {
     		error(Error.NAME_INVALID);
     	} else {
-    		if (server.nameExists(clientName, this)) {
+    		if (server.nameExists(input, this)) {
         		error(Error.NAME_USED);
         	} else {
             	clientName = input;
@@ -163,7 +180,8 @@ public class ClientHandler implements Runnable {
     	Boolean goodQueue = true;
 
     	for (String a : n) {
-    		if (!(a.equals("2") || a.equals("3") || a.equals("4"))) {
+    		if (!(a.equals("2") || a.equals("3") 
+    				  || a.equals("4")) || ServerQueue.contains(this, a)) {
     			error(Error.QUEUE_INVALID);
     			goodQueue = false;
     			break;

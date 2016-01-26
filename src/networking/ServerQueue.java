@@ -14,9 +14,9 @@ import qwirkle.Qwirkle;
 
 public class ServerQueue implements Runnable {
 	
-	private List<ClientHandler> twoPlayer;
-    private List<ClientHandler> threePlayer;
-    private List<ClientHandler> fourPlayer;
+	private static List<ClientHandler> twoPlayer;
+    private static List<ClientHandler> threePlayer;
+    private static List<ClientHandler> fourPlayer;
     
     ServerQueue() {
     	twoPlayer = new ArrayList<ClientHandler>();
@@ -37,7 +37,6 @@ public class ServerQueue implements Runnable {
     	} else if (n.equals("4")) {
     		fourPlayer.add(client);
     	}
-    	System.out.println(fourPlayer.size() + "; " + threePlayer.size() + "; " + twoPlayer.size());
     }
 		
 	/**
@@ -49,30 +48,25 @@ public class ServerQueue implements Runnable {
 		while (true) {
 			List<ClientHandler> players = null;
 			if (fourPlayer.size() >= 4) {
-				players = new Vector<ClientHandler>(fourPlayer.subList(0, 3));
+				players = new Vector<ClientHandler>(fourPlayer.subList(0, 4));
 				game = new Qwirkle(players);
 				fourPlayer.removeAll(players);
-				(new Thread(game)).start();
 			} else if (threePlayer.size() >= 3) {
-				players = new Vector<ClientHandler>(threePlayer.subList(0, 2));
-				
+				players = new Vector<ClientHandler>(threePlayer.subList(0, 3));
 				game = new Qwirkle(players);
 				threePlayer.removeAll(players);
-				(new Thread(game)).start();
 			} else if (twoPlayer.size() >= 2) {
-				players = new Vector<ClientHandler>(twoPlayer.subList(0, 1));
+				players = new Vector<ClientHandler>(twoPlayer.subList(0, 2));
 				game = new Qwirkle(players);
 				twoPlayer.removeAll(players);
-				(new Thread(game)).start();
 			}
 			if (players != null && game != null) {
 				String names = "";
 				for (ClientHandler client : players) {
 					names = String.format("%s %s", names, client.getName());
-				}
-				for (ClientHandler client : players) {
 					client.gameStart(names, game);
 				}
+				(new Thread(game)).start();
 			}
 			try {
 				Thread.sleep(100);
@@ -81,5 +75,16 @@ public class ServerQueue implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static boolean contains(ClientHandler client, String n) {
+		if (n.equals("2")) {
+    		return twoPlayer.contains(client);
+    	} else if (n.equals("3")) {
+    		return threePlayer.contains(client);
+    	} else if (n.equals("4")) {
+    		return fourPlayer.contains(client);
+    	}
+		return false;
 	}
 }
