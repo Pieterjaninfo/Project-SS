@@ -152,6 +152,7 @@ public class Board {
 	 */
 	
 	
+	
 	/**
 	 * Checks if the move is allowed to be made, and if it is allowed, it does the move.
 	 */
