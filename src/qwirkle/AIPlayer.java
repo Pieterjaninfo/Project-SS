@@ -134,6 +134,19 @@ public class AIPlayer implements Player {
 
 	@Override
 	public void removeTile(List<Tile> tiles) {
-		getHand().removeAll(tiles);
+		List<Tile> temp = new ArrayList<Tile>();
+		for (Tile tile : tiles) {
+			for (int i = 0; i < 6; i++) {
+				if (getHand().get(i).equals(tile)) {
+					temp.add(getHand().get(i));
+				}
+			}
+		}
+		getHand().removeAll(temp);	}
+
+	@Override
+	public void addScore(Move move) {
+		// TODO Auto-generated method stub
+		
 	}
 }

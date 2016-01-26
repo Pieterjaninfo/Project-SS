@@ -180,7 +180,7 @@ public class Qwirkle implements Runnable{
 	 */
 	public void makeMove() {
 		while (true) {
-			Move move = currentPlayer.determineMove();
+			Move move = currentPlayer.determineMove();			
 			if (currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
 				ui.showMessage("You don't have some of the tiles you tried to place!");
 			} else if (board.checkMove(move)) {
@@ -227,6 +227,7 @@ public class Qwirkle implements Runnable{
 	public void tradeMove(String handTiles) {
 		if (firstMove) {
 			clientPlayerMap.get(currentPlayer).error(Error.TRADE_FIRST_TURN);
+			return;
 		}
 		String[] tileString = handTiles.split(" ");
 		List<Tile> tileList = new ArrayList<Tile>();
@@ -244,6 +245,9 @@ public class Qwirkle implements Runnable{
 	}
 	
 	public void tradeMove(List<Tile> tradeTiles) {
+		if (firstMove) {
+			return;
+		}
 		if (bag.canTradeTiles(tradeTiles)) {
 			currentPlayer.removeTile(tradeTiles);
 			currentPlayer.addTile(bag.tradeTiles(tradeTiles));

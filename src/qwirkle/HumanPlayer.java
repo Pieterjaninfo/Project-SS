@@ -32,12 +32,10 @@ public class HumanPlayer implements Player {
 
 	@Override
 	public Move determineMove() {
-		// TODO ask user what he wants to do, trade or do a move
 		while (true) {
 			String firstInput = game.readLine("Type 'move' to make a move.\n" +
 					  "Type 'trade' to trade tiles");
 			if (firstInput.equals("move")) {
-
 				Move moves = new Move();
 				String input = game.readLine("Enter the tiles and location you want to place\n" +
 						  " in the format tile@x,y tile@x,y etc.");
@@ -47,8 +45,9 @@ public class HumanPlayer implements Player {
 				String[] tiles = input.split(" ");
 				for (String move : tiles) {
 					String tileString = move.split("@")[0];
-					Shape shape = Shape.charToEnum(tileString.charAt(0));
-					Color color = Color.toEnum(tileString.charAt(1));
+					Shape shape = Shape.charToEnum(tileString.charAt(1));
+					Color color = Color.toEnum(Character.digit(tileString.charAt(0), 10));
+					
 					Tile tile = new Tile(color, shape);
 					int x = Integer.parseInt(move.split("@")[1].split(",")[0]);
 					int y = Integer.parseInt(move.split("@")[1].split(",")[1]);
@@ -56,15 +55,17 @@ public class HumanPlayer implements Player {
 				}
 				return moves;
 
-			} else if (firstInput.equals("trade")){
+			} else if (firstInput.equals("trade")) {
 				// TODO do trade:
-				
-				break;
+				String input = game.readLine("Enter the tilecodes with a space between the codes.");
+				while (!input.matches(regex)) {
+					
+				}
+				return null;
+			} else if (firstInput.equals("exit")) {
+				System.exit(0);
 			}
 		}
-		
-		
-		return null;
 	}
 
 	@Override
@@ -153,8 +154,26 @@ public class HumanPlayer implements Player {
 		getHand().addAll(tiles);
 	}
 
+	/**
+	 * Removes specified tiles from the hand.
+	 * Tiles have to be in the hand
+	 */
 	@Override
 	public void removeTile(List<Tile> tiles) {
-		getHand().removeAll(tiles);
+		List<Tile> temp = new ArrayList<Tile>();
+		for (Tile tile : tiles) {
+			for (int i = 0; i < 6; i++) {
+				if (getHand().get(i).equals(tile)) {
+					temp.add(getHand().get(i));
+				}
+			}
+		}
+		getHand().removeAll(temp);
+	}
+
+	@Override
+	public void addScore(Move move) {
+		// TODO Auto-generated method stub
+		
 	}
 }
