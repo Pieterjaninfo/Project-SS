@@ -66,7 +66,7 @@ public class ClientHandler implements Runnable {
 				if (input.startsWith(CLIENT_QUIT)) {
 					break;
 				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
-					identification(input.substring(CLIENT_IDENTIFY.length()) + 1);
+					identification(input.substring(CLIENT_IDENTIFY.length() + 1));
 				} else if (clientName == null) {
 					error(Error.ILLEGAL_STATE);
 				} else if (input.startsWith(CLIENT_QUEUE)) {
@@ -78,8 +78,12 @@ public class ClientHandler implements Runnable {
 				} else {
 					error(Error.ILLEGAL_STATE);
 				}
+				Thread.sleep(100);
 			}
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -135,9 +139,9 @@ public class ClientHandler implements Runnable {
      * Sets the input to be the clientName.
      * @param input
      */
-    //@ requires input != null; input.matches("[a-zA-Z0-9-_]{2,16}")
+    //@ requires input != null; input.matches("^[A-Za-z0-9-_]{2,16}$")
     public void identification(String input) {
-    	if (input.matches(NAME_REGEX)) {
+    	if (!input.matches(NAME_REGEX)) {
     		error(Error.NAME_INVALID);
     	} else {
     		if (server.nameExists(clientName, this)) {
@@ -159,7 +163,7 @@ public class ClientHandler implements Runnable {
     	Boolean goodQueue = true;
 
     	for (String a : n) {
-    		if (!(a.equals("1") || a.equals("2") || a.equals("3"))) {
+    		if (!(a.equals("2") || a.equals("3") || a.equals("4"))) {
     			error(Error.QUEUE_INVALID);
     			goodQueue = false;
     			break;

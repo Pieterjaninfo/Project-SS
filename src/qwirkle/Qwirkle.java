@@ -20,6 +20,7 @@ public class Qwirkle implements Runnable{
 	private List<ClientHandler> clients;
 	private Player currentPlayer;
 	private Boolean firstMove = true;
+	private Object object = new Object();
 	
 	public Qwirkle() {
 		board = new Board(); // I think???
@@ -145,12 +146,16 @@ public class Qwirkle implements Runnable{
 			if (board.canPlaceATile(currentPlayer.getHand())) {
 				clientPlayerMap.get(currentPlayer).pass();
 			}
-			// TODO if player can't play send pass.
-			try {
-				this.wait(); // TODO might not work test needed
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			synchronized (object) {
+				try {
+					object.wait(); // TODO might not work test needed
+					System.out.println("wait started"); //TODO remove
+
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("end wait"); //TODO remove
 			}
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());
@@ -228,7 +233,7 @@ public class Qwirkle implements Runnable{
 				drawString = String.format("%s %s", drawString, a.toCodedString());
 			}
 			clientPlayerMap.get(currentPlayer).drawTile(drawString);
-			this.notifyAll(); // TODO might not work test needed
+			//object.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
 		}
@@ -260,7 +265,7 @@ public class Qwirkle implements Runnable{
 				newTileString = String.format("%s %s", newTileString, a.toCodedString());
 			}
 			clientPlayerMap.get(currentPlayer).drawTile(newTileString);
-			this.notifyAll(); // TODO might not work test needed
+			//object.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
 		}
