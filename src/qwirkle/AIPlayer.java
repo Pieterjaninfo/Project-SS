@@ -6,13 +6,17 @@ import java.util.Vector;
 
 public class AIPlayer implements Player {
 
+	//@ private invariant behaviour != null;
 	private Behaviour behaviour;
-	//private String name;
+	//@ private invariant hand != null;
 	private List<Tile> hand;
+	//@ private invariant board != null;
 	private Board board;
 	//@ private invariant score >= 0;
 	private int score;
 	
+	//@ requires behaviour != null;
+	//@ requires b != null;
 	public AIPlayer(Behaviour behaviour, Board b) {
 		this.behaviour = behaviour;
 		this.board = b;
@@ -24,7 +28,7 @@ public class AIPlayer implements Player {
 	 * Returns the name of the behaviour.
 	 */
 	@Override
-	public String getName() {
+	/*@ pure */ public String getName() {
 		return behaviour.getName();
 	}
 
@@ -33,7 +37,7 @@ public class AIPlayer implements Player {
 	 * @return a list of tiles with type Tile
 	 */
 	@Override
-	public List<Tile> getHand() {
+	/*@ pure */ public List<Tile> getHand() {
 		return hand;
 	}
 
@@ -46,18 +50,19 @@ public class AIPlayer implements Player {
 		return behaviour.determineMove(board, hand);
 	}
 	
+	//@ ensures \result >= 0;
 	@Override
-	public int getScore() {
+	/*@ pure */ public int getScore() {
 		return score;
 	}
 	
 	@Override
-	public int largestStartSize() {
+	/*@ pure */ public int largestStartSize() {
 		List<Tile> list = new ArrayList<Tile>();
 		list.addAll(this.getHand());
 		for (int i = 0; i < getHand().size(); i++) {
 			for (int j = 0; j < getHand().size(); j++) {
-				if (i != j && hand.get(i).equals(hand.get(j)) && list.contains(hand.get(i))){
+				if (i != j && hand.get(i).equals(hand.get(j)) && list.contains(hand.get(i))) {
 					list.remove(hand.get(j));					
 				}
 			}
@@ -108,11 +113,13 @@ public class AIPlayer implements Player {
 		return largest;
 	}
 	
+	//@ ensures getHand() == startingHand;
 	@Override
 	public void setStartingHand(List<Tile> startingHand) {
 		hand = startingHand;
 	}
 
+	//@ requires move != null;
 	@Override
 	public boolean tilesInHand(Move move) {
 		List<Tile> moveTiles = move.getTileList();
@@ -127,13 +134,37 @@ public class AIPlayer implements Player {
 		return true;
 	}
 
+	//@ requires tiles != null;
 	@Override
 	public void addTile(List<Tile> tiles) {
 		getHand().addAll(tiles);
 	}
 
+	//@ requires tiles != null;
 	@Override
 	public void removeTile(List<Tile> tiles) {
 		getHand().removeAll(tiles);
+	}
+	
+	//@ requires move != null;
+	@Override
+	public void addScore(Move move) {
+		int result = 0;
+		List<Tile> moveTiles = move.getTileList();
+		
+		for (Tile moveTile : moveTiles) {
+			result += moveTile.getHorizPattern().getPoints();
+			result += moveTile.getVertPattern().getPoints();
+		}
+		updateScore(result);
+		
+	}
+	
+	/*
+	 * Increments the current score by the value given.
+	 */
+	//@ ensures extra >= 0;
+	private void updateScore(int extra) {
+		this.score += extra;
 	}
 }
