@@ -31,18 +31,25 @@ public class TUITest {
 		Map<Integer, Map<Integer, Tile>> res = new HashMap<Integer, Map<Integer, Tile>>();
 		y1.put(0, tile1);
 		y1.put(1, tile2);
+		y1.put(2, tile2);
+		y1.put(-2, tile2);
 		res.put(0, y1);
 		y2.put(0, tile2);
 		res.put(-1, y2);
-		y3.put(0, tile1);
-		y3.put(-1, tile1);
-		res.put(-2, y3);
+		
+
+		ui.showHand(testList);
+		
 		
 		System.out.printf("%s\n", res);
 
+		ui.showBoard(res);
+		
+		y3.put(0, tile1);
+		y3.put(-1, tile1);
+		res.put(-3, y3);
+		ui.showHand(testList);
 
-		//ui.showHand(testList);
-		System.out.println("Board: ");
 		ui.showBoard(res);
 	}
 

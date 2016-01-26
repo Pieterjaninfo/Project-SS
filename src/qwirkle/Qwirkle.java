@@ -19,7 +19,7 @@ public class Qwirkle implements Runnable{
 	private Map<Player, ClientHandler> clientPlayerMap = new HashMap<Player, ClientHandler>();
 	private List<ClientHandler> clients;
 	private Player currentPlayer;
-	private Boolean firstMove;
+	private Boolean firstMove = true;
 	
 	public Qwirkle() {
 		board = new Board(); // I think???
@@ -74,15 +74,11 @@ public class Qwirkle implements Runnable{
 			
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());			
-			
-		} while (true);
+			firstMove = false;
+		} while (!board.gameOver()); //other method name??
 		// TODO while the game is not over.
 	}
-	//TODO remove temp test method
-	public void showBoard() {
-		ui.showBoard(board.getAllTiles());
-	}
-
+	
 	/**
 	 * Calls the UI to get the amount and names (and behaviours for AiPlayers).
 	 */
@@ -200,7 +196,7 @@ public class Qwirkle implements Runnable{
 			int y = Integer.parseInt(move1.split("@")[1].split(",")[1]);
 			moves.addTile(tile, x, y);
 		}
-		if (currentPlayer.tilesInHand(moves)) {
+		if (currentPlayer.tilesInHand(moves) && bag.canTradeTiles(moves.getTileList())) {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_TILES_UNOWNED);
 		} else if (board.checkMove(moves)) {
 			board.doMove(moves);
@@ -224,12 +220,22 @@ public class Qwirkle implements Runnable{
 		for (String a: tileString) {
 			tileList.add(codeToTile(a));
 		}		
+		// TODO return the traded tiles to the player!
 		if (bag.canTradeTiles(tileList)) {
 			bag.tradeTiles(tileList);
 			clientPlayerMap.get(currentPlayer).moveTradeOk();
 			this.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
+		}
+	}
+	
+	public void tradeMove(List<Tile> tradeTiles) {
+		// TODO return the traded tiles to the player!
+
+		if (bag.canTradeTiles(tradeTiles)) {
+			bag.tradeTiles(tradeTiles);
+		} else {
 		}
 	}
 	
@@ -254,5 +260,9 @@ public class Qwirkle implements Runnable{
 	 */
 	public String tileToCode(Tile tile) {
 		return String.format("%d", tile.getColor().toInt() * 6 + tile.getShape().toInt());
+	}
+	
+	public String readLine(String msg) {
+		return ui.readLine(msg);
 	}
 }

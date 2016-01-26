@@ -19,7 +19,9 @@ import qwirkle.Tile;
 public class TUI implements UI {
 	
 	private static final String HORIZONTAL_SEPERATOR = "+----";
+	private static final String SEPERATOR = "-----------------------------";
 
+	
 	private Scanner input; 
 	private Qwirkle game;
 	private InetAddress host;
@@ -34,6 +36,7 @@ public class TUI implements UI {
 	 */
 	@Override
 	public void showBoard(Map<Integer, Map<Integer, Tile>> tileMap) {
+		System.out.printf("%s%s%s\n", SEPERATOR, " Board ", SEPERATOR);
 		String print = "";
 		Integer xMin = Collections.min(tileMap.keySet());
 		Integer xMax = Collections.max(tileMap.keySet());
@@ -49,13 +52,17 @@ public class TUI implements UI {
 				yMax = Collections.max(row.keySet());
 			}
 		}
+
 				
-		for (int j = yMax; j >= yMin; j--) {
-			for (int i = xMin; i <= xMax; i++) {
+		for (int j = yMax + 1; j >= yMin - 1; j--) {
+			print = String.format("%s%-5s", print, "");
+
+			for (int i = xMin - 1; i <= xMax + 1; i++) {
 				print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
 			}
 			print = String.format("%s+\n", print);
-			for (int i = xMin; i <= xMax; i++) {
+			print = String.format("%s%5s", print, j);
+			for (int i = xMin - 1; i <= xMax + 1; i++) {
 				if (tileMap.containsKey(i) && tileMap.get(i).containsKey(j)) {
 					print = String.format("%s| %s ", print, tileMap.get(i).get(j).toCodedString());
 				} else {
@@ -64,13 +71,17 @@ public class TUI implements UI {
 			}
 			print = String.format("%s|\n", print);
 		}
-		for (int i = xMin; i <= xMax; i++) {
+		print = String.format("%s%-5s", print, "");
+
+		for (int i = xMin - 1; i <= xMax + 1; i++) {
 			print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
 		}
-		print = String.format("%s+\n", print);
-		System.out.print(print);
-		// TODO Auto-generated method stub
-		
+		print = String.format("%s+\n%5s", print, "^y/x>");
+		for (int i = xMin - 1; i <= xMax + 1; i++) {
+			print = String.format("%s %-4s", print, i);
+		}
+		print = String.format("%s\n", print);
+		System.out.print(print);		
 	}
 
 	/**
@@ -91,6 +102,7 @@ public class TUI implements UI {
 				game.startMultiplayer();
 				break;
 			} else if (command.equals("exit")) {
+				input.close();
 				System.exit(0);
 			} else {
 				System.out.println("invalid choice");
@@ -119,6 +131,7 @@ public class TUI implements UI {
 	 */
 	@Override
 	public void showHand(List<Tile> tiles) {
+		System.out.printf("%s%s-%s\n", SEPERATOR, " Hand ", SEPERATOR);
 		String print = "";
 		for (int i = 0; i < tiles.size(); i++) {
 			print = String.format("%s%s", print, HORIZONTAL_SEPERATOR);
@@ -197,6 +210,16 @@ public class TUI implements UI {
 		int in = input.nextInt();		// TODO catch error if isn't int
 		input.nextLine();
 		return in;
+	}
+	
+	/**
+	 * Scans the input for user input on the message.
+	 * @param msg message to print
+	 * @return the response from the user
+	 */
+	public String readLine(String msg) {
+		System.out.println(msg);
+		return input.nextLine();
 	}
 
 }

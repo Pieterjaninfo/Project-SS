@@ -39,4 +39,16 @@ public enum Shape {
 		}
 		return null;
 	}
+	
+	public static Shape charToEnum(char character) {
+		switch (character) {
+			case 'x' : return CROSS;
+			case 's' : return SQUARE;
+			case 'o' : return CIRCLE;
+			case 'd' : return DIAMOND;
+			case '*' : return STAR;
+			case 'c' : return CLOVER;
+		}
+		return null;
+	}
 }

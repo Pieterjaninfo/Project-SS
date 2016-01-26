@@ -142,9 +142,20 @@ public class Client implements Runnable{
 		return running;
 	}
     
+    /**
+     * Quits the client.
+     */
     public void quitClient() {
     	running = false;
     }
     
+    /**
+     * Reads from the socket and returns the input.
+     * @return input string
+     */
+    public String readLine() {
+		return clientName;
+    	
+    }
     
 }

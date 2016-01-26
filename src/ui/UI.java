@@ -62,5 +62,12 @@ public interface UI {
 	 */
 	public int getPlayerCount();
 	
+	/**
+	 * Reads from standard system input after the message is shown.
+	 * @param msg
+	 * @return
+	 */
+	public String readLine(String msg);
+	
 	
 }
