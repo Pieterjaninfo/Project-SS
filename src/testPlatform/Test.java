@@ -34,16 +34,16 @@ public class Test {
 		}
 */
 		
-		//String input = "1s@-1,2 4*@5,6 5*@1,3 5d@8,7";
+		String input = "1s@0,0 4*@0,1 5*@-1,0 5d@8,7";
 		//String in = "1s 2d 5*";
 		//String regex = "^([0-5][x,s,o,*,c,d])( [0-5][x,s,o,*,c,d])*$";
 		
-		String in = String.format("IDENTIFY Hallo");
+		//String in = String.format("IDENTIFY Hallo");
 		
-		String regex = "^[A-Za-z0-9-_]{2,16}$";
-		//System.out.println(input.matches("^([0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})( [0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})*$"));
+		//String regex = "^[A-Za-z0-9-_]{2,16}$";
+		System.out.println(input.matches("^([0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})( [0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})*$"));
 		//System.out.println(input.matches("^([0-5][x,s,o,*,c,d]@[0-9]{1,3},[0-9]{1,3}){1-6}$"));
-		System.out.println(in.substring("IDENTIFY".length() + 1).matches(regex));
+		//System.out.println(in.substring("IDENTIFY".length() + 1).matches(regex));
 		
  	}
 
