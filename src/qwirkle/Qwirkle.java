@@ -75,7 +75,7 @@ public class Qwirkle implements Runnable{
 					  % players.size());
 			firstMove = false;
 		} while (!gameOver()); //other method name??
-		// TODO while the game is not over.
+		// TODO Show scores.
 	}
 	
 	/**
@@ -139,10 +139,12 @@ public class Qwirkle implements Runnable{
 			player.setStartingHand(bag.giveStartingHand());
 		}
 		currentPlayer = determineFirstMove();
-		//clientPlayerMap.get(currentPlayer).gameBroadcast(clients, );
 		firstMove = true;
 		do {
-			clientPlayerMap.get(currentPlayer).turn(clients, currentPlayer.getName());
+			clientPlayerMap.get(currentPlayer).turn(clients);
+			if (board.canPlaceATile(currentPlayer.getHand())) {
+				clientPlayerMap.get(currentPlayer).pass();
+			}
 			// TODO if player can't play send pass.
 			try {
 				this.wait(); // TODO might not work test needed
@@ -152,9 +154,9 @@ public class Qwirkle implements Runnable{
 			}
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());
-		} while (true); // TODO while game runs
-		// TODO Auto-generated method stub
-		
+		} while (!gameOver()); 
+		//TODO send the scores for each player.
+		clientPlayerMap.get(currentPlayer).gameEnd();
 	}
 	
 	
@@ -183,9 +185,9 @@ public class Qwirkle implements Runnable{
 			Move move = currentPlayer.determineMove();	
 			if (move == null) {
 				if (!firstMove) {
-					ui.showMessage("cant trade the first move");
 					return;
 				}
+				ui.showMessage("Can't trade first move");
 			} else if (currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
 				ui.showMessage("You don't have some of the tiles you tried to place!");
 			} else if (board.checkMove(move)) {
@@ -217,8 +219,15 @@ public class Qwirkle implements Runnable{
 		} else if (board.checkMove(moves)) {
 			board.doMove(moves);
 			currentPlayer.removeTile(moves.getTileList());
-			currentPlayer.addTile(bag.getTiles(moves.getTileList().size()));
-			clientPlayerMap.get(currentPlayer).movePutOk();
+			List<Tile> newTiles = bag.getTiles(moves.getTileList().size());
+			currentPlayer.addTile(newTiles);
+			clientPlayerMap.get(currentPlayer).movePutOk(clients, moves.toCode());
+			
+			String drawString = "";
+			for (Tile a : newTiles) {
+				drawString = String.format("%s %s", drawString, a.toCodedString());
+			}
+			clientPlayerMap.get(currentPlayer).drawTile(drawString);
 			this.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
@@ -240,8 +249,16 @@ public class Qwirkle implements Runnable{
 			tileList.add(codeToTile(a));
 		}		
 		if (bag.canTradeTiles(tileList)) {
-			currentPlayer.addTile(bag.tradeTiles(tileList));
-			clientPlayerMap.get(currentPlayer).moveTradeOk();
+			currentPlayer.removeTile(tileList);
+			List<Tile> newTiles = bag.tradeTiles(tileList);
+			currentPlayer.addTile(newTiles);
+			clientPlayerMap.get(currentPlayer).moveTradeOk(clients, newTiles.size());
+			
+			String newTileString = "";
+			for (Tile a : newTiles) {
+				newTileString = String.format("%s %s", newTileString, a.toCodedString());
+			}
+			clientPlayerMap.get(currentPlayer).drawTile(newTileString);
 			this.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
@@ -253,6 +270,7 @@ public class Qwirkle implements Runnable{
 			return;
 		}
 		if (bag.canTradeTiles(tradeTiles)) {
+			currentPlayer.removeTile(tradeTiles);
 			currentPlayer.addTile(bag.tradeTiles(tradeTiles));
 		}
 	}

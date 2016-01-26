@@ -65,4 +65,15 @@ public class Move {
 		return result;
 	}
 
+	public String toCode() {
+		String result = "";
+		for (Integer x : getTiles().keySet()) {
+			for (Integer y : getTiles().get(x).keySet()) {
+				String temp = String.format("%s@%d,%d",
+						  getTiles().get(x).get(y).toCodedString(), x, y);
+				result = String.format("%s %s", result, temp);
+			}
+		}
+		return result;		
+	}
 }

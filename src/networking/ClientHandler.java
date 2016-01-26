@@ -184,24 +184,28 @@ public class ClientHandler implements Runnable {
     	server.gameBroadcast(gameClients, msg);
     }
     
-    public void turn(List<ClientHandler> gameClients, String playerName) {
-    	gameBroadcast(gameClients, SERVER_TURN + " " + playerName);
+    public void turn(List<ClientHandler> gameClients) {
+    	gameBroadcast(gameClients, SERVER_TURN + " " + getName());
     	moveExpected = true;
     }
     
-    public void movePutOk() {
-    	sendMessage(SERVER_MOVE_PUT);
+    public void movePutOk(List<ClientHandler> gameClients, String move) {
+    	gameBroadcast(gameClients, SERVER_MOVE_PUT + move);
     }
     
-    public void moveTradeOk() {
-    	sendMessage(SERVER_MOVE_TRADE);
+    public void moveTradeOk(List<ClientHandler> gameClients, int ammount) {
+    	gameBroadcast(gameClients, SERVER_MOVE_TRADE + ammount);
     }
     
     public void gameEnd() {
-    	
+    	sendMessage(SERVER_GAMEEND);
     }
     
     public void pass() {
-    	
+    	sendMessage(SERVER_PASS + getName());
+    }
+    
+    public void drawTile(String tileList) {
+    	sendMessage(SERVER_DRAWTILE + tileList);
     }
 }

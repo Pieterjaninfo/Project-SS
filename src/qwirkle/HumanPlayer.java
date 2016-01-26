@@ -60,9 +60,6 @@ public class HumanPlayer implements Player {
 
 			} else if (firstInput.equals("trade")) {
 				String input = game.readLine("Enter the tilecodes with a space between the codes.");
-				//TODO remove
-				System.out.println(input);
-				
 				while (!input.matches(TRADE_REGEX)) {
 					input = game.readLine("Incorrect format, please try again!");
 				}
