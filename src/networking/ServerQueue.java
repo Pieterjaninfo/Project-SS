@@ -2,6 +2,7 @@ package networking;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import qwirkle.Qwirkle;
 
@@ -13,9 +14,9 @@ import qwirkle.Qwirkle;
 
 public class ServerQueue implements Runnable {
 	
-	private List<ClientHandler> twoPlayer;
-    private List<ClientHandler> threePlayer;
-    private List<ClientHandler> fourPlayer;
+	private static List<ClientHandler> twoPlayer;
+    private static List<ClientHandler> threePlayer;
+    private static List<ClientHandler> fourPlayer;
     
     ServerQueue() {
     	twoPlayer = new ArrayList<ClientHandler>();
@@ -29,11 +30,11 @@ public class ServerQueue implements Runnable {
 	 * @param n
 	 */
 	public void addToQueue(ClientHandler client, String n) {
-    	if (n == "1") {
+    	if (n.equals("2")) {
     		twoPlayer.add(client);
-    	} else if (n == "2") {
+    	} else if (n.equals("3")) {
     		threePlayer.add(client);
-    	} else if (n == "3") {
+    	} else if (n.equals("4")) {
     		fourPlayer.add(client);
     	}
     }
@@ -46,28 +47,44 @@ public class ServerQueue implements Runnable {
 		Qwirkle game = null;
 		while (true) {
 			List<ClientHandler> players = null;
-			if (fourPlayer.size() > 4) {
-				players = fourPlayer.subList(0, 3);
+			if (fourPlayer.size() >= 4) {
+				players = new Vector<ClientHandler>(fourPlayer.subList(0, 4));
 				game = new Qwirkle(players);
-				(new Thread(game)).start();
-			} else if (threePlayer.size() > 3) {
-				players = fourPlayer.subList(0, 2);
+				fourPlayer.removeAll(players);
+			} else if (threePlayer.size() >= 3) {
+				players = new Vector<ClientHandler>(threePlayer.subList(0, 3));
 				game = new Qwirkle(players);
-				(new Thread(game)).start();
-			} else if (twoPlayer.size() > 2) {
-				players = fourPlayer.subList(0, 1);
+				threePlayer.removeAll(players);
+			} else if (twoPlayer.size() >= 2) {
+				players = new Vector<ClientHandler>(twoPlayer.subList(0, 2));
 				game = new Qwirkle(players);
-				(new Thread(game)).start();
+				twoPlayer.removeAll(players);
 			}
 			if (players != null && game != null) {
 				String names = "";
 				for (ClientHandler client : players) {
 					names = String.format("%s %s", names, client.getName());
-				}
-				for (ClientHandler client : players) {
 					client.gameStart(names, game);
 				}
+				(new Thread(game)).start();
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static boolean contains(ClientHandler client, String n) {
+		if (n.equals("2")) {
+    		return twoPlayer.contains(client);
+    	} else if (n.equals("3")) {
+    		return threePlayer.contains(client);
+    	} else if (n.equals("4")) {
+    		return fourPlayer.contains(client);
+    	}
+		return false;
 	}
 }
