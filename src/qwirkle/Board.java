@@ -158,7 +158,6 @@ public class Board {
 			
 			Map<Integer, Map<Integer, Tile>> moveTilesMap = move.getTiles();
 			
-			
 			if (moveTilesMap.size() == 1) {
 				for (Integer x : moveTilesMap.keySet()) {
 					if (moveTilesMap.get(x).keySet().size() == 1) {

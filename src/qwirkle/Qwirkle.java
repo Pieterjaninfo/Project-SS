@@ -180,17 +180,13 @@ public class Qwirkle implements Runnable{
 	 */
 	public void makeMove() {
 		while (true) {
-			Move move = currentPlayer.determineMove();
+			Move move = currentPlayer.determineMove();			
 			if (currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
 				ui.showMessage("You don't have some of the tiles you tried to place!");
 			} else if (board.checkMove(move)) {
 				board.doMove(move);
 				currentPlayer.removeTile(move.getTileList());
-				List<Tile> newTiles = new ArrayList<Tile>();
-				for (Tile a : move.getTileList()) {
-					newTiles.add(bag.getRandomTile());
-				}
-				currentPlayer.addTile(newTiles);
+				currentPlayer.addTile(bag.getTiles(move.getTileList().size()));
 				break;
 			} else {
 				ui.showMessage("Incorrect move!");
@@ -216,11 +212,7 @@ public class Qwirkle implements Runnable{
 		} else if (board.checkMove(moves)) {
 			board.doMove(moves);
 			currentPlayer.removeTile(moves.getTileList());
-			List<Tile> newTiles = new ArrayList<Tile>();
-			for (Tile a : moves.getTileList()) {
-				newTiles.add(bag.getRandomTile());
-			}
-			currentPlayer.addTile(newTiles);
+			currentPlayer.addTile(bag.getTiles(moves.getTileList().size()));
 			clientPlayerMap.get(currentPlayer).movePutOk();
 			this.notifyAll(); // TODO might not work test needed
 		} else {
@@ -235,6 +227,7 @@ public class Qwirkle implements Runnable{
 	public void tradeMove(String handTiles) {
 		if (firstMove) {
 			clientPlayerMap.get(currentPlayer).error(Error.TRADE_FIRST_TURN);
+			return;
 		}
 		String[] tileString = handTiles.split(" ");
 		List<Tile> tileList = new ArrayList<Tile>();
@@ -252,6 +245,9 @@ public class Qwirkle implements Runnable{
 	}
 	
 	public void tradeMove(List<Tile> tradeTiles) {
+		if (firstMove) {
+			return;
+		}
 		if (bag.canTradeTiles(tradeTiles)) {
 			currentPlayer.removeTile(tradeTiles);
 			currentPlayer.addTile(bag.tradeTiles(tradeTiles));
