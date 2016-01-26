@@ -9,13 +9,15 @@ import java.util.Map;
 
 public class Board {
 
+	//@ private invariant board != null;
 	private Map<Integer, Map<Integer, Tile>> board;
 	
 	public Board() {
 		this.board = new HashMap<Integer, Map<Integer, Tile>>();
 	}
 	
-
+	//@ requires board != null;
+	//@ ensures getAllTiles() == board;
 	public Board(Map<Integer, Map<Integer, Tile>> board) {
 		this.board = board;
 	}
@@ -47,6 +49,108 @@ public class Board {
 		}
 		board.get(x).put(y, tile);
 	}
+	
+
+	/**
+	 * Makes a shallow board copy of the board.
+	 * @return the shallow board copy
+	 */
+	public Map<Integer, Map<Integer, Tile>> makeBoardCopy() {
+		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = 
+				  new HashMap<Integer, Map<Integer, Tile>>();
+		for (Integer key : board.keySet()) {
+			Map<Integer, Tile> valueMap = new HashMap<Integer, Tile>(board.get(key));
+			shallowBoardCopy.put(key, valueMap);
+		}
+		return shallowBoardCopy;
+	}
+	
+	
+	/**
+	 * Returns all tiles that are placed on the board.
+	 * @return all tiles on the board
+	 */
+	//@ ensures \result == this.board;
+	public Map<Integer, Map<Integer, Tile>> getAllTiles() {
+		return board;
+	}
+	
+	/**
+	 * Checks if there are no tiles on the coordinates where the move wants to put the tiles.
+	 * @param move The move you want to do
+	 * @return true if all the tile spots are free
+	 */
+	//@ requires move != null;
+	private boolean isPlaceFree(Move move) {
+		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
+		for (Integer x : placedTiles.keySet()) {
+			for (Integer y : placedTiles.get(x).keySet()) {
+				if (containsTile(x, y)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns the tile on the given x and y coordinate, 
+	 * 	  or null when there is no tile on the given coordinate.
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 * @return the tile on the coordinate, or null if there isn't a tile there
+	 */
+	//@ requires x != null;
+	//@ requires y != null;
+	public Tile getTile(int x, int y) {
+		Tile tile = null;
+		if (containsTile(x, y)) {
+			tile = board.get(x).get(y);
+		}
+		return tile;
+	}
+	
+	
+	/**
+	 * Returns the amount of tiles that are currently placed on the board.
+	 * @return the amount of tiles on the board
+	 */
+	//@ ensures \result >= 0;
+	public int getBoardSize() {
+		return board.size();
+	}
+	
+	/**
+	 * Check if a tile from the hand can be placed and if so it return true.
+	 * @param tilesList The hand you want to check
+	 * @return true if the player can place a tile
+	 */
+	//@ requires tileList != null;
+	public boolean canPlaceATile(List<Tile> tilesList) {
+		//loop through all tiles
+		for (Integer x : board.keySet()) {
+			for (Integer y : board.get(x).keySet()) {
+				
+				//loop through all tiles in hand
+				for (Tile tile : tilesList) {
+					
+					
+					//check left, right, above and below the board tile
+					if (canPlaceTile(tile, x - 1, y) || canPlaceTile(tile, x + 1, y) || 
+							  canPlaceTile(tile, x, y + 1) || canPlaceTile(tile, x, y - 1)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/* TODO the methods below contain a lot of duplicate code, 
+	 * these sub-codes need to be put in methods, e.g. in a separate class called
+	 * BoardChecker.java
+	 */
+	
 	
 	/**
 	 * Checks if the move is allowed to be made, and if it is allowed, it does the move.
@@ -623,19 +727,6 @@ public class Board {
 		} //check do move
 	}
 
-	/**
-	 * Makes a shallow board copy of the board.
-	 * @return the shallow board copy
-	 */
-	public Map<Integer, Map<Integer, Tile>> makeBoardCopy() {
-		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = 
-				  new HashMap<Integer, Map<Integer, Tile>>();
-		for (Integer key : board.keySet()) {
-			Map<Integer, Tile> valueMap = new HashMap<Integer, Tile>(board.get(key));
-			shallowBoardCopy.put(key, valueMap);
-		}
-		return shallowBoardCopy;
-	}
 	
 	/**
 	 * Checks if the move is allowed to be done.
@@ -1653,48 +1744,7 @@ public class Board {
 		return true;
 	}
 	
-	/**
-	 * Returns all tiles that are placed on the board.
-	 * @return all tiles on the board
-	 */
-	public Map<Integer, Map<Integer, Tile>> getAllTiles() {
-		return board;
-	}
 	
-	/**
-	 * Checks if there are no tiles on the coordinates where the move wants to put the tiles.
-	 * @param move The move you want to do
-	 * @return true if all the tile spots are free
-	 */
-	//@ requires move != null;
-	private boolean isPlaceFree(Move move) {
-		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
-		for (Integer x : placedTiles.keySet()) {
-			for (Integer y : placedTiles.get(x).keySet()) {
-				if (containsTile(x, y)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Returns the tile on the given x and y coordinate, 
-	 * 	  or null when there is no tile on the given coordinate.
-	 * @param x The x coordinate
-	 * @param y The y coordinate
-	 * @return the tile on the coordinate, or null if there isn't a tile there
-	 */
-	//@ requires x != null;
-	//@ requires y != null;
-	public Tile getTile(int x, int y) {
-		Tile tile = null;
-		if (containsTile(x, y)) {
-			tile = board.get(x).get(y);
-		}
-		return tile;
-	}
 	
 	/**
 	 * Checks if the tile is allowed to be placed on the given coordinates.
@@ -1861,13 +1911,6 @@ public class Board {
 
 	}
 	
-	/**
-	 * Returns the amount of tiles that are currently placed on the board.
-	 * @return the amount of tiles on the board
-	 */
-	public int getBoardSize() {
-		return board.size();
-	}
 	
 	
 }
