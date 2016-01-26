@@ -184,9 +184,29 @@ public class HumanPlayer implements Player {
 		getHand().removeAll(temp);
 	}
 
+	/**
+	 * Add the amount of points rewarded for doing the move to the player score.
+	 * @param move The move you did for the points
+	 */
+	//@ requires move != null;
 	@Override
 	public void addScore(Move move) {
-		// TODO Auto-generated method stub
+		int result = 0;
+		List<Tile> moveTiles = move.getTileList();
 		
+		for (Tile moveTile : moveTiles) {
+			result += moveTile.getHorizPattern().getPoints();
+			result += moveTile.getVertPattern().getPoints();
+		}
+		updateScore(result);
+		
+	}
+	
+	/*
+	 * Increments the current score by the value given.
+	 */
+	//@ ensures extra >= 0;
+	private void updateScore(int extra) {
+		this.score += extra;
 	}
 }
