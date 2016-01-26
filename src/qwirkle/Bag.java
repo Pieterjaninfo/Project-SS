@@ -43,6 +43,23 @@ public class Bag {
 	}
 	
 	/**
+	 * Returns a list with a specified amount of random tiles and removes these from the bag.
+	 * @param amount The amount of tiles you want to get from the bag
+	 * @return a list of tiles with type Tile
+	 */
+	//@ requires amount >= 0;
+	public List<Tile> getTiles(int amount) {
+		List<Tile> result = new ArrayList<Tile>();
+		
+		for (int i = 0; i < amount; i++) {
+			result.add(getRandomTile());
+		}
+		
+		getTiles().removeAll(result);
+		return result;
+	}
+	
+	/**
 	 * Checks if the player is allowed to trade tiles.
 	 * @return true if the player is allowed to make the trade
 	 */
