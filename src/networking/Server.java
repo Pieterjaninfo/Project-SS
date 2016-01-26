@@ -162,12 +162,16 @@ public class Server implements Runnable {
      * @return
      */
     //@ requires name != null;
-    public boolean nameExists(String name) {
+    public boolean nameExists(String name, ClientHandler client) {
     	Vector<ClientHandler> threadsCopy = new Vector<ClientHandler>(threads);
+    	threadsCopy.remove(client);
     	for (ClientHandler a : threadsCopy) {
-    		if (a.getName().equals(name)) {
+    		if (threadsCopy.isEmpty()) {
+    			return true;
+    		} else if (a.getName().equals(name)) {
     			return true;
     		}
+    		
     	}
     	return false;
     }

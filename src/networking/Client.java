@@ -15,7 +15,7 @@ import ui.UI;
  * @author Bart Meyers
  */
 
-public class Client implements Runnable{
+public class Client implements Runnable {
 	
 	// List of protocol commands.
     private static final String CLIENT_IDENTIFY = "IDENTIFY";
@@ -67,8 +67,8 @@ public class Client implements Runnable{
     /**
      * Method to start the client.
      */
-    public void begin(UI ui) {
-    	this.ui = ui;
+    public void begin(UI uiA) {
+    	this.ui = uiA;
     	try {
 			(new Thread(this)).start();
 			do {
@@ -86,14 +86,8 @@ public class Client implements Runnable{
     @Override
 	public void run() {
     	// TODO implement protocol and game.
-		try {
-	    	out.write(CLIENT_IDENTIFY + ui.getPlayer(1)); // TODO if name AI is already in use add a number to the end...
-	    	
-			in.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}    	
+		identify();   
+		queue();
 		
 	}
     
@@ -158,4 +152,51 @@ public class Client implements Runnable{
     	
     }
     
+    public void identify() {
+    	try {
+			String response = "";
+			String player = ui.getPlayer(5);
+			do {
+		    	out.write(CLIENT_IDENTIFY + " " + player);
+		    	while (!in.ready()) {
+        			// Wait for an input from the server
+		    	}
+		    	response = in.readLine();
+		    	if (player.startsWith("AI") && response.startsWith(SERVER_ERROR)) {
+		    		int i = 0;
+		    		player = String.format("%s%s", player, i);
+		    		i++;
+		    	} else {
+		    		ui.showMessage("Name incorrect or already taken.");
+		    		player = ui.getPlayer(5);
+		    	}
+			} while (!response.equals(SERVER_IDENITFY));
+			clientName = player;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+    }
+    
+    public void queue() {
+    	try {
+    		String response = "";
+        	do {
+        		String queue = ui.readLine("Pleas enter the ques you want to enter." +
+          			  "\nPossible queues: 2, 3 and 4.");
+        		if (queue.matches(LIST_REGEX)) {
+            		out.write(CLIENT_QUEUE + " " + queue);
+            		while (!in.ready()) {
+            			// Wait for an input from the server
+            		}
+            		response = in.readLine();
+        		} else {
+        			ui.showMessage("Incorrect queue format");
+        		}
+        	} while (!response.startsWith(SERVER_QUEUE));
+        } catch (IOException e) {
+        	e.printStackTrace();
+        	//TODO exception catch
+        }
+    }
 }

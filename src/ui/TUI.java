@@ -196,7 +196,7 @@ public class TUI implements UI {
 	public String getPlayer(int number) {
 		String result = "";
 		System.out.println("For AI players use: AI 'StrategyName'");
-		/*if (number == 1) {
+		if (number == 5) {
 			do {
 				System.out.printf("Enter name:\n");
 				result = input.nextLine();
@@ -204,10 +204,10 @@ public class TUI implements UI {
 					System.out.println("Name not supported, please choose a different name.");
 				}
 			} while (!result.matches("[a-zA-Z0-9-_]{2,16}"));
-		} else {*/
+		} else {
 			System.out.printf("Enter player %d:\n", number + 1);
 			result = input.nextLine();
-		//}
+		}
 		
 		//System.out.println("result: " + result[0] + result[1]);
 		return result;

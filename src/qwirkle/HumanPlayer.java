@@ -11,7 +11,10 @@ public class HumanPlayer implements Player {
 	protected List<Tile> hand;
 	private int score;
 	private static final String MOVE_REGEX = 
-			  "^([0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})( [0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})*$";
+			  "^([0-5][x,s,o,*,c,d]@-?\\d{1,3},-?\\d{1,3})" +
+			  "( [0-5][x,s,o,*,c,d]@\\d{1,3},\\d{1,3})*$";
+	private static final String TRADE_REGEX = 
+			  "^([0-5][x,s,o,*,c,d])( [0-5][x,s,o,*,c,d])*$";
 
 	public HumanPlayer(String name, Qwirkle game) {
 		this.name = name;
@@ -56,11 +59,21 @@ public class HumanPlayer implements Player {
 				return moves;
 
 			} else if (firstInput.equals("trade")) {
-				// TODO do trade:
 				String input = game.readLine("Enter the tilecodes with a space between the codes.");
-				//while (!input.matches(regex)) {
-					
-				//}
+
+				while (!input.matches(TRADE_REGEX)) {
+					input = game.readLine("Incorrect format, please try again!");
+				}
+				List<Tile> tradeIn = new ArrayList<Tile>();
+				String[] tiles = input.split(" ");
+				for (String tileString : tiles) {
+					Shape shape = Shape.charToEnum(tileString.charAt(1));
+					Color color = Color.toEnum(Character.digit(tileString.charAt(0), 10));
+					Tile tile = new Tile(color, shape);
+					tradeIn.add(tile);
+				}
+				game.tradeMove(tradeIn);
+
 				return null;
 			} else if (firstInput.equals("exit")) {
 				System.exit(0);

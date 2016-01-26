@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable {
     private static final String CLIENT_LOBBY = "LOBBY";
     private static final String SERVER_LOBBY = "LOBBYOK";*/
 	private static final String NAME_REGEX = "^[A-Za-z0-9-_]{2,16}$";
-    private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
+    //private static final String LIST_REGEX = "^\\w+(,\\w+)*$";
     
     private Boolean moveExpected = false;
     private Qwirkle game;
@@ -60,6 +60,9 @@ public class ClientHandler implements Runnable {
 		try {
 			while (true) {
 				String input = in.readLine();
+				if (input == null) {
+					break;
+				}
 				if (input.startsWith(CLIENT_QUIT)) {
 					break;
 				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
@@ -137,7 +140,7 @@ public class ClientHandler implements Runnable {
     	if (input.matches(NAME_REGEX)) {
     		error(Error.NAME_INVALID);
     	} else {
-    		if (server.nameExists(clientName)) {
+    		if (server.nameExists(clientName, this)) {
         		error(Error.NAME_USED);
         	} else {
             	clientName = input;
@@ -154,10 +157,9 @@ public class ClientHandler implements Runnable {
     public void queue(String input) {
     	String[] n = input.split(",");
     	Boolean goodQueue = true;
+
     	for (String a : n) {
-    		if (a == "1" || a == "2" || a == "3") {
-    			
-    		} else {
+    		if (!(a.equals("1") || a.equals("2") || a.equals("3"))) {
     			error(Error.QUEUE_INVALID);
     			goodQueue = false;
     			break;
@@ -175,33 +177,37 @@ public class ClientHandler implements Runnable {
     	sendMessage(SERVER_ERROR + " " + error);
     }
 	
-    public void gameStart(String msg, Qwirkle game) {
+    public void gameStart(String msg, Qwirkle gameA) {
     	sendMessage(SERVER_GAMESTART + " " + msg);
-    	this.game = game;
+    	this.game = gameA;
     }
     
     public void gameBroadcast(List<ClientHandler> gameClients, String msg) {
     	server.gameBroadcast(gameClients, msg);
     }
     
-    public void turn(List<ClientHandler> gameClients, String playerName) {
-    	gameBroadcast(gameClients, SERVER_TURN + " " + playerName);
+    public void turn(List<ClientHandler> gameClients) {
+    	gameBroadcast(gameClients, SERVER_TURN + " " + getName());
     	moveExpected = true;
     }
     
-    public void movePutOk() {
-    	sendMessage(SERVER_MOVE_PUT);
+    public void movePutOk(List<ClientHandler> gameClients, String move) {
+    	gameBroadcast(gameClients, SERVER_MOVE_PUT + move);
     }
     
-    public void moveTradeOk() {
-    	sendMessage(SERVER_MOVE_TRADE);
+    public void moveTradeOk(List<ClientHandler> gameClients, int ammount) {
+    	gameBroadcast(gameClients, SERVER_MOVE_TRADE + ammount);
     }
     
     public void gameEnd() {
-    	
+    	sendMessage(SERVER_GAMEEND);
     }
     
     public void pass() {
-    	
+    	sendMessage(SERVER_PASS + getName());
+    }
+    
+    public void drawTile(String tileList) {
+    	sendMessage(SERVER_DRAWTILE + tileList);
     }
 }
