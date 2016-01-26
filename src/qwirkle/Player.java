@@ -58,12 +58,16 @@ public interface Player {
 	public boolean tilesInHand(Move move);
 	
 	/**
-	 * adds the tiles to the hand.
+	 * Adds the tiles to the hand.
+	 * @param tiles The tiles you want to add
 	 */
+	//@ requires tiles != null;
 	public void addTile(List<Tile> tiles);
 	
 	/**
-	 * 
+	 * Removes the specified tiles from the hand.
+	 * @param tiles The tiles you want to remove
 	 */
+	//@ requires tiles != null;
 	public void removeTile(List<Tile> tiles);
 }
