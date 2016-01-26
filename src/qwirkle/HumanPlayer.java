@@ -58,9 +58,9 @@ public class HumanPlayer implements Player {
 			} else if (firstInput.equals("trade")) {
 				// TODO do trade:
 				String input = game.readLine("Enter the tilecodes with a space between the codes.");
-				while (!input.matches(regex)) {
+				//while (!input.matches(regex)) {
 					
-				}
+				//}
 				return null;
 			} else if (firstInput.equals("exit")) {
 				System.exit(0);
