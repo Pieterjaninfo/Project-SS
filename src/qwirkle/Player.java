@@ -32,15 +32,25 @@ public interface Player {
 	public void setStartingHand(List<Tile> startingHand);
 	
 	/**
-	 * returns the largest row that can be created with the tiles in the hand.
+	 * Returns the largest row that can be created with the tiles in the hand.
 	 * @return
 	 */
 	public int largestStartSize();
 	
 	/**
-	 * returns if the player has the tile in his hand.
+	 * Returns if the player has the tile in his hand.
 	 * @param tile The tile to check
 	 * @return
 	 */
 	public boolean tilesInHand(Move move);
+	
+	/**
+	 * adds the tiles to the hand.
+	 */
+	public void addTile(List<Tile> tiles);
+	
+	/**
+	 * 
+	 */
+	public void removeTile(List<Tile> tiles);
 }

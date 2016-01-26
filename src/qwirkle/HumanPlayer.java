@@ -70,11 +70,10 @@ public class HumanPlayer implements Player {
 	public int getScore() {
 		return score;
 	}
-
+	
 	@Override
 	public void setStartingHand(List<Tile> startingHand) {
-		// TODO Auto-generated method stub
-		
+		hand = startingHand;
 	}
 
 	@Override
@@ -148,15 +147,13 @@ public class HumanPlayer implements Player {
 		return true;
 	}
 	
+	@Override
+	public void addTile(List<Tile> tiles) {
+		getHand().addAll(tiles);
+	}
 
-	/*
-	 * Niet lezen en schrijven naar system.output maar de Qwirkle.java aanroepen
-	 * dezelfde game van Qwirkle krijgen
-	 * 
-	 * Zodra move is aangemaakt, dan 
-	 * 
-	 * 
-	 * dDtermine move vraagt wat keuze is
-	 * make move -> geef aan move -> 
-	 */
+	@Override
+	public void removeTile(List<Tile> tiles) {
+		getHand().removeAll(tiles);
+	}
 }

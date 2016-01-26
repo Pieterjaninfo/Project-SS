@@ -107,6 +107,11 @@ public class AIPlayer implements Player {
 		
 		return largest;
 	}
+	
+	@Override
+	public void setStartingHand(List<Tile> startingHand) {
+		hand = startingHand;
+	}
 
 	@Override
 	public boolean tilesInHand(Move move) {
@@ -123,8 +128,12 @@ public class AIPlayer implements Player {
 	}
 
 	@Override
-	public void setStartingHand(List<Tile> startingHand) {
-		// TODO Auto-generated method stub
-		
+	public void addTile(List<Tile> tiles) {
+		getHand().addAll(tiles);
+	}
+
+	@Override
+	public void removeTile(List<Tile> tiles) {
+		getHand().removeAll(tiles);
 	}
 }
