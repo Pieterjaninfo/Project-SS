@@ -793,7 +793,7 @@ public class Board {
 					    tilesOnBoard.add(getTile(i - 1, y));
 					}
 					
-				   //tiles between lowestX and highestX
+				    //tiles between lowestX and highestX
 					for (int i = lowestX; i < highestX; i++) {
 				    	if (containsTile(i + 1, y)) {
 				    		tilesOnBoard.add(getTile(i + 1, y));
