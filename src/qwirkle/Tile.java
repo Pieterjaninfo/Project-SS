@@ -77,13 +77,15 @@ public class Tile {
 		this.horizPattern = horizP;
 	}
 	
+	/**
+	 * Returns the for human readable tile characteristics of a tile.
+	 */
 	public String toString() {
 		return String.format("Shape: %s,Color: %s", shape, color);
 	}
 	
 	/**
 	 * Returns the for human readable code for the UI.
-	 * @return
 	 */
 	public String toCodedString() {
 		//System.out.println(toString());
