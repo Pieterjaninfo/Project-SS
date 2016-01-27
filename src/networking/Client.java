@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qwirkle.Player;
-import qwirkle.Qwirkle;
 import qwirkle.SocketPlayer;
 
 import ui.UI;

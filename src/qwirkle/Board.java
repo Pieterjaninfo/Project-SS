@@ -431,7 +431,6 @@ public class Board {
 					} else {
 						//move contains one X, multiple Y (vertPattern)
 						
-						System.out.println("REACHED MOVE CONTAINSMORE TILES ONE X MULT Y"); //TODO REMOVE
 						// place all the tiles in Move on the board
 						for (Integer y : moveTilesMap.get(x).keySet()) {
 							placeTile(moveTilesMap.get(x).get(y), x, y);

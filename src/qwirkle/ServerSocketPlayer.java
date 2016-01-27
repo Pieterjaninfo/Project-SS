@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class ServerSocketPlayer implements Player{
+public class ServerSocketPlayer implements Player {
 	
-	private Qwirkle game;
+	//private Qwirkle game;
 	private String playerName;
 	private List<Tile> hand;
 	private int score;
 	
 	public ServerSocketPlayer(String name, Qwirkle game) {
-		this.game = game;
+		//this.game = game;
 		this.playerName = name;
 		this.score = 0;
 	}
@@ -53,13 +53,6 @@ public class ServerSocketPlayer implements Player{
 				}
 			}
 		}
-		/*
-		for (Tile a : hand) {
-			System.out.println("hand: " + a.toString());
-		}
-		for (Tile b : list) {
-			System.out.println("list: " + b.toString());
-		}*/
 		int[] a = new int[12];
 		for (Tile tile : list) {
 			if (tile.getShape() == Shape.CROSS) {

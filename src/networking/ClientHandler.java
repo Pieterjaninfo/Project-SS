@@ -86,12 +86,14 @@ public class ClientHandler implements Runnable {
 						error(Error.INVALID_PARAMETER);						
 					} else {
 						game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1));
+						moveExpected = false;
 					}
 				} else if (input.startsWith(CLIENT_MOVE_TRADE) && moveExpected) {
 					if (input.length() <= CLIENT_MOVE_TRADE.length()) {
 						error(Error.INVALID_PARAMETER);						
 					} else {
 						game.tradeMove(input.substring(CLIENT_MOVE_TRADE.length() + 1));
+						moveExpected = false;
 					}
 				} else {
 					error(Error.ILLEGAL_STATE);

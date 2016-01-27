@@ -10,7 +10,7 @@ import ui.*;
 import networking.*;
 import networking.Error;
 
-public class Qwirkle implements Runnable{
+public class Qwirkle implements Runnable {
 	
 	private static UI ui;
 	private Board board;
@@ -153,7 +153,6 @@ public class Qwirkle implements Runnable{
 		currentPlayer = determineFirstMove();
 		firstMove = true;
 		do {
-			//System.out.println(currentPlayer.getHand() + "; " + board.canPlaceATile(currentPlayer.getHand())); //TODO remove
 			if (!board.canPlaceATile(currentPlayer.getHand())) {
 				clientPlayerMap.get(currentPlayer).pass(clients);
 			} else {
