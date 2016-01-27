@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class ServerSocketPlayer implements Player{
-	
-	private Qwirkle game;
+import networking.Client;
+
+public class SocketPlayer implements Player {
+	private Client game;
 	private String playerName;
 	private List<Tile> hand;
 	private int score;
 	
-	public ServerSocketPlayer(String name, Qwirkle game) {
+	public SocketPlayer(String name, Client game) {
 		this.game = game;
 		this.playerName = name;
 		this.score = 0;

@@ -150,19 +150,22 @@ public class Qwirkle implements Runnable{
 		currentPlayer = determineFirstMove();
 		firstMove = true;
 		do {
-			clientPlayerMap.get(currentPlayer).turn(clients);
+			//System.out.println(currentPlayer.getHand() + "; " + board.canPlaceATile(currentPlayer.getHand())); //TODO remove
 			if (!board.canPlaceATile(currentPlayer.getHand())) {
 				clientPlayerMap.get(currentPlayer).pass(clients);
-			}
-			synchronized (object) {
-				try {
-					object.wait(); // TODO seems to work!!
+			} else {
+				clientPlayerMap.get(currentPlayer).turn(clients);
+				synchronized (object) {
+					try {
+						object.wait(); // TODO seems to work!!
 
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
+			
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());
 		} while (!gameOver()); 
@@ -217,7 +220,7 @@ public class Qwirkle implements Runnable{
 				currentPlayer.addTile(bag.getTiles(move.getTileList().size()));
 				break;
 			} else {
-				ui.showMessage("Incorrect move!");
+				ui.showMessage("Incorrect move!" + move.getTiles());
 			}
 		}
 		firstMove = false;

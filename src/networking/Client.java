@@ -7,6 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import qwirkle.Player;
+import qwirkle.Qwirkle;
+import qwirkle.SocketPlayer;
 
 import ui.UI;
 
@@ -51,6 +57,9 @@ public class Client implements Runnable {
 	private boolean running = true;
 	private String clientName;
 	private UI ui;
+	private List<Player> players = new ArrayList<Player>();
+	private Player currentPlayer;
+	private Boolean firstMove = true;
     
     public Client(InetAddress host, int port)
 			throws IOException {
@@ -86,8 +95,13 @@ public class Client implements Runnable {
     @Override
 	public void run() {
     	// TODO implement protocol and game.
-		identify();   
-		queue();
+		identify();  
+		do {
+			queue();
+			gameStart();
+			moves();
+			
+		} while (running);
 		
 	}
     
@@ -119,6 +133,7 @@ public class Client implements Runnable {
     public void shutdown() {
 		print("Closing socket connection...");
 		try {
+			running = false;
 			out.close();
 			in.close();
 			socket.close();
@@ -198,5 +213,46 @@ public class Client implements Runnable {
         	e.printStackTrace();
         	//TODO exception catch
         }
+    }
+    
+    public void moves() {
+    	String input;
+    	try {
+			input = in.readLine();
+			if (input.startsWith(SERVER_MOVE_PUT)) {
+				
+			} else if (input.startsWith(SERVER_PASS)) {
+				
+			} else if (input.startsWith(SERVER_MOVE_TRADE)) {
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    public void error(Error error) {
+    	sendMessage(SERVER_ERROR + " " + error);
+    }
+    
+    public void gameStart() {
+    	String input = "";
+		try {
+			input = in.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	if (input.startsWith(SERVER_GAMESTART)) {
+    		String[] in = input.substring(SERVER_GAMESTART.length() + 1).split(" ");
+    		for (String playerName : in) {
+    			Player player = new SocketPlayer(playerName, this);
+    			
+    		}
+    	} else {
+    		error(Error.INVALID_COMMAND);
+    	}
     }
 }

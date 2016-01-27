@@ -227,7 +227,7 @@ public class ClientHandler implements Runnable {
     	if (results != null) {
     		sendMessage(SERVER_GAMEEND + results);
     	} else {
-    		sendMessage(SERVER_GAMEEND + "ERROR");
+    		sendMessage(SERVER_GAMEEND + " ERROR");
     	}
     	
     }

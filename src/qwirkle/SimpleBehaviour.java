@@ -29,8 +29,13 @@ public class SimpleBehaviour implements Behaviour {
 		
 		Map<Integer, Map<Integer, Tile>> boardTiles = b.getAllTiles();
 		
+		if (boardTiles.isEmpty()) {
+			moves.addTile(hand.get(0), 0, 0);
+			return moves;
+		}
+		
 		for (int x : boardTiles.keySet()) {
-			for (int y : boardTiles.get(x).keySet()) {
+ 			for (int y : boardTiles.get(x).keySet()) {
 				if (b.containsTile(x, y)) {
 					
 					if (b.getTile(x - 1, y) == null) {

@@ -19,7 +19,7 @@ public class Board {
 	
 	//@ requires board != null;
 	//@ ensures getAllTiles() == board;
-	public Board(Map<Integer, Map<Integer, Tile>> board) {
+	public Board(Map<Integer, Map<Integer, Tile>> board) { //TODO remove
 		this.board = board;
 	}
 	
