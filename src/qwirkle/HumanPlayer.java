@@ -159,6 +159,7 @@ public class HumanPlayer implements Player {
 				if (moveTile.equals(handVTiles) && !had.contains(handVTiles)) {
 					had.add(handVTiles);
 					i++;
+					break;
 				}
 			}
 		}
@@ -185,6 +186,7 @@ public class HumanPlayer implements Player {
 				}
 			}
 		}
+		System.out.println(temp); //TODO remove
 		getHand().removeAll(temp);
 	}
 

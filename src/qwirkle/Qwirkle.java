@@ -199,7 +199,7 @@ public class Qwirkle implements Runnable{
 					return;
 				}
 				ui.showMessage("Can't trade first move");
-			} else if (currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
+			} else if (!currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
 				ui.showMessage("You don't have some of the tiles you tried to place!");
 			} else if (board.checkMove(move)) {
 				board.doMove(move);
