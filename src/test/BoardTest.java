@@ -34,7 +34,23 @@ public class BoardTest {
 	private Tile tile11;
 	private List<Tile> tilesList;
 	private List<Tile> tilesList2;
+	private Move move;
 	
+	
+	private Tile t1;
+	private Tile t2;
+	private Tile t3;
+	private Tile t4;
+	private Tile t5;
+	private Tile t6;
+	private Tile t7;
+	private Tile t8;
+	private Tile t9;
+	private Tile t10;
+	private Tile t11;
+	private Tile t12;
+	private Tile t13;
+	private Tile t14;
 	
 	
 	@Before
@@ -74,7 +90,9 @@ public class BoardTest {
 		
 		b = new Board(boardMap);
 		
-		Move move = new Move();
+		move = new Move();
+		move.addTile(tile1, 0, 0);
+		move.addTile(tile2, 0, 1);
 		
 	
 		b3 = new Board();
@@ -86,6 +104,22 @@ public class BoardTest {
 		b3.placeTile(tile4, 2, 0);
 		b3.placeTile(tile5, 2, -1);
 	
+		
+		
+		t1 = new Tile(Color.RED, Shape.CLOVER);
+		t2 = new Tile(Color.BLUE, Shape.CLOVER);
+		t3 = new Tile(Color.PURPLE, Shape.CLOVER);
+		t4 = new Tile(Color.ORANGE, Shape.CLOVER);
+		t5 = new Tile(Color.YELLOW, Shape.CLOVER);
+		t6 = new Tile(Color.GREEN, Shape.CLOVER);
+		t7 = new Tile(Color.RED, Shape.SQUARE);
+		t8 = new Tile(Color.RED, Shape.STAR);
+		t9 = new Tile(Color.PURPLE, Shape.STAR);
+		t10 = new Tile(Color.BLUE, Shape.SQUARE);
+		t11 = new Tile(Color.BLUE, Shape.DIAMOND);
+		t12 = new Tile(Color.RED, Shape.CIRCLE);
+		t13 = new Tile(Color.ORANGE, Shape.CROSS);
+		t14 = new Tile(Color.ORANGE, Shape.STAR);
 	}
 	
 	@Test
@@ -116,14 +150,14 @@ public class BoardTest {
 	
 	@Test
 	public void isPlaceFree() {
-		Move move = new Move();
-		move.addTile(tile6, 10, 10);
-		move.addTile(tile7, 10, 12);
+		Move move2 = new Move();
+		move2.addTile(tile6, 10, 10);
+		move2.addTile(tile7, 10, 12);
 		
-		assertTrue(b.isPlaceFree(move));
+		assertTrue(b.isPlaceFree(move2));
 		
-		move.addTile(tile9, 0, 0);
-		assertFalse(b.isPlaceFree(move));
+		move2.addTile(tile9, 0, 0);
+		assertFalse(b.isPlaceFree(move2));
 	}
 	
 	@Test 
@@ -161,11 +195,75 @@ public class BoardTest {
 	
 	@Test
 	public void isMoveConnected() {
+		Board b4 = new Board();
+		b4.doMove(move);
 		
+		Move move2 = new Move();
+		move2.addTile(tile8, 0, 3);
+		assertFalse(b4.isMoveConnected(move2));
+		
+		move2.addTile(tile7, 0, 2);
+	
+		assertTrue(b4.isMoveConnected(move2));
+	
+	
+	
 	}
 	
 	@Test
 	public void doMove() {
+		Board b4 = new Board();
+		b4.doMove(move);
+		assertEquals(tile1, b4.getTile(0, 0));
+		assertEquals(tile2, b4.getTile(0, 1));
+		
+		//prepare the board
+		Board b5 = new Board();
+		
+		Move move1 = new Move();
+		move1.addTile(t1, 0, 2);
+		move1.addTile(t2, 0, 1);
+		move1.addTile(t3, 0, 0);
+		move1.addTile(t2, 0, -1);
+		move1.addTile(t5, 0, -2);
+		move1.addTile(t6, 0, -3);
+		
+		b5.doMove(move1);
+		
+		Move move2 = new Move();
+		move2.addTile(t7, -1, 2);
+		move2.addTile(t8, -2, 2);
+		
+		b5.doMove(move2);
+		
+		Move move3 = new Move();
+		move3.addTile(t9, -2, 1);
+		
+		b5.doMove(move3);
+		
+		Move move4 = new Move();
+		move4.addTile(t10, 1, 1);
+		move4.addTile(t11, 2, 1);
+		
+		b5.doMove(move4);
+		
+		Move move5 = new Move();
+		move5.addTile(t12, 2, 2);
+		
+		b5.doMove(move5);
+		
+		Move move6 = new Move();
+		move6.addTile(t13, -1, -1);
+		move6.addTile(t14, -2, -1);
+		
+		b5.doMove(move6);
+		
+		//test the board
+		
+		assertEquals(t1, b5.getTile(0, 2));
+
+		assertEquals(t9, b5.getTile(-2, 1));
+		assertEquals(t11, b5.getTile(2, 1));
 		
 	}
 	
@@ -203,7 +301,7 @@ public class BoardTest {
 		
 		assertFalse(b4.canPlaceTile(tile5, 0, 1));
 		
-	//yay
+	
 		
 	}
 	
