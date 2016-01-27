@@ -159,7 +159,8 @@ public class Board {
 			Map<Integer, Map<Integer, Tile>> moveTilesMap = move.getTiles();
 			System.out.println(moveTilesMap); //TODO remove
 			//System.out.println(moveTilesMap.size()); //TODO remove
-			if (moveTilesMap.size() == 1) {
+			
+			if (moveTilesMap.keySet().size() == 1) {
 				for (Integer x : moveTilesMap.keySet()) {
 					//System.out.println(moveTilesMap.get(x).keySet()); //TODO remove
 					if (moveTilesMap.get(x).keySet().size() == 1) {
@@ -399,26 +400,17 @@ public class Board {
 							
 						} //for each y value
 						
-					} //check y values size
-				} // for each x value
-				
-				// MOVE WITH SINGLE TILE SHOULD BE PLACED CORRECTLY NOW
-			
-			} else {
-				//move contains more tiles
-				
-				if (moveTilesMap.keySet().size() == 1) {
-					//move contains one X, multiple Y (vertPattern)
-					
-					// place all the tiles in Move on the board
-					for (Integer x : moveTilesMap.keySet()) {
+					} else {
+						//move contains one X, multiple Y (vertPattern)
+						
+						System.out.println("REACHED MOVE CONTAINSMORE TILES ONE X MULT Y"); //TODO REMOVE
+						// place all the tiles in Move on the board
 						for (Integer y : moveTilesMap.get(x).keySet()) {
 							placeTile(moveTilesMap.get(x).get(y), x, y);
 						}
-					}
-					
-					//horizPattern
-					for (Integer x : moveTilesMap.keySet()) {
+						
+						
+						//horizPattern
 						for (Integer y : moveTilesMap.get(x).keySet()) {
 							Tile thisTile = moveTilesMap.get(x).get(y);
 							
@@ -535,9 +527,9 @@ public class Board {
 							
 							// HORIZONTAL PATTERN SHOULD BE MERGED NOW
 						}
-					}
-					//vertPattern
-					for (Integer x : moveTilesMap.keySet()) {
+					
+						//vertPattern
+						
 						//create a list of all y values
 						List<Integer> ys = new ArrayList<Integer>();
 						ys.addAll(moveTilesMap.get(x).keySet());
@@ -629,242 +621,253 @@ public class Board {
 							
 							
 							
-						}
+						
 						
 						// MOVE HAS BEEN DONE AND TILE PATTERNS HAVE BEEN SET
 
-					
+						
+						}
+						
 					}
+					
+				
+				} // for each x value
+				
+				// MOVE WITH ALL TILES HAVING THE SAME X SHOULD BE CORRECTLY PLACED NOW
+			
+			} else {
+				//move contains multiple X and one Y (horizPattern)
+				System.out.println("REACHED MOVE CONTAINSMORE TILES MULT X ONE Y"); //TODO REMOVE
+				
+				// place all the tiles in Move on the board
+				for (Integer x : moveTilesMap.keySet()) {
+					for (Integer y : moveTilesMap.get(x).keySet()) {
+						placeTile(moveTilesMap.get(x).get(y), x, y);
+					}
+				}
+				
+				
+				//TODO reuse duplicated code after implemented in boardChecker.java
+				//vertPattern
+				for (Integer x : moveTilesMap.keySet()) {
+					for (Integer y : moveTilesMap.get(x).keySet()) {
+						Tile thisTile = moveTilesMap.get(x).get(y);
+						
+						//Vertical patterns
+						Tile upTile = getTile(x, y + 1);
+						Tile downTile = getTile(x, y - 1);
+						
+						//check if tile can be merged with both upper and lower side
+						if (upTile != null && downTile != null) {
+							//there are upper and lower tiles
+							Pattern upPattern = upTile.getVertPattern();
+							Pattern downPattern = downTile.getVertPattern();
+							if (upPattern != null && downPattern != null) {
+								// there is upper and lower pattern
+								upPattern.merge(downPattern);
+								upPattern.addTile(thisTile);
+								thisTile.setVertPattern(upPattern);
+							} else if (upPattern != null) {
+								// there is only upper pattern
+								upPattern.addTile(thisTile);
+								upPattern.addTile(downTile);
+								thisTile.setVertPattern(upPattern);
+								downTile.setVertPattern(upPattern);
+							} else if (downPattern != null) {
+								// there is only lower pattern
+								downPattern.addTile(thisTile);
+								downPattern.addTile(upTile);
+								thisTile.setVertPattern(downPattern);
+								upTile.setVertPattern(downPattern);
+							} else {
+								// both tiles have no pattern
+								if (thisTile.getColor() == upTile.getColor()) {
+									//color pattern
+									ColorPattern colorPattern = 
+											  new ColorPattern(thisTile.getColor());
+									colorPattern.addTile(thisTile);
+									colorPattern.addTile(upTile);
+									colorPattern.addTile(downTile);
+									thisTile.setVertPattern(colorPattern);
+									upTile.setVertPattern(colorPattern);
+									downTile.setVertPattern(colorPattern);
+								} else {
+									//shape pattern
+									ShapePattern shapePattern = 
+											  new ShapePattern(thisTile.getShape());
+									shapePattern.addTile(thisTile);
+									shapePattern.addTile(upTile);
+									shapePattern.addTile(downTile);
+									thisTile.setVertPattern(shapePattern);
+									upTile.setVertPattern(shapePattern);
+									downTile.setVertPattern(shapePattern);
+								}
+							}	
+						} else if (upTile != null) {
+							//only upper tile
+							Pattern upPattern = upTile.getVertPattern();
+							if (upPattern != null) {
+								//upper tile is in a pattern
+								upPattern.addTile(thisTile);
+								thisTile.setVertPattern(upPattern);
+							} else {
+								//upper tile is not in a pattern
+								if (upTile.getColor() == thisTile.getColor()) {
+									//color pattern
+									ColorPattern colorPattern = 
+											  new ColorPattern(thisTile.getColor());
+									colorPattern.addTile(thisTile);
+									colorPattern.addTile(upTile);
+									thisTile.setVertPattern(colorPattern);
+									upTile.setVertPattern(colorPattern);
+								} else {
+									//shape pattern
+									ShapePattern shapePattern = 
+											  new ShapePattern(thisTile.getShape());
+									shapePattern.addTile(thisTile);
+									shapePattern.addTile(upTile);
+									thisTile.setVertPattern(shapePattern);
+									upTile.setVertPattern(shapePattern);
+								}
+							}
+						} else if (downTile != null) {
+							//only lower tile
+							Pattern downPattern = downTile.getVertPattern();
+							if (downPattern != null) {
+								//down tile is in a pattern
+								downPattern.addTile(thisTile);
+								thisTile.setVertPattern(downPattern);
+							} else {
+								//down tile has no pattern
+								if (downTile.getColor() == thisTile.getColor()) {
+									//color pattern
+									ColorPattern colorPattern = 
+											  new ColorPattern(thisTile.getColor());
+									colorPattern.addTile(thisTile);
+									colorPattern.addTile(downTile);
+									thisTile.setVertPattern(colorPattern);
+									downTile.setVertPattern(colorPattern);
+								} else {
+									//shape pattern
+									ShapePattern shapePattern = 
+											  new ShapePattern(thisTile.getShape());
+									shapePattern.addTile(thisTile);
+									shapePattern.addTile(downTile);
+									thisTile.setVertPattern(shapePattern);
+									downTile.setVertPattern(shapePattern);
+								}
+							}
+						} // ----end of duplicate code------
+						
+						// VERTICAL PATTERN SHOULD BE MERGED NOW
+						
+						
+					}
+				}
+						
+					
+				//horizPattern
+						
+				//make list of all x values and get the only y value
+				List<Integer> xs = new ArrayList<Integer>();
+				xs.addAll(moveTilesMap.keySet());
+				
+				List<Integer> ysTemp = new ArrayList<Integer>();
+				ysTemp.addAll(moveTilesMap.get(xs.get(0)).keySet());
+				
+				Integer y = ysTemp.get(0);
+
+				//horizPattern
+				
+				Shape shape1 = moveTilesMap.get(xs.get(0)).get(y).getShape();
+				Color color1 = moveTilesMap.get(xs.get(0)).get(y).getColor();
+				Shape shape2 = moveTilesMap.get(xs.get(1)).get(y).getShape();
+				
+
+				//check what is the highest and lowest x-value
+				Integer lowestX = Collections.min(moveTilesMap.keySet());
+				Integer highestX = Collections.max(moveTilesMap.keySet());
+				
+				//all tiles on board for pattern with move tiles
+				List<Tile> tilesOnBoard = new ArrayList<Tile>();	
+				
+				//tiles below lowestX
+				for (int i = lowestX; getTile(i - 1, y) != null; i--) {
+				    tilesOnBoard.add(getTile(i - 1, y));
+				}
+				
+			    //tiles between lowestX and highestX
+				for (int i = lowestX; i < highestX; i++) {
+			    	if (containsTile(i + 1, y)) {
+			    		tilesOnBoard.add(getTile(i + 1, y));
+			    	}
+			    }
+				
+			    //tiles to the right of highestX
+			    for (int i = highestX; getTile(i + 1, y) != null; i++) {
+			    	tilesOnBoard.add(getTile(i + 1, y));
+			    }
+				
+				
+				boolean isShapePattern = false;
+				if (shape1 == shape2) {
+					//only shape in common
+					isShapePattern = true;
+				}
+				
+				//check which patternList is filled and fill it up
+				if (isShapePattern) {
+					//shape pattern
+					ShapePattern movePattern = new ShapePattern(shape1);
+					for (int i = 0; i < xs.size(); i++) {
+						movePattern.addTile(moveTilesMap.get(xs.get(i)).get(y));
+					}
+					
+					//add all tiles to movePattern
+					for (Tile tile : tilesOnBoard) {
+						Pattern tilePattern = tile.getHorizPattern();
+						if (tilePattern != null) {
+							// tile has a horizPattern
+							movePattern.merge(tilePattern);
+						} else {
+							// tile has no horizPattern
+							movePattern.addTile(tile);
+						}
+					}
+					
+					//set horizPattern of boardTiles
+					for (Tile tile : tilesOnBoard) {
+						tile.setHorizPattern(movePattern);
+					}
+					
+					
 				} else {
-					//move contains multiple X and one Y (horizPattern)
+					//color pattern
+					ColorPattern movePattern = new ColorPattern(color1);
+					for (int i = 0; i < xs.size(); i++) {
+						movePattern.addTile(moveTilesMap.get(xs.get(i)).get(y));
+					}
 					
-					
-					// place all the tiles in Move on the board
-					for (Integer x : moveTilesMap.keySet()) {
-						for (Integer y : moveTilesMap.get(x).keySet()) {
-							placeTile(moveTilesMap.get(x).get(y), x, y);
+					//add all tiles to movePattern
+					for (Tile tile : tilesOnBoard) {
+						Pattern tilePattern = tile.getHorizPattern();
+						if (tilePattern != null) {
+							// tile has a horizPattern
+							movePattern.merge(tilePattern);
+						} else {
+							// tile has no horizPattern
+							movePattern.addTile(tile);
 						}
 					}
 					
-					
-					//TODO reuse duplicated code after implemented in boardChecker.java
-					//vertPattern
-					for (Integer x : moveTilesMap.keySet()) {
-						for (Integer y : moveTilesMap.get(x).keySet()) {
-							Tile thisTile = moveTilesMap.get(x).get(y);
-							
-							//Vertical patterns
-							Tile upTile = getTile(x, y + 1);
-							Tile downTile = getTile(x, y - 1);
-							
-							//check if tile can be merged with both upper and lower side
-							if (upTile != null && downTile != null) {
-								//there are upper and lower tiles
-								Pattern upPattern = upTile.getVertPattern();
-								Pattern downPattern = downTile.getVertPattern();
-								if (upPattern != null && downPattern != null) {
-									// there is upper and lower pattern
-									upPattern.merge(downPattern);
-									upPattern.addTile(thisTile);
-									thisTile.setVertPattern(upPattern);
-								} else if (upPattern != null) {
-									// there is only upper pattern
-									upPattern.addTile(thisTile);
-									upPattern.addTile(downTile);
-									thisTile.setVertPattern(upPattern);
-									downTile.setVertPattern(upPattern);
-								} else if (downPattern != null) {
-									// there is only lower pattern
-									downPattern.addTile(thisTile);
-									downPattern.addTile(upTile);
-									thisTile.setVertPattern(downPattern);
-									upTile.setVertPattern(downPattern);
-								} else {
-									// both tiles have no pattern
-									if (thisTile.getColor() == upTile.getColor()) {
-										//color pattern
-										ColorPattern colorPattern = 
-												  new ColorPattern(thisTile.getColor());
-										colorPattern.addTile(thisTile);
-										colorPattern.addTile(upTile);
-										colorPattern.addTile(downTile);
-										thisTile.setVertPattern(colorPattern);
-										upTile.setVertPattern(colorPattern);
-										downTile.setVertPattern(colorPattern);
-									} else {
-										//shape pattern
-										ShapePattern shapePattern = 
-												  new ShapePattern(thisTile.getShape());
-										shapePattern.addTile(thisTile);
-										shapePattern.addTile(upTile);
-										shapePattern.addTile(downTile);
-										thisTile.setVertPattern(shapePattern);
-										upTile.setVertPattern(shapePattern);
-										downTile.setVertPattern(shapePattern);
-									}
-								}	
-							} else if (upTile != null) {
-								//only upper tile
-								Pattern upPattern = upTile.getVertPattern();
-								if (upPattern != null) {
-									//upper tile is in a pattern
-									upPattern.addTile(thisTile);
-									thisTile.setVertPattern(upPattern);
-								} else {
-									//upper tile is not in a pattern
-									if (upTile.getColor() == thisTile.getColor()) {
-										//color pattern
-										ColorPattern colorPattern = 
-												  new ColorPattern(thisTile.getColor());
-										colorPattern.addTile(thisTile);
-										colorPattern.addTile(upTile);
-										thisTile.setVertPattern(colorPattern);
-										upTile.setVertPattern(colorPattern);
-									} else {
-										//shape pattern
-										ShapePattern shapePattern = 
-												  new ShapePattern(thisTile.getShape());
-										shapePattern.addTile(thisTile);
-										shapePattern.addTile(upTile);
-										thisTile.setVertPattern(shapePattern);
-										upTile.setVertPattern(shapePattern);
-									}
-								}
-							} else if (downTile != null) {
-								//only lower tile
-								Pattern downPattern = downTile.getVertPattern();
-								if (downPattern != null) {
-									//down tile is in a pattern
-									downPattern.addTile(thisTile);
-									thisTile.setVertPattern(downPattern);
-								} else {
-									//down tile has no pattern
-									if (downTile.getColor() == thisTile.getColor()) {
-										//color pattern
-										ColorPattern colorPattern = 
-												  new ColorPattern(thisTile.getColor());
-										colorPattern.addTile(thisTile);
-										colorPattern.addTile(downTile);
-										thisTile.setVertPattern(colorPattern);
-										downTile.setVertPattern(colorPattern);
-									} else {
-										//shape pattern
-										ShapePattern shapePattern = 
-												  new ShapePattern(thisTile.getShape());
-										shapePattern.addTile(thisTile);
-										shapePattern.addTile(downTile);
-										thisTile.setVertPattern(shapePattern);
-										downTile.setVertPattern(shapePattern);
-									}
-								}
-							} // ----end of duplicate code------
-							
-							// VERTICAL PATTERN SHOULD BE MERGED NOW
-							
-							
-						}
-					}
-						
-					
-					//horizPattern
-							
-					//make list of all x values and get the only y value
-					List<Integer> xs = new ArrayList<Integer>();
-					xs.addAll(moveTilesMap.keySet());
-					Integer y = xs.get(0);
-					
-
-					//horizPattern
-					
-					Shape shape1 = moveTilesMap.get(xs.get(0)).get(y).getShape();
-					Color color1 = moveTilesMap.get(xs.get(0)).get(y).getColor();
-					Shape shape2 = moveTilesMap.get(xs.get(1)).get(y).getShape();
-					
-
-					//check what is the highest and lowest x-value
-					Integer lowestX = Collections.min(moveTilesMap.keySet());
-					Integer highestX = Collections.max(moveTilesMap.keySet());
-					
-					//all tiles on board for pattern with move tiles
-					List<Tile> tilesOnBoard = new ArrayList<Tile>();	
-					
-					//tiles below lowestX
-					for (int i = lowestX; getTile(i - 1, y) != null; i--) {
-					    tilesOnBoard.add(getTile(i - 1, y));
+					//set horizPattern of boardTiles
+					for (Tile tile : tilesOnBoard) {
+						tile.setHorizPattern(movePattern);
 					}
 					
-				    //tiles between lowestX and highestX
-					for (int i = lowestX; i < highestX; i++) {
-				    	if (containsTile(i + 1, y)) {
-				    		tilesOnBoard.add(getTile(i + 1, y));
-				    	}
-				    }
-					
-				   // tiles to the right of highestX
-				    for (int i = highestX; getTile(i + 1, y) != null; i++) {
-				    	tilesOnBoard.add(getTile(i + 1, y));
-				    }
-					
-					
-					boolean isShapePattern = false;
-					if (shape1 == shape2) {
-						//only shape in common
-						isShapePattern = true;
-					}
-					
-					//check which patternList is filled and fill it up
-					if (isShapePattern) {
-						//shape pattern
-						ShapePattern movePattern = new ShapePattern(shape1);
-						for (int i = 0; i < xs.size(); i++) {
-							movePattern.addTile(moveTilesMap.get(xs.get(i)).get(y));
-						}
-						
-						//add all tiles to movePattern
-						for (Tile tile : tilesOnBoard) {
-							Pattern tilePattern = tile.getHorizPattern();
-							if (tilePattern != null) {
-								// tile has a horizPattern
-								movePattern.merge(tilePattern);
-							} else {
-								// tile has no horizPattern
-								movePattern.addTile(tile);
-							}
-						}
-						
-						//set horizPattern of boardTiles
-						for (Tile tile : tilesOnBoard) {
-							tile.setHorizPattern(movePattern);
-						}
-						
-						
-					} else {
-						//color pattern
-						ColorPattern movePattern = new ColorPattern(color1);
-						for (int i = 0; i < xs.size(); i++) {
-							movePattern.addTile(moveTilesMap.get(xs.get(i)).get(y));
-						}
-						
-						//add all tiles to movePattern
-						for (Tile tile : tilesOnBoard) {
-							Pattern tilePattern = tile.getHorizPattern();
-							if (tilePattern != null) {
-								// tile has a horizPattern
-								movePattern.merge(tilePattern);
-							} else {
-								// tile has no horizPattern
-								movePattern.addTile(tile);
-							}
-						}
-						
-						//set horizPattern of boardTiles
-						for (Tile tile : tilesOnBoard) {
-							tile.setHorizPattern(movePattern);
-						}
-						
-					}
-					
-					//MOVE HAS BEEN DONE AND TILE PATTERNS HAVE BEEN SET
+				
+				
+				//MOVE HAS BEEN DONE AND TILE PATTERNS HAVE BEEN SET
 
 				}
 			}
@@ -985,12 +988,15 @@ public class Board {
 						if (upTile != null) {
 							if (upTile.getVertPattern() != null) {
 								// upper tile is in a pattern
+								System.out.println("UPTILE VERTPATTERN 1X MULT Y"); //TODO REMOVE
 								if (!upTile.getVertPattern().canAddTile(thisTile)) {
 									return false;
 								}
 							} else {
 								// upper tile has no pattern
-								if (upTile.equals(thisTile)) {
+								if (upTile.equals(thisTile) 
+										  || upTile.getColor() != thisTile.getColor() 
+										    && upTile.getShape() != thisTile.getShape()) {
 									return false;
 								}
 							}
@@ -1005,7 +1011,9 @@ public class Board {
 								}
 							} else {
 								// lower tile has no pattern
-								if (downTile.equals(thisTile)) {
+								if (downTile.equals(thisTile)
+										  || downTile.getColor() != thisTile.getColor()
+										    && downTile.getShape() != thisTile.getShape()) {
 									return false;
 								}
 							}
@@ -1035,7 +1043,9 @@ public class Board {
 								}
 							} else {
 								// both tiles have no pattern
-								if (upTile.equals(downTile)) {
+								if (upTile.equals(downTile) 
+										  || upTile.getColor() != downTile.getColor() 
+										    && upTile.getShape() != downTile.getShape()) {
 									return false;
 								}
 							}	
@@ -1045,13 +1055,9 @@ public class Board {
 			
 					}
 					return true;
-				}
-			}			
-		} else {
-			// move consists of multiple tiles to be placed
-			if (placedTiles.keySet().size() == 1) {
-				// move tiles have the same X (thus vertPattern)
-				for (Integer x : placedTiles.keySet()) {
+				
+				} else {
+					//move consist of tiles with one X and multiple Y (thus vertPattern)
 					List<Integer> ys = new ArrayList<Integer>();
 					ys.addAll(placedTiles.get(x).keySet());
 					
@@ -1150,7 +1156,9 @@ public class Board {
 								}
 							} else {
 								// upper tile has no pattern
-								if (upTile.equals(thisTile)) {
+								if (upTile.equals(thisTile) 
+										  || upTile.getColor() != thisTile.getColor() 
+										    && upTile.getShape() != thisTile.getShape()) {
 									return false;
 								}
 							}
@@ -1165,7 +1173,9 @@ public class Board {
 								}
 							} else {
 								// lower tile has no pattern
-								if (downTile.equals(thisTile)) {
+								if (downTile.equals(thisTile) 
+										  || downTile.getColor() != thisTile.getColor() 
+										    && downTile.getShape() != thisTile.getShape()) {
 									return false;
 								}
 							}
@@ -1194,7 +1204,9 @@ public class Board {
 								}
 							} else {
 								// both tiles have no pattern
-								if (upTile.equals(downTile)) {
+								if (upTile.equals(downTile) 
+										  || upTile.getColor() != downTile.getColor() 
+										    && upTile.getShape() != downTile.getShape()) {
 									return false;
 								}
 							}	
@@ -1279,7 +1291,9 @@ public class Board {
 									}
 								} else {
 									// both tiles have no pattern
-									if (upTile.equals(downTile)) {
+									if (upTile.equals(downTile) 
+											  || upTile.getColor() != downTile.getColor() 
+											    && upTile.getShape() != downTile.getShape()) {
 										return false;
 									}
 								}	
@@ -1399,7 +1413,9 @@ public class Board {
 									}
 								} else {
 									// both tiles have no pattern
-									if (upTile.equals(downTile)) {
+									if (upTile.equals(downTile) 
+											  || upTile.getColor() != downTile.getColor() 
+											    && upTile.getShape() != downTile.getShape()) {
 										return false;
 									}
 								}	
@@ -1445,443 +1461,446 @@ public class Board {
 						// VERTICAL PATTERN SHOULD BE MERGABLE NOW
 					    //which means both patterns are mergeable
 					
-					}	
-				} 
-				
+					}
+				}
 				return true;
+			}			
+		} else {
+			// move tiles have multiple X's
 			
-			} else {
-				// move tiles have multiple X's
+			//check if there is only one y-value and store this value
+			Integer y = null;
+			for (Integer x : placedTiles.keySet()) {
+				List<Integer> ys = new ArrayList<Integer>();
+				ys.addAll(placedTiles.get(x).keySet());
+				y = ys.get(0);
 				
-				//check if there is only one y-value and store this value
-				Integer y = null;
-				for (Integer x : placedTiles.keySet()) {
-					List<Integer> ys = new ArrayList<Integer>();
-					ys.addAll(placedTiles.get(x).keySet());
-					y = ys.get(0);
+				for (Integer x2 : placedTiles.keySet()) {
+					List<Integer> ys2 = new ArrayList<Integer>();
+					ys2.addAll(placedTiles.get(x2).keySet());
+					Integer y2 = ys2.get(0);
 					
-					for (Integer x2 : placedTiles.keySet()) {
-						List<Integer> ys2 = new ArrayList<Integer>();
-						ys2.addAll(placedTiles.get(x2).keySet());
-						Integer y2 = ys2.get(0);
-						
-						if (y2 != y || ys.size() > 1 || ys2.size() > 1) {	
-							return false;
-						}
-					}
-				}
-				
-				//quick check if y is valid
-				if (y == null) {
-					return false;
-				}
-				
-				// ALL TILES SHOULD HAVE DIFFERENT X'S WITH THE SAME Y-VALUE (horizPattern)
-				
-				//TODO USEFULL FOR DOMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				
-				//check for shape or color pattern in hand
-				List<Integer> xs = new ArrayList<Integer>();
-				xs.addAll(placedTiles.keySet());
-				
-				Shape shape1 = placedTiles.get(xs.get(0)).get(y).getShape();
-				Color color1 = placedTiles.get(xs.get(0)).get(y).getColor();
-				
-				Shape shape2 = placedTiles.get(xs.get(1)).get(y).getShape();
-				Color color2 = placedTiles.get(xs.get(1)).get(y).getColor();
-				List<Shape> shapeList = new ArrayList<Shape>();
-				List<Color> colorList = new ArrayList<Color>();
-				
-				if (shape1 == shape2 && color1 == color2 
-						  || shape1 != shape2 && color1 != color2) {
-					//no shape or color in common OR shape and color are equal
-					//could've used tile.equals(tile) here but would cause more declaration
-					return false;
-				} else {
-					//either have a shape or a color in common
-					if (shape1 == shape2) {
-						//only shape in common
-						colorList.add(color1);
-						colorList.add(color2);
-					} else {
-						//only color in common
-						shapeList.add(shape1);
-						shapeList.add(shape2);
-					}	
-				}
-				
-				//check which patternList is filled and fill it up
-				if (shapeList.isEmpty()) {
-					//shape pattern
-					for (int i = 2; i < xs.size(); i++) {
-						Color colorI = placedTiles.get(xs.get(i)).get(y).getColor(); 
-						if (!colorList.contains(colorI)) {
-							// list does not contain that color yet
-							colorList.add(colorI);
-						} else {
-							// list contains color therefore cannot make a pattern
-							return false;
-						}
-					}
-				} else {
-					//color pattern
-					for (int i = 2; i < xs.size(); i++) {
-						Shape shapeI = placedTiles.get(xs.get(i)).get(y).getShape();
-						if (!shapeList.contains(shapeI)) {
-							// list does not contain that shape yet
-							shapeList.add(shapeI);
-						} else {
-							// list contains that shape therefore cannot make a pattern
-							return false;
-						}
-					}
-				}
-				
-				// THERE EXISTS EITHER A SHAPE OR COLOR PATTERN IN THE HAND
-				
-				//check what is the highest and lowest x-value
-				Integer lowestX = Collections.min(placedTiles.keySet());
-				Integer highestX = Collections.max(placedTiles.keySet());
-				
-				//check if difference x-difference is not too high
-				if (Math.abs(highestX - lowestX) > 5) {
-					return false;
-				}
-				
-				
-				//check for gaps between the lowest and highest x-value
-				for (int i = lowestX + 1; i < highestX; i++) {
-					if (!containsTile(i, y) && !placedTiles.containsKey(i)) {
+					if (y2 != y || ys.size() > 1 || ys2.size() > 1) {	
 						return false;
 					}
 				}
-				
-				// THE PLACED TILES ARE CONNECTED, THUS NO GAPS
-				
-				//TODO reuse duplicated code after implemented in boardChecker.java
-				
-				//------------------------check horizontalPattern DUPLICATE----------------------
-				//check if individual tiles can be merged with horizontal patterns
-				for (Integer x : placedTiles.keySet()) {
-					Tile thisTile = placedTiles.get(x).get(y);
-					
-					//Horizontal patterns
-					Tile leftTile = getTile(x - 1, y);
-					Tile rightTile = getTile(x + 1, y);
-					
-					//check if individual tile can be merged with left side
-					if (leftTile != null) {
-						if (leftTile.getHorizPattern() != null) {
-							// left tile is in a pattern
-							if (!leftTile.getHorizPattern().canAddTile(thisTile)) {
-								return false;
-							} 
-						} else {
-							//left tile has no pattern
-							if (leftTile.equals(thisTile) 
-									  || leftTile.getColor() != thisTile.getColor() 
-									    && leftTile.getShape() != thisTile.getShape()) {
-								return false;
-							}
-						}	
+			}
+			
+			//quick check if y is valid
+			if (y == null) {
+				return false;
+			}
+			
+			// ALL TILES SHOULD HAVE DIFFERENT X'S WITH THE SAME Y-VALUE (horizPattern)
+			
+			//TODO USEFULL FOR DOMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			//check for shape or color pattern in hand
+			List<Integer> xs = new ArrayList<Integer>();
+			xs.addAll(placedTiles.keySet());
+			
+			Shape shape1 = placedTiles.get(xs.get(0)).get(y).getShape();
+			Color color1 = placedTiles.get(xs.get(0)).get(y).getColor();
+			
+			Shape shape2 = placedTiles.get(xs.get(1)).get(y).getShape();
+			Color color2 = placedTiles.get(xs.get(1)).get(y).getColor();
+			List<Shape> shapeList = new ArrayList<Shape>();
+			List<Color> colorList = new ArrayList<Color>();
+			
+			if (shape1 == shape2 && color1 == color2 
+					  || shape1 != shape2 && color1 != color2) {
+				//no shape or color in common OR shape and color are equal
+				//could've used tile.equals(tile) here but would cause more declaration
+				return false;
+			} else {
+				//either have a shape or a color in common
+				if (shape1 == shape2) {
+					//only shape in common
+					colorList.add(color1);
+					colorList.add(color2);
+				} else {
+					//only color in common
+					shapeList.add(shape1);
+					shapeList.add(shape2);
+				}	
+			}
+			
+			//check which patternList is filled and fill it up
+			if (shapeList.isEmpty()) {
+				//shape pattern
+				for (int i = 2; i < xs.size(); i++) {
+					Color colorI = placedTiles.get(xs.get(i)).get(y).getColor(); 
+					if (!colorList.contains(colorI)) {
+						// list does not contain that color yet
+						colorList.add(colorI);
+					} else {
+						// list contains color therefore cannot make a pattern
+						return false;
 					}
-					//check if individual tile can be merged with right side
-					if (rightTile != null) {
-						if (rightTile.getHorizPattern() != null) {
-							// right tile is in a pattern
-							if (!rightTile.getHorizPattern().canAddTile(thisTile)) {
+				}
+			} else {
+				//color pattern
+				for (int i = 2; i < xs.size(); i++) {
+					Shape shapeI = placedTiles.get(xs.get(i)).get(y).getShape();
+					if (!shapeList.contains(shapeI)) {
+						// list does not contain that shape yet
+						shapeList.add(shapeI);
+					} else {
+						// list contains that shape therefore cannot make a pattern
+						return false;
+					}
+				}
+			}
+			
+			// THERE EXISTS EITHER A SHAPE OR COLOR PATTERN IN THE HAND
+			
+			//check what is the highest and lowest x-value
+			Integer lowestX = Collections.min(placedTiles.keySet());
+			Integer highestX = Collections.max(placedTiles.keySet());
+			
+			//check if difference x-difference is not too high
+			if (Math.abs(highestX - lowestX) > 5) {
+				return false;
+			}
+			
+			
+			//check for gaps between the lowest and highest x-value
+			for (int i = lowestX + 1; i < highestX; i++) {
+				if (!containsTile(i, y) && !placedTiles.containsKey(i)) {
+					return false;
+				}
+			}
+			
+			// THE PLACED TILES ARE CONNECTED, THUS NO GAPS
+			
+			//TODO reuse duplicated code after implemented in boardChecker.java
+			
+			//------------------------check horizontalPattern DUPLICATE----------------------
+			//check if individual tiles can be merged with horizontal patterns
+			for (Integer x : placedTiles.keySet()) {
+				Tile thisTile = placedTiles.get(x).get(y);
+				
+				//Horizontal patterns
+				Tile leftTile = getTile(x - 1, y);
+				Tile rightTile = getTile(x + 1, y);
+				
+				//check if individual tile can be merged with left side
+				if (leftTile != null) {
+					if (leftTile.getHorizPattern() != null) {
+						// left tile is in a pattern
+						if (!leftTile.getHorizPattern().canAddTile(thisTile)) {
+							return false;
+						} 
+					} else {
+						//left tile has no pattern
+						if (leftTile.equals(thisTile) 
+								  || leftTile.getColor() != thisTile.getColor() 
+								    && leftTile.getShape() != thisTile.getShape()) {
+							return false;
+						}
+					}	
+				}
+				//check if individual tile can be merged with right side
+				if (rightTile != null) {
+					if (rightTile.getHorizPattern() != null) {
+						// right tile is in a pattern
+						if (!rightTile.getHorizPattern().canAddTile(thisTile)) {
+							return false;
+						}
+					} else {
+						// right tile has no pattern
+						if (rightTile.equals(thisTile) 
+								  || rightTile.getColor() != thisTile.getColor() 
+								    && rightTile.getShape() != thisTile.getShape()) {
+							return false;
+						}
+					}
+				}
+				//check if tile can merge with both left and right side
+				if (leftTile != null && rightTile != null) {
+						
+					Pattern leftPattern = leftTile.getHorizPattern();
+					Pattern rightPattern = rightTile.getHorizPattern();
+					if (leftPattern != null && rightPattern != null) {
+						// there is left and right pattern
+						if (!leftPattern.canMerge(rightPattern) || 
+								  leftPattern.getSize() + rightPattern.getSize() > 5) {
+							return false;
+						}
+					} else if (leftPattern != null) {
+						// there is only left pattern
+						if (!leftPattern.canAddTile(rightTile) || 
+								  leftPattern.getSize() > 4) {
+							return false;
+						}
+					} else if (rightPattern != null) {
+						// there is only right pattern
+						if (!rightPattern.canAddTile(leftTile) || 
+								  rightPattern.getSize() > 4) {
+							return false;
+						}
+					} else {
+						// both tiles have no pattern
+						if (leftTile.equals(rightTile) || 
+								  rightTile.getColor() != leftTile.getColor() 
+								  && rightTile.getShape() != leftTile.getShape()) {
+							return false;
+						}
+					}
+				}
+			} //-----------------end of duplicate code----------------------------------
+		
+			
+			// HORIZONTAL PATTERN SHOULD BE MERGABLE NOW
+			
+			
+			
+			//check which patternList is fully filled and make it into a Pattern
+			if (shapeList.isEmpty()) {
+				//colorList is filled so shape pattern
+				ShapePattern movePattern = new ShapePattern(shape1);
+				for (int i = 0; i < xs.size(); i++) {
+					movePattern.addTile(placedTiles.get(xs.get(i)).get(y));
+				}
+				
+				// ALL MOVE TILES ARE IN A SHAPEPATTERN
+				
+				
+				for (Integer x : placedTiles.keySet()) {
+					//Vertical patterns
+					//--Tile thisTile = placedTiles.get(x).get(y);
+					Tile upTile = getTile(x, y + 1);
+					Tile downTile = getTile(x, y - 1);
+					
+					// check if movePattern can be merged with upper tile
+					if (upTile != null) {
+						if (upTile.getVertPattern() != null) {
+							// upper tile is in a pattern
+							if (!upTile.getVertPattern().canMerge(movePattern)) {
 								return false;
 							}
 						} else {
-							// right tile has no pattern
-							if (rightTile.equals(thisTile) 
-									  || rightTile.getColor() != thisTile.getColor() 
-									    && rightTile.getShape() != thisTile.getShape()) {
+							// upper tile has no pattern
+							if (!movePattern.canAddTile(upTile)) {
 								return false;
 							}
 						}
 					}
-					//check if tile can merge with both left and right side
-					if (leftTile != null && rightTile != null) {
-							
-						Pattern leftPattern = leftTile.getHorizPattern();
-						Pattern rightPattern = rightTile.getHorizPattern();
-						if (leftPattern != null && rightPattern != null) {
-							// there is left and right pattern
-							if (!leftPattern.canMerge(rightPattern) || 
-									  leftPattern.getSize() + rightPattern.getSize() > 5) {
+					
+					// check if movePattern can be merged with lower tile
+					if (downTile != null) {
+						if (downTile.getVertPattern() != null) {
+							// lower tile is in a pattern
+							if (!downTile.getVertPattern().canMerge(movePattern)) {
 								return false;
 							}
-						} else if (leftPattern != null) {
-							// there is only left pattern
-							if (!leftPattern.canAddTile(rightTile) || 
-									  leftPattern.getSize() > 4) {
+						} else {
+							// lower tile has no pattern
+							if (movePattern.canAddTile(downTile)) {
 								return false;
 							}
-						} else if (rightPattern != null) {
-							// there is only right pattern
-							if (!rightPattern.canAddTile(leftTile) || 
-									  rightPattern.getSize() > 4) {
+						}
+					}
+					
+					//check if movePattern can be merged with both upper and lower side
+					if (upTile != null && downTile != null) {
+						
+						Pattern upPattern = upTile.getVertPattern();
+						Pattern downPattern = downTile.getVertPattern();
+						if (upPattern != null && downPattern != null) {
+							// there is upper and lower pattern
+							if (!upPattern.canMerge(downPattern) || 
+									  upPattern.getSize() + downPattern.getSize() > 5) {
+								return false;
+							}
+						} else if (upPattern != null) {
+							// there is only upper pattern
+							if (!upPattern.canAddTile(downTile) 
+									  || upPattern.getSize() > 4) {
+								return false;
+							}
+						} else if (downPattern != null) {
+							// there is only lower pattern
+							if (!downPattern.canAddTile(upTile) 
+									  || downPattern.getSize() > 4) {
 								return false;
 							}
 						} else {
 							// both tiles have no pattern
-							if (leftTile.equals(rightTile) || 
-									  rightTile.getColor() != leftTile.getColor() 
-									  && rightTile.getShape() != leftTile.getShape()) {
+							if (upTile.equals(downTile)
+									  || upTile.getColor() != downTile.getColor() 
+									    && upTile.getShape() != downTile.getShape()) {
 								return false;
 							}
 						}
 					}
-				} //-----------------end of duplicate code----------------------------------
-			
-				
-				// HORIZONTAL PATTERN SHOULD BE MERGABLE NOW
-				
-				
-				
-				//check which patternList is fully filled and make it into a Pattern
-				if (shapeList.isEmpty()) {
-					//colorList is filled so shape pattern
-					ShapePattern movePattern = new ShapePattern(shape1);
-					for (int i = 0; i < xs.size(); i++) {
-						movePattern.addTile(placedTiles.get(xs.get(i)).get(y));
-					}
-					
-					// ALL MOVE TILES ARE IN A SHAPEPATTERN
-					
-					
-					for (Integer x : placedTiles.keySet()) {
-						//Vertical patterns
-						//--Tile thisTile = placedTiles.get(x).get(y);
-						Tile upTile = getTile(x, y + 1);
-						Tile downTile = getTile(x, y - 1);
-						
-						// check if movePattern can be merged with upper tile
-						if (upTile != null) {
-							if (upTile.getVertPattern() != null) {
-								// upper tile is in a pattern
-								if (!upTile.getVertPattern().canMerge(movePattern)) {
-									return false;
-								}
-							} else {
-								// upper tile has no pattern
-								if (!movePattern.canAddTile(upTile)) {
-									return false;
-								}
-							}
-						}
-						
-						// check if movePattern can be merged with lower tile
-						if (downTile != null) {
-							if (downTile.getVertPattern() != null) {
-								// lower tile is in a pattern
-								if (!downTile.getVertPattern().canMerge(movePattern)) {
-									return false;
-								}
-							} else {
-								// lower tile has no pattern
-								if (movePattern.canAddTile(downTile)) {
-									return false;
-								}
-							}
-						}
-						
-						//check if movePattern can be merged with both upper and lower side
-						if (upTile != null && downTile != null) {
-							
-							Pattern upPattern = upTile.getVertPattern();
-							Pattern downPattern = downTile.getVertPattern();
-							if (upPattern != null && downPattern != null) {
-								// there is upper and lower pattern
-								if (!upPattern.canMerge(downPattern) || 
-										  upPattern.getSize() + downPattern.getSize() > 5) {
-									return false;
-								}
-							} else if (upPattern != null) {
-								// there is only upper pattern
-								if (!upPattern.canAddTile(downTile) 
-										  || upPattern.getSize() > 4) {
-									return false;
-								}
-							} else if (downPattern != null) {
-								// there is only lower pattern
-								if (!downPattern.canAddTile(upTile) 
-										  || downPattern.getSize() > 4) {
-									return false;
-								}
-							} else {
-								// both tiles have no pattern
-								if (upTile.equals(downTile)) {
-									return false;
-								}
-							}
-						}
-					}
-						
-					//TODO reuse duplicated code after implemented in boardChecker.java
-					
-					//---------------------duplicatable code------------------------------
-					
-					
-					//all tiles on board for pattern with move tiles
-					List<Tile> tilesOnBoard = new ArrayList<Tile>();	
-					
-					//tiles below lowestX
-					for (int i = lowestX; getTile(i - 1, y) != null; i--) {
-					    tilesOnBoard.add(getTile(i - 1, y));
-					}
-					
-				   //tiles between lowestX and highestX
-					for (int i = lowestX; i < highestX; i++) {
-				    	if (containsTile(i + 1, y)) {
-				    		tilesOnBoard.add(getTile(i + 1, y));
-				    	}
-				    }
-					
-				   // tiles to the right of highestX
-				    for (int i = highestX; getTile(i + 1, y) != null; i++) {
-				    	tilesOnBoard.add(getTile(i + 1, y));
-				    }
-					
-				    // check if movePatttern is mergeable tiles on deck
-				    for (Tile boardTile : tilesOnBoard) {
-				    	if (!movePattern.canAddTile(boardTile)) {
-				    		return false;
-				    	}
-				    	movePattern.addTile(boardTile);
-				    }
-					
-					
-					
-					
-					//---------------------end of duplicate code---------------------------
-					
-					// VERTICAL PATTERN SHOULD BE MERGABLE NOW
-					//which means that both patterns are mergeable
-					
-					
-					
-					
-					
-				} else {
-					//colorList is empty so ColorPattern
-					ColorPattern movePattern = new ColorPattern(color1);
-					for (int i = 0; i < xs.size(); i++) {
-						movePattern.addTile(placedTiles.get(xs.get(i)).get(y));
-					}
-					
-					// ALL MOVE TILES ARE IN A COLORPATTERN
-					
-					
-					for (Integer x : placedTiles.keySet()) {
-						//Vertical patterns
-						//--Tile thisTile = placedTiles.get(x).get(y);
-						Tile upTile = getTile(x, y + 1);
-						Tile downTile = getTile(x, y - 1);
-						
-						// check if movePattern can be merged with upper tile
-						if (upTile != null) {
-							if (upTile.getVertPattern() != null) {
-								// upper tile is in a pattern
-								if (!upTile.getVertPattern().canMerge(movePattern)) {
-									return false;
-								}
-							} else {
-								// upper tile has no pattern
-								if (!movePattern.canAddTile(upTile)) {
-									return false;
-								}
-							}
-						}
-						
-						// check if movePattern can be merged with lower tile
-						if (downTile != null) {
-							if (downTile.getVertPattern() != null) {
-								// lower tile is in a pattern
-								if (!downTile.getVertPattern().canMerge(movePattern)) {
-									return false;
-								}
-							} else {
-								// lower tile has no pattern
-								if (movePattern.canAddTile(downTile)) {
-									return false;
-								}
-							}
-						}
-						
-						//check if movePattern can be merged with both upper and lower side
-						if (upTile != null && downTile != null) {
-							
-							Pattern upPattern = upTile.getVertPattern();
-							Pattern downPattern = downTile.getVertPattern();
-							if (upPattern != null && downPattern != null) {
-								// there is upper and lower pattern
-								if (!upPattern.canMerge(downPattern) || 
-										  upPattern.getSize() + downPattern.getSize() > 5) {
-									return false;
-								}
-							} else if (upPattern != null) {
-								// there is only upper pattern
-								if (!upPattern.canAddTile(downTile) 
-										  || upPattern.getSize() > 4) {
-									return false;
-								}
-							} else if (downPattern != null) {
-								// there is only lower pattern
-								if (!downPattern.canAddTile(upTile) 
-										  || downPattern.getSize() > 4) {
-									return false;
-								}
-							} else {
-								// both tiles have no pattern
-								if (upTile.equals(downTile)) {
-									return false;
-								}
-							}
-						}
-					}
-					
-					
-					//TODO reuse duplicated code after implemented in boardChecker.java
-					
-					//---------duplicate code-------------------------------------------------
-					
-					//all tiles on board for pattern with move tiles
-					List<Tile> tilesOnBoard = new ArrayList<Tile>();	
-					
-					//tiles below lowestX
-					for (int i = lowestX; getTile(i - 1, y) != null; i--) {
-					    tilesOnBoard.add(getTile(i - 1, y));
-					}
-					
-				   //tiles between lowestX and highestX
-					for (int i = lowestX; i < highestX; i++) {
-				    	if (containsTile(i + 1, y)) {
-				    		tilesOnBoard.add(getTile(i + 1, y));
-				    	}
-				    }
-					
-				   // tiles to the right of highestX
-				    for (int i = highestX; getTile(i + 1, y) != null; i++) {
-				    	tilesOnBoard.add(getTile(i + 1, y));
-				    }
-					
-				    // check if movePatttern is mergeable tiles on deck
-				    for (Tile boardTile : tilesOnBoard) {
-				    	if (!movePattern.canAddTile(boardTile) 
-				    			  || movePattern.getSize() + tilesOnBoard.size() > 6) {
-				    		return false;
-				    	}
-				    	movePattern.addTile(boardTile);
-				    }
-	
-					//----------------end of duplicate code------------------------
-					
-					// VERTICAL PATTERN SHOULD BE MERGABLE NOW
-					//which means that both patterns are mergeable
-					
 				}
+					
+				//TODO reuse duplicated code after implemented in boardChecker.java
+				
+				//---------------------duplicatable code------------------------------
+				
+				
+				//all tiles on board for pattern with move tiles
+				List<Tile> tilesOnBoard = new ArrayList<Tile>();	
+				
+				//tiles below lowestX
+				for (int i = lowestX; getTile(i - 1, y) != null; i--) {
+				    tilesOnBoard.add(getTile(i - 1, y));
+				}
+				
+			   //tiles between lowestX and highestX
+				for (int i = lowestX; i < highestX; i++) {
+			    	if (containsTile(i + 1, y)) {
+			    		tilesOnBoard.add(getTile(i + 1, y));
+			    	}
+			    }
+				
+			   // tiles to the right of highestX
+			    for (int i = highestX; getTile(i + 1, y) != null; i++) {
+			    	tilesOnBoard.add(getTile(i + 1, y));
+			    }
+				
+			    // check if movePatttern is mergeable tiles on deck
+			    for (Tile boardTile : tilesOnBoard) {
+			    	if (!movePattern.canAddTile(boardTile)) {
+			    		return false;
+			    	}
+			    	movePattern.addTile(boardTile);
+			    }
+				
+				
+				
+				
+				//---------------------end of duplicate code---------------------------
+				
+				// VERTICAL PATTERN SHOULD BE MERGABLE NOW
+				//which means that both patterns are mergeable
+				
+				
+				
+				
+				
+			} else {
+				//colorList is empty so ColorPattern
+				ColorPattern movePattern = new ColorPattern(color1);
+				for (int i = 0; i < xs.size(); i++) {
+					movePattern.addTile(placedTiles.get(xs.get(i)).get(y));
+				}
+				
+				// ALL MOVE TILES ARE IN A COLORPATTERN
+				
+				
+				for (Integer x : placedTiles.keySet()) {
+					//Vertical patterns
+					//--Tile thisTile = placedTiles.get(x).get(y);
+					Tile upTile = getTile(x, y + 1);
+					Tile downTile = getTile(x, y - 1);
+					
+					// check if movePattern can be merged with upper tile
+					if (upTile != null) {
+						if (upTile.getVertPattern() != null) {
+							// upper tile is in a pattern
+							if (!upTile.getVertPattern().canMerge(movePattern)) {
+								return false;
+							}
+						} else {
+							// upper tile has no pattern
+							if (!movePattern.canAddTile(upTile)) {
+								return false;
+							}
+						}
+					}
+					
+					// check if movePattern can be merged with lower tile
+					if (downTile != null) {
+						if (downTile.getVertPattern() != null) {
+							// lower tile is in a pattern
+							if (!downTile.getVertPattern().canMerge(movePattern)) {
+								return false;
+							}
+						} else {
+							// lower tile has no pattern
+							if (movePattern.canAddTile(downTile)) {
+								return false;
+							}
+						}
+					}
+					
+					//check if movePattern can be merged with both upper and lower side
+					if (upTile != null && downTile != null) {
+						
+						Pattern upPattern = upTile.getVertPattern();
+						Pattern downPattern = downTile.getVertPattern();
+						if (upPattern != null && downPattern != null) {
+							// there is upper and lower pattern
+							if (!upPattern.canMerge(downPattern) || 
+									  upPattern.getSize() + downPattern.getSize() > 5) {
+								return false;
+							}
+						} else if (upPattern != null) {
+							// there is only upper pattern
+							if (!upPattern.canAddTile(downTile) 
+									  || upPattern.getSize() > 4) {
+								return false;
+							}
+						} else if (downPattern != null) {
+							// there is only lower pattern
+							if (!downPattern.canAddTile(upTile) 
+									  || downPattern.getSize() > 4) {
+								return false;
+							}
+						} else {
+							// both tiles have no pattern
+							if (upTile.equals(downTile) 
+									  || upTile.getColor() != downTile.getColor() 
+									    && upTile.getShape() != downTile.getShape()) {
+								return false;
+							}
+						}
+					}
+				}
+				
+				
+				//TODO reuse duplicated code after implemented in boardChecker.java
+				
+				//---------duplicate code-------------------------------------------------
+				
+				//all tiles on board for pattern with move tiles
+				List<Tile> tilesOnBoard = new ArrayList<Tile>();	
+				
+				//tiles below lowestX
+				for (int i = lowestX; getTile(i - 1, y) != null; i--) {
+				    tilesOnBoard.add(getTile(i - 1, y));
+				}
+				
+			   //tiles between lowestX and highestX
+				for (int i = lowestX; i < highestX; i++) {
+			    	if (containsTile(i + 1, y)) {
+			    		tilesOnBoard.add(getTile(i + 1, y));
+			    	}
+			    }
+				
+			   // tiles to the right of highestX
+			    for (int i = highestX; getTile(i + 1, y) != null; i++) {
+			    	tilesOnBoard.add(getTile(i + 1, y));
+			    }
+				
+			    // check if movePatttern is mergeable tiles on deck
+			    for (Tile boardTile : tilesOnBoard) {
+			    	if (!movePattern.canAddTile(boardTile) 
+			    			  || movePattern.getSize() + tilesOnBoard.size() > 6) {
+			    		return false;
+			    	}
+			    	movePattern.addTile(boardTile);
+			    }
+
+				//----------------end of duplicate code------------------------
+				
+				// VERTICAL PATTERN SHOULD BE MERGABLE NOW
+				//which means that both patterns are mergeable
+					
+		
 			}	
 		}
 		
