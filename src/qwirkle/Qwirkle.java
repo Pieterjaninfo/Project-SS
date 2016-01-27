@@ -150,7 +150,7 @@ public class Qwirkle implements Runnable {
 		currentPlayer = determineFirstMove();
 		firstMove = true;
 		do {
-			if (!board.canPlaceATile(currentPlayer.getHand())) {
+			if (!board.canPlaceATile(currentPlayer.getHand()) && bag.getSize() != 0) {
 				clientPlayerMap.get(currentPlayer).pass(clients);
 			} else {
 				clientPlayerMap.get(currentPlayer).turn(clients);

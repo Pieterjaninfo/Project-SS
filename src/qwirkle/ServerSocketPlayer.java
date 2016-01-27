@@ -103,6 +103,7 @@ public class ServerSocketPlayer implements Player {
 				if (moveTile.equals(handVTiles) && !had.contains(handVTiles)) {
 					had.add(handVTiles);
 					i++;
+					break;
 				}
 			}
 		}
