@@ -152,14 +152,17 @@ public class HumanPlayer implements Player {
 	public boolean tilesInHand(Move move) {
 		List<Tile> moveTiles = move.getTileList();
 		Vector<Tile> handV = new Vector<Tile>(getHand());
+		List<Tile> had = new ArrayList<Tile>();
+		int i = 0;
 		for (Tile moveTile : moveTiles) {
-			if (handV.contains(moveTile)) {
-				handV.remove(moveTile);
-			} else {
-				return false;
+			for (Tile handVTiles : handV) {
+				if (moveTile.equals(handVTiles) && !had.contains(handVTiles)) {
+					had.add(handVTiles);
+					i++;
+				}
 			}
 		}
-		return true;
+		return i == moveTiles.size();
 	}
 	
 	@Override
@@ -178,6 +181,7 @@ public class HumanPlayer implements Player {
 			for (int i = 0; i < 6; i++) {
 				if (getHand().get(i).equals(tile)) {
 					temp.add(getHand().get(i));
+					break;
 				}
 			}
 		}
