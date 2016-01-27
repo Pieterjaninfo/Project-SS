@@ -168,7 +168,7 @@ public class Server implements Runnable {
     	for (ClientHandler a : threadsCopy) {
     		if (threadsCopy.isEmpty()) {
     			return false;
-    		} else if (a.getName().equals(name)) {
+    		} else if (name.equals(a.getName())) {
     			return true;
     		}
     		
