@@ -143,7 +143,26 @@ public class Board {
 		return false;
 	}
 	
-	
+	/**
+	 * Checks if any of the tiles in the move is connected to the tiles on the board. 
+	 * @return true if at least one move tile is connected to the board
+	 */
+	//@ requires move != null;
+	public boolean isMoveConnected(Move move) {
+		//check if one tile of move is connected
+		boolean result = false;
+		//loop through all moves
+		for (Integer x : move.getTiles().keySet()) {
+			for (Integer y : move.getTiles().get(x).keySet()) {
+				if (containsTile(x - 1, y) || containsTile(x + 1, y) 
+						  || containsTile(x, y - 1) || containsTile(x, y + 1)) {
+					result = true;	
+				}
+			}
+		}
+		
+		return result;
+	}
 	
 	
 	
@@ -897,19 +916,9 @@ public class Board {
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
 		
 		
-		//check if one tile of move is connected
-		boolean isConnected = false;
-		//loop through all moves
-		for (Integer x : move.getTiles().keySet()) {
-			for (Integer y : move.getTiles().get(x).keySet()) {
-				if (containsTile(x - 1, y) || containsTile(x + 1, y) 
-						  || containsTile(x, y - 1) || containsTile(x, y + 1)) {
-					isConnected = true;	
-				}
-			}
-		}
+		
 		//check if at least one tile is connected when there are tiles on the board
-		if (getBoardSize() > 0 && !isConnected) {
+		if (getBoardSize() > 0 && isMoveConnected(move)) {
 			return false;
 		}
 		
