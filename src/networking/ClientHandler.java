@@ -64,6 +64,7 @@ public class ClientHandler implements Runnable {
 					break;
 				}
 				if (input.startsWith(CLIENT_QUIT)) {
+					game.quit();
 					break;
 				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
 					if (input.length() <= CLIENT_IDENTIFY.length()) {
@@ -95,6 +96,7 @@ public class ClientHandler implements Runnable {
 				} else {
 					error(Error.ILLEGAL_STATE);
 				}
+				// wait for a bit to relief the cpu.
 				Thread.sleep(100);
 			}
 		} catch (IOException e) {
@@ -221,12 +223,17 @@ public class ClientHandler implements Runnable {
     	gameBroadcast(gameClients, SERVER_MOVE_TRADE + ammount);
     }
     
-    public void gameEnd() {
-    	sendMessage(SERVER_GAMEEND);
+    public void gameEnd(String results) {
+    	if (results != null) {
+    		sendMessage(SERVER_GAMEEND + results);
+    	} else {
+    		sendMessage(SERVER_GAMEEND + "ERROR");
+    	}
+    	
     }
     
-    public void pass() {
-    	sendMessage(SERVER_PASS + getName());
+    public void pass(List<ClientHandler> players) {
+    	gameBroadcast(players, SERVER_PASS + " " + getName());
     }
     
     public void drawTile(String tileList) {

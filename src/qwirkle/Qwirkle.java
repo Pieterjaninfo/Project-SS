@@ -141,7 +141,7 @@ public class Qwirkle implements Runnable{
 			player.setStartingHand(startingHand);
 			String send = "";
 			for (Tile tile : startingHand) {
-				send = String.format("%s %s", send, tile.toCodedString());
+				send = String.format("%s %s", send, tileToCode(tile));
 			}
 			clientPlayerMap.get(player).drawTile(send);
 		}
@@ -149,25 +149,25 @@ public class Qwirkle implements Runnable{
 		firstMove = true;
 		do {
 			clientPlayerMap.get(currentPlayer).turn(clients);
-			if (board.canPlaceATile(currentPlayer.getHand())) {
-				clientPlayerMap.get(currentPlayer).pass();
+			if (!board.canPlaceATile(currentPlayer.getHand())) {
+				clientPlayerMap.get(currentPlayer).pass(clients);
 			}
 			synchronized (object) {
 				try {
-					object.wait(); // TODO might not work test needed
-					System.out.println("wait started"); //TODO remove
+					object.wait(); // TODO seems to work!!
 
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("end wait"); //TODO remove
 			}
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());
 		} while (!gameOver()); 
+		String results = "";
 		//TODO send the scores for each player.
-		clientPlayerMap.get(currentPlayer).gameEnd();
+
+		clientPlayerMap.get(currentPlayer).gameEnd(results);
 	}
 	
 	
@@ -232,16 +232,20 @@ public class Qwirkle implements Runnable{
 			currentPlayer.removeTile(moves.getTileList());
 			List<Tile> newTiles = bag.getTiles(moves.getTileList().size());
 			currentPlayer.addTile(newTiles);
-			clientPlayerMap.get(currentPlayer).movePutOk(clients, moves.toCode());
+			clientPlayerMap.get(currentPlayer).movePutOk(clients, moves.toMoveServerCode(this));
 			
 			String drawString = "";
 			for (Tile a : newTiles) {
-				drawString = String.format("%s %s", drawString, a.toCodedString());
+				drawString = String.format("%s %s", drawString, tileToCode(a));
 			}
 			clientPlayerMap.get(currentPlayer).drawTile(drawString);
 			//object.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
+		}
+		firstMove = false;
+		synchronized (object) {
+			object.notifyAll(); // TODO check
 		}
 	}
 	
@@ -268,12 +272,15 @@ public class Qwirkle implements Runnable{
 			
 			String newTileString = "";
 			for (Tile a : newTiles) {
-				newTileString = String.format("%s %s", newTileString, a.toCodedString());
+				newTileString = String.format("%s %s", newTileString, tileToCode(a));
 			}
 			clientPlayerMap.get(currentPlayer).drawTile(newTileString);
 			//object.notifyAll(); // TODO might not work test needed
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
+		}
+		synchronized (object) {
+			object.notifyAll(); // TODO check
 		}
 	}
 	
@@ -325,5 +332,16 @@ public class Qwirkle implements Runnable{
 			}
 		} 
 		return false;
+	}
+	
+	/**
+	 * Function that tells the other players in the game that somebody quit.
+	 * @param name
+	 */
+	public void quit() {
+		for (ClientHandler client : clients) {
+			client.gameEnd(null);
+		}
+		
 	}
 }

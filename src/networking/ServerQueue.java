@@ -64,11 +64,15 @@ public class ServerQueue implements Runnable {
 				String names = "";
 				for (ClientHandler client : players) {
 					names = String.format("%s %s", names, client.getName());
+				}
+				for (ClientHandler client : players) {
+					
 					client.gameStart(names, game);
 				}
 				(new Thread(game)).start();
 			}
 			try {
+				// wait for a bit to relief the cpu.
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

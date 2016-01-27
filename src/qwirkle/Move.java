@@ -76,4 +76,16 @@ public class Move {
 		}
 		return result;		
 	}
+	
+	public String toMoveServerCode(Qwirkle game) {
+		String result = "";
+		for (Integer x : getTiles().keySet()) {
+			for (Integer y : getTiles().get(x).keySet()) {
+				String temp = String.format("%s@%d,%d",
+						  game.tileToCode(getTiles().get(x).get(y)), x, y);
+				result = String.format("%s %s", result, temp);
+			}
+		}
+		return result;		
+	}
 }

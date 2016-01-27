@@ -9,6 +9,7 @@ public class ServerSocketPlayer implements Player{
 	private Qwirkle game;
 	private String playerName;
 	private List<Tile> hand;
+	private Tile handTiles;
 	
 	public ServerSocketPlayer(String name, Qwirkle game) {
 		this.game = game;
@@ -101,14 +102,17 @@ public class ServerSocketPlayer implements Player{
 	public boolean tilesInHand(Move move) {
 		List<Tile> moveTiles = move.getTileList();
 		Vector<Tile> handV = new Vector<Tile>(getHand());
+		List<Tile> had = new ArrayList<Tile>();
+		int i = 0;
 		for (Tile moveTile : moveTiles) {
-			if (handV.contains(moveTile)) {
-				handV.remove(moveTile);
-			} else {
-				return false;
+			for (Tile handVTiles : handV) {
+				if (moveTile.equals(handVTiles) && !had.contains(handVTiles)) {
+					had.add(handVTiles);
+					i++;
+				}
 			}
 		}
-		return true;
+		return i == moveTiles.size();
 	}
 
 	@Override
