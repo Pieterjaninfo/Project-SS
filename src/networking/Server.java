@@ -153,6 +153,7 @@ public class Server implements Runnable {
 	 */
 	//@ requires handler != null;
     public void removeHandler(ClientHandler handler) {
+    	queue.removeClient(handler);
     	threads.remove(handler);
     }
     
