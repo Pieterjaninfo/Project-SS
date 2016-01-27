@@ -51,14 +51,23 @@ public class ServerQueue implements Runnable {
 				players = new Vector<ClientHandler>(fourPlayer.subList(0, 4));
 				game = new Qwirkle(players);
 				fourPlayer.removeAll(players);
+				threePlayer.removeAll(players);
+				twoPlayer.removeAll(players);
+
 			} else if (threePlayer.size() >= 3) {
 				players = new Vector<ClientHandler>(threePlayer.subList(0, 3));
 				game = new Qwirkle(players);
 				threePlayer.removeAll(players);
+				fourPlayer.removeAll(players);
+				twoPlayer.removeAll(players);
+
 			} else if (twoPlayer.size() >= 2) {
 				players = new Vector<ClientHandler>(twoPlayer.subList(0, 2));
 				game = new Qwirkle(players);
 				twoPlayer.removeAll(players);
+				fourPlayer.removeAll(players);
+				threePlayer.removeAll(players);
+
 			}
 			if (players != null && game != null) {
 				String names = "";
@@ -90,5 +99,11 @@ public class ServerQueue implements Runnable {
     		return fourPlayer.contains(client);
     	}
 		return false;
+	}
+	
+	public void removeClient(ClientHandler client) {
+		twoPlayer.remove(client);
+		threePlayer.remove(client);
+		fourPlayer.remove(client);
 	}
 }

@@ -70,7 +70,8 @@ public class ClientHandler implements Runnable {
 					if (input.length() <= CLIENT_IDENTIFY.length()) {
 						error(Error.INVALID_PARAMETER);						
 					} else {
-						identification(input.substring(CLIENT_IDENTIFY.length() + 1));
+						identification(input.substring(CLIENT_IDENTIFY.length() + 1).split(" ")[0]);
+						System.out.println(clientName + " Connected"); //TODO remove
 					}
 				} else if (clientName == null) {
 					error(Error.ILLEGAL_STATE);
@@ -86,12 +87,14 @@ public class ClientHandler implements Runnable {
 						error(Error.INVALID_PARAMETER);						
 					} else {
 						game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1));
+						moveExpected = false;
 					}
 				} else if (input.startsWith(CLIENT_MOVE_TRADE) && moveExpected) {
 					if (input.length() <= CLIENT_MOVE_TRADE.length()) {
 						error(Error.INVALID_PARAMETER);						
 					} else {
 						game.tradeMove(input.substring(CLIENT_MOVE_TRADE.length() + 1));
+						moveExpected = false;
 					}
 				} else {
 					error(Error.ILLEGAL_STATE);
@@ -101,7 +104,8 @@ public class ClientHandler implements Runnable {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			shutdown();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -128,6 +132,9 @@ public class ClientHandler implements Runnable {
 	 * Shuts down the connection with this client and shuts down this ClientHandler.
 	 */
 	private void shutdown() {
+		if (game != null) {
+			game.quit();
+		}
         server.removeHandler(this);
         //server.broadcast("[" + clientName + " has left]");
         try {
@@ -198,11 +205,11 @@ public class ClientHandler implements Runnable {
     }
     
     public void error(Error error) {
-    	sendMessage(SERVER_ERROR + " " + error);
+    	sendMessage(SERVER_ERROR + " " + error.ordinal() + " " +  error);
     }
 	
     public void gameStart(String msg, Qwirkle gameA) {
-    	sendMessage(SERVER_GAMESTART + " " + msg);
+    	sendMessage(SERVER_GAMESTART + msg);
     	this.game = gameA;
     }
     

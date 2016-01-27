@@ -97,7 +97,7 @@ public class HumanPlayer implements Player {
 		list.addAll(this.getHand());
 		for (int i = 0; i < getHand().size(); i++) {
 			for (int j = 0; j < getHand().size(); j++) {
-				if (i != j && hand.get(i).equals(hand.get(j)) && list.contains(hand.get(i))){
+				if (i != j && hand.get(i).equals(hand.get(j)) && list.contains(hand.get(i))) {
 					list.remove(hand.get(j));					
 				}
 			}
