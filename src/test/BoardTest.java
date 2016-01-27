@@ -117,7 +117,7 @@ public class BoardTest {
 		t9 = new Tile(Color.PURPLE, Shape.STAR);
 		t10 = new Tile(Color.BLUE, Shape.SQUARE);
 		t11 = new Tile(Color.BLUE, Shape.DIAMOND);
-		t12 = new Tile(Color.RED, Shape.CIRCLE);
+		t12 = new Tile(Color.RED, Shape.DIAMOND);
 		t13 = new Tile(Color.ORANGE, Shape.CROSS);
 		t14 = new Tile(Color.ORANGE, Shape.STAR);
 	}
@@ -224,38 +224,32 @@ public class BoardTest {
 		move1.addTile(t1, 0, 2);
 		move1.addTile(t2, 0, 1);
 		move1.addTile(t3, 0, 0);
-		move1.addTile(t2, 0, -1);
+		move1.addTile(t4, 0, -1);
 		move1.addTile(t5, 0, -2);
 		move1.addTile(t6, 0, -3);
-		
 		b5.doMove(move1);
 		
 		Move move2 = new Move();
 		move2.addTile(t7, -1, 2);
 		move2.addTile(t8, -2, 2);
-		
 		b5.doMove(move2);
 		
 		Move move3 = new Move();
 		move3.addTile(t9, -2, 1);
-		
 		b5.doMove(move3);
 		
 		Move move4 = new Move();
 		move4.addTile(t10, 1, 1);
 		move4.addTile(t11, 2, 1);
-		
 		b5.doMove(move4);
 		
 		Move move5 = new Move();
 		move5.addTile(t12, 2, 2);
-		
 		b5.doMove(move5);
 		
 		Move move6 = new Move();
 		move6.addTile(t13, -1, -1);
 		move6.addTile(t14, -2, -1);
-		
 		b5.doMove(move6);
 		
 		//test the board
@@ -263,7 +257,7 @@ public class BoardTest {
 		assertEquals(t1, b5.getTile(0, 2));
 
 		assertEquals(t9, b5.getTile(-2, 1));
-		assertEquals(t11, b5.getTile(2, 1));
+		assertEquals(t10, b5.getTile(1, 1));
 		
 	}
 	

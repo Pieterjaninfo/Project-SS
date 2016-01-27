@@ -183,21 +183,15 @@ public class Board {
 		if (checkMove(move)) {
 			
 			Map<Integer, Map<Integer, Tile>> moveTilesMap = move.getTiles();
-			System.out.println(moveTilesMap); //TODO remove
-			//System.out.println(moveTilesMap.size()); //TODO remove
 			
 			if (moveTilesMap.keySet().size() == 1) {
 				for (Integer x : moveTilesMap.keySet()) {
-					//System.out.println(moveTilesMap.get(x).keySet()); //TODO remove
 					if (moveTilesMap.get(x).keySet().size() == 1) {
 						//move contains one tile
 						for (Integer y : moveTilesMap.get(x).keySet()) {
 							Tile thisTile = moveTilesMap.get(x).get(y);
-							//System.out.println(thisTile); //TODO remove
 							if (canPlaceTile(thisTile, x, y)) { // not even needed
-								
-								System.out.println("MOVE REACHED 1 TILE 1X 1Y"); //TODO remove
-								
+
 								//place tile on board
 								placeTile(thisTile, x, y);
 								
@@ -643,11 +637,7 @@ public class Board {
 							for (Tile tile : tilesOnBoard) {
 								tile.setVertPattern(movePattern);
 							}
-							
-							
-							
-						
-						
+
 						// MOVE HAS BEEN DONE AND TILE PATTERNS HAVE BEEN SET
 
 						
@@ -662,7 +652,6 @@ public class Board {
 			
 			} else {
 				//move contains multiple X and one Y (horizPattern)
-				System.out.println("REACHED MOVE CONTAINSMORE TILES MULT X ONE Y"); //TODO REMOVE
 				
 				// place all the tiles in Move on the board
 				for (Integer x : moveTilesMap.keySet()) {
@@ -1021,7 +1010,6 @@ public class Board {
 						if (upTile != null) {
 							if (upTile.getVertPattern() != null) {
 								// upper tile is in a pattern
-								System.out.println("UPTILE VERTPATTERN 1X MULT Y"); //TODO REMOVE
 								if (!upTile.getVertPattern().canAddTile(thisTile)) {
 									return false;
 								}
@@ -1265,7 +1253,6 @@ public class Board {
 						//--------------------vertical pattern DUPLICATE-----------------------
 						for (Integer y : placedTiles.get(x).keySet()) {
 							//Vertical patterns
-							//--Tile thisTile = placedTiles.get(x).get(y);
 							Tile upTile = getTile(x, y + 1);
 							Tile downTile = getTile(x, y - 1);
 							
@@ -1525,8 +1512,6 @@ public class Board {
 			}
 			
 			// ALL TILES SHOULD HAVE DIFFERENT X'S WITH THE SAME Y-VALUE (horizPattern)
-			
-			//TODO USEFULL FOR DOMOVE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			
 			//check for shape or color pattern in hand
 			List<Integer> xs = new ArrayList<Integer>();
@@ -2113,11 +2098,8 @@ public class Board {
 		
 		// VERTICAL PATTERN SHOULD BE MERGABLE NOW
 
-	
 		return true;
-
 	}
-	
-	
+
 	
 }
