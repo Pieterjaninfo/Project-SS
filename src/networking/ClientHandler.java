@@ -60,6 +60,7 @@ public class ClientHandler implements Runnable {
 		try {
 			while (true) {
 				String input = in.readLine();
+				System.out.println("[IN] " + input);
 				if (input == null) {
 					break;
 				}
@@ -119,6 +120,7 @@ public class ClientHandler implements Runnable {
 	 */
 	public void sendMessage(String msg) {
     	try {
+    		System.out.println("[OUT]" + msg);
 			out.write(msg);
 			out.newLine();
 			out.flush();
