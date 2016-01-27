@@ -199,6 +199,14 @@ public class Qwirkle implements Runnable{
 	public void makeMove() {
 		while (true) {
 			Move move = currentPlayer.determineMove();	
+			//TODO remove...
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// TODO till here
 			if (move == null) {
 				if (!firstMove) {
 					return;

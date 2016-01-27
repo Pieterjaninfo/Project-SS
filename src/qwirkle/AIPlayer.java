@@ -146,7 +146,6 @@ public class AIPlayer implements Player {
 
 	//@ requires tiles != null;
 	@Override
-	@Override
 	public void removeTile(List<Tile> tiles) {
 		List<Tile> temp = new ArrayList<Tile>();
 		for (Tile tile : tiles) {
