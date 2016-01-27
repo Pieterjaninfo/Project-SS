@@ -1,6 +1,7 @@
 package qwirkle;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -45,22 +46,6 @@ public class Board {
 		}
 		board.get(x).put(y, tile);
 	}
-	
-
-	/**
-	 * Makes a shallow board copy of the board.
-	 * @return the shallow board copy
-	 */
-	public Map<Integer, Map<Integer, Tile>> makeBoardCopy() {
-		Map<Integer, Map<Integer, Tile>> shallowBoardCopy = 
-				  new HashMap<Integer, Map<Integer, Tile>>();
-		for (Integer key : board.keySet()) {
-			Map<Integer, Tile> valueMap = new HashMap<Integer, Tile>(board.get(key));
-			shallowBoardCopy.put(key, valueMap);
-		}
-		return shallowBoardCopy;
-	}
-	
 	
 	/**
 	 * Returns all tiles that are placed on the board.
@@ -110,8 +95,27 @@ public class Board {
 	 */
 	//@ ensures \result >= 0;
 	/*@ pure */ public int getBoardSize() {
-		return board.size();
+		return getTileList().size();
 	}
+	
+	/**
+	 * Returns a list with all the tiles from the board.
+	 * @return a list of tiles with type Tile
+	 */
+	//@ensures \result != null;
+	public List<Tile> getTileList() {
+		List<Tile> result = new ArrayList<Tile>();
+		Collection<Map<Integer, Tile>> map = getAllTiles().values();
+		for (Map<Integer, Tile> a : map) {
+			for (Tile tile : a.values()) {
+				result.add(tile);
+			}
+		}
+		return result;
+	}
+	
+	
+	
 	
 	/**
 	 * Check if a tile from the hand can be placed and if so it return true.
@@ -891,6 +895,24 @@ public class Board {
 		// TODO place all duplicate codes in a sub-method in a class called BoardChecker.java!
 		
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
+		
+		
+		//check if one tile of move is connected
+		boolean isConnected = false;
+		//loop through all moves
+		for (Integer x : move.getTiles().keySet()) {
+			for (Integer y : move.getTiles().get(x).keySet()) {
+				if (containsTile(x - 1, y) || containsTile(x + 1, y) 
+						  || containsTile(x, y - 1) || containsTile(x, y + 1)) {
+					isConnected = true;	
+				}
+			}
+		}
+		//check if at least one tile is connected when there are tiles on the board
+		if (getBoardSize() > 0 && !isConnected) {
+			return false;
+		}
+		
 		
 		if (placedTiles.size() == 1) {
 			// move contains tiles with only one x value

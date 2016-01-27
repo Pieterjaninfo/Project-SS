@@ -77,6 +77,11 @@ public class Qwirkle implements Runnable{
 			firstMove = false;
 		} while (!gameOver()); //other method name??
 		// TODO Show scores.
+		
+		
+		/*TODO IF GAMEOVER show all the players with their score 
+		 *  (and potentially who's winner in a method determineWinner)
+		 */
 	}
 	
 	/**
