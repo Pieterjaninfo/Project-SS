@@ -61,7 +61,7 @@ public class Board {
 	 * @return true if all the tile spots are free
 	 */
 	//@ requires move != null;
-	/*@ pure */ private boolean isPlaceFree(Move move) {
+	/*@ pure */ public boolean isPlaceFree(Move move) {
 		Map<Integer, Map<Integer, Tile>> placedTiles = move.getTiles();
 		for (Integer x : placedTiles.keySet()) {
 			for (Integer y : placedTiles.get(x).keySet()) {
@@ -115,8 +115,6 @@ public class Board {
 	}
 	
 	
-	
-	
 	/**
 	 * Check if a tile from the hand can be placed and if so it return true.
 	 * @param tilesList The hand you want to check
@@ -126,7 +124,7 @@ public class Board {
 	public boolean canPlaceATile(List<Tile> tilesList) {
 		//loop through all tiles
 		
-		if (board.isEmpty()) {
+		if (getBoardSize() == 0) {
 			return true;
 		}
 		
