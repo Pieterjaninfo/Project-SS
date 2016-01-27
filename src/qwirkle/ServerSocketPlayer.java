@@ -9,11 +9,12 @@ public class ServerSocketPlayer implements Player{
 	private Qwirkle game;
 	private String playerName;
 	private List<Tile> hand;
-	private Tile handTiles;
+	private int score;
 	
 	public ServerSocketPlayer(String name, Qwirkle game) {
 		this.game = game;
 		this.playerName = name;
+		this.score = 0;
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class ServerSocketPlayer implements Player{
 
 	@Override
 	public int getScore() {
-		return 0;
+		return score;
 	}
 
 	@Override
@@ -130,11 +131,33 @@ public class ServerSocketPlayer implements Player{
 				}
 			}
 		}
-		getHand().removeAll(temp);	}
+		getHand().removeAll(temp);	
+	}
 
+	/**
+	 * Add the amount of points rewarded for doing the move to the player score.
+	 * @param move The move you did for the points
+	 */
+	//@ requires move != null;
 	@Override
 	public void addScore(Move move) {
-		// TODO Auto-generated method stub
+		int result = 0;
+		List<Tile> moveTiles = move.getTileList();
+		
+		for (Tile moveTile : moveTiles) {
+			result += moveTile.getHorizPattern().getPoints();
+			result += moveTile.getVertPattern().getPoints();
+		}
+		updateScore(result);
 		
 	}
+	
+	/*
+	 * Increments the current score by the value given.
+	 */
+	//@ ensures extra >= 0;
+	private void updateScore(int extra) {
+		this.score += extra;
+	}
+	
 }

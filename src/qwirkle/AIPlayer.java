@@ -151,11 +151,15 @@ public class AIPlayer implements Player {
 				}
 			}
 		}
-		getHand().removeAll(temp);	}
+		getHand().removeAll(temp);	
+	}
 
 
 	
-	
+	/**
+	 * Add the amount of points rewarded for doing the move to the player score.
+	 * @param move The move you did for the points
+	 */
 	//@ requires move != null;
 	@Override
 	public void addScore(Move move) {
