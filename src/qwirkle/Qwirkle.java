@@ -357,4 +357,24 @@ public class Qwirkle implements Runnable{
 		}
 		
 	}
+	
+	/**
+	 * Shows the scores of the players for singleplayer.
+	 */
+	public void showScoresSP() {
+		for (Player player : players) {
+			sendMessage(String.format("Player: %s has %d points.\n", player, player.getScore()));
+		}
+	}
+	
+	/**
+	 * Shows the scores of the players for multiplayer.
+	 */
+	public String showScoresMP() {
+		String result = "";
+		for (Player player : players) {
+			result =  String.format("%s %d,%s", result, player.getScore(), player.getName());
+		}
+		return result;
+	}
 }

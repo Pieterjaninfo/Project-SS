@@ -125,6 +125,11 @@ public class Board {
 	//@ requires tilesList != null;
 	public boolean canPlaceATile(List<Tile> tilesList) {
 		//loop through all tiles
+		
+		if (board.isEmpty()) {
+			return true;
+		}
+		
 		for (Integer x : board.keySet()) {
 			for (Integer y : board.get(x).keySet()) {
 				
