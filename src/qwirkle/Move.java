@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Move {
-
-	// TODO better fucking JML needed ;c
 	
 	//@ private invariant points >= 0;
 	private int points;

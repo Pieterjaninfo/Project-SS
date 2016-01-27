@@ -77,11 +77,8 @@ public class Qwirkle implements Runnable {
 			firstMove = false;
 		} while (!gameOver()); //other method name??
 		// TODO Show scores.
+		showScoresSP();
 		
-		
-		/*TODO IF GAMEOVER show all the players with their score 
-		 *  (and potentially who's winner in a method determineWinner)
-		 */
 	}
 	
 	/**
@@ -208,7 +205,7 @@ public class Qwirkle implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// TODO till here
+			// TODO ...till here
 			if (move == null) {
 				if (!firstMove) {
 					return;
@@ -227,6 +224,7 @@ public class Qwirkle implements Runnable {
 		}
 		firstMove = false;
 	}
+	
 	/**
 	 * Makes move for the current player.
 	 * @param move The move in the for of the string, as determined in the protocol.
@@ -336,13 +334,21 @@ public class Qwirkle implements Runnable {
 		return ui.readLine(msg);
 	}
 	
+	/**
+	 * Checks if the game is over concerning the game rules.
+	 * @return true if the game is over
+	 */
 	public boolean gameOver() {
 		if (bag.getSize() == 0) {
-			if (!board.canPlaceATile(currentPlayer.getHand())) {
-				// Nested statements to decrease the amount 
-				// of times the canPlaceTile function will be called
-				return true;	
-			} else if (currentPlayer.getHand().isEmpty()) {
+			if (currentPlayer.getHand().isEmpty()) {
+				return true;
+			} else if (!board.canPlaceATile(currentPlayer.getHand())) {
+				
+				for (Player player : players) {
+					if (board.canPlaceATile(player.getHand())) {
+						return false;
+					}
+				}
 				return true;
 			}
 		} 
