@@ -890,7 +890,7 @@ public class Board {
 					for (Tile tile : tilesOnBoard) {
 						tile.setHorizPattern(movePattern);
 					}
-					
+			
 				
 				
 				//MOVE HAS BEEN DONE AND TILE PATTERNS HAVE BEEN SET
