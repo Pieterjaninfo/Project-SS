@@ -179,28 +179,34 @@ public class BoardTest {
 		Board b4 = new Board();
 		
 		assertTrue(b4.canPlaceTile(tile1, 0, 0));
-		b4.placeTile(tile1, 0, 0);
+		
+		
+		Move move2 = new Move();
+		move2.addTile(tile1, 0, 0);
+		b4.doMove(move2);
+		
 		
 		assertFalse(b4.canPlaceTile(tile2, 0, 0));
+		assertFalse(b4.canPlaceTile(tile1, 0, 1));
 		
 		assertTrue(b4.canPlaceTile(tile2, 0, 1));
 		assertTrue(b4.canPlaceTile(tile2, 0, -1));
 		assertTrue(b4.canPlaceTile(tile2, 1, 0));
 		assertTrue(b4.canPlaceTile(tile2, -1, 0));
-		/*
-		assertFalse(b4.canPlaceTile(tile5, 0, 1));
-		assertFalse(b4.canPlaceTile(tile5, 0, -1));
-		assertFalse(b4.canPlaceTile(tile5, 1, 0));
-		assertFalse(b4.canPlaceTile(tile5, -1, 0));
-		*/
-		b4.placeTile(tile2, 0, 1);
 		
 		assertFalse(b4.canPlaceTile(tile5, 0, 1));
 		assertFalse(b4.canPlaceTile(tile5, 0, -1));
 		assertFalse(b4.canPlaceTile(tile5, 1, 0));
 		assertFalse(b4.canPlaceTile(tile5, -1, 0));
 		
+		
+		
+		assertFalse(b4.canPlaceTile(tile5, 0, 1));
+		
+	
 		
 	}
+	
+	
 	
 }

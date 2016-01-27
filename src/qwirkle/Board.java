@@ -2057,7 +2057,8 @@ public class Board {
 				}
 			} else {
 				// upper tile has no pattern
-				if (upTile.equals(thisTile)) {
+				if (upTile.equals(thisTile) || upTile.getColor() != thisTile.getColor() &&
+						  upTile.getShape() != thisTile.getShape()) {
 					return false;
 				}
 			}
@@ -2072,7 +2073,8 @@ public class Board {
 				}
 			} else {
 				// lower tile has no pattern
-				if (downTile.equals(thisTile)) {
+				if (downTile.equals(thisTile) || downTile.getColor() != thisTile.getColor() &&
+						  downTile.getShape() != thisTile.getShape()) {
 					return false;
 				}
 			}
@@ -2102,7 +2104,8 @@ public class Board {
 				}
 			} else {
 				// both tiles have no pattern
-				if (upTile.equals(downTile)) {
+				if (upTile.equals(downTile) || upTile.getColor() != downTile.getColor() && 
+						  upTile.getShape() != downTile.getShape()) {
 					return false;
 				}
 			}	
