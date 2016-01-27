@@ -29,12 +29,12 @@ public class StartSizeTest {
 		list.add(new Tile(Color.BLUE, Shape.CIRCLE));
 		list.add(new Tile(Color.GREEN, Shape.SQUARE));
 		Qwirkle game = new Qwirkle();
-		 a = new ServerSocketPlayer("Test", game);
-		 a.setStartingHand(list);
+		a = new ServerSocketPlayer("Test", game);
+		a.setStartingHand(list);
  	}
 	
 	@Test
-	public void Testduplicate() {
+	public void testDuplicate() {
 		assertEquals(4, a.largestStartSize());
 		assertEquals(6, a.getHand().size());
 	}

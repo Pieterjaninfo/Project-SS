@@ -56,7 +56,6 @@ public class Server implements Runnable {
     /** 
      * Constructs a new Server object. 
      */
-    //@ requires portArg != null; portArg.instanceOf(Integer);
     public Server(int portArg) {
     	this.port = portArg;
     	threads = new ArrayList<ClientHandler>();

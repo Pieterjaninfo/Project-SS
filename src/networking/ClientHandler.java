@@ -167,7 +167,6 @@ public class ClientHandler implements Runnable {
      * Sets the input to be the clientName.
      * @param input
      */
-    //@ requires input != null; input.matches("^[A-Za-z0-9-_]{2,16}$")
     public void identification(String input) {
     	if (!input.matches(NAME_REGEX)) {
     		error(Error.NAME_INVALID);
