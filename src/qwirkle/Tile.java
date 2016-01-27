@@ -81,6 +81,10 @@ public class Tile {
 		return String.format("Shape: %s,Color: %s", shape, color);
 	}
 	
+	/**
+	 * Returns the for human readable code for the UI.
+	 * @return
+	 */
 	public String toCodedString() {
 		//System.out.println(toString());
 		return String.format("%s%s", getColor().toInt(), getShape().toString());
