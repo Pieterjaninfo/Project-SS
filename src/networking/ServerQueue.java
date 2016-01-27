@@ -105,5 +105,5 @@ public class ServerQueue implements Runnable {
 		twoPlayer.remove(client);
 		threePlayer.remove(client);
 		fourPlayer.remove(client);
-		}
+	}
 }

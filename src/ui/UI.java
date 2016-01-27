@@ -44,7 +44,7 @@ public interface UI {
 	public InetAddress getHost();
 	
 	/**
-	 * Asks the user for the port to connect to
+	 * Asks the user for the port to connect to.
 	 * @return the port as integer
 	 */
 	public int getPort();

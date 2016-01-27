@@ -205,7 +205,7 @@ public class ClientHandler implements Runnable {
     }
     
     public void error(Error error) {
-    	sendMessage(SERVER_ERROR + " " + error);
+    	sendMessage(SERVER_ERROR + " " + error.ordinal() + " " +  error);
     }
 	
     public void gameStart(String msg, Qwirkle gameA) {
