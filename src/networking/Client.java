@@ -172,8 +172,14 @@ public class Client implements Runnable {
 			String player = ui.getPlayer(5);
 			do {
 		    	out.write(CLIENT_IDENTIFY + " " + player);
-		    	while (!in.ready()) {
+		    	while (!in.ready()) {						//WHILE LOOP MAY NOT BE NEEDED
         			// Wait for an input from the server
+		    		try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 		    	}
 		    	response = in.readLine();
 		    	if (player.startsWith("AI") && response.startsWith(SERVER_ERROR)) {
@@ -196,12 +202,18 @@ public class Client implements Runnable {
     	try {
     		String response = "";
         	do {
-        		String queue = ui.readLine("Pleas enter the ques you want to enter." +
+        		String queue = ui.readLine("Please enter the queues you want to enter." +
           			  "\nPossible queues: 2, 3 and 4.");
         		if (queue.matches(LIST_REGEX)) {
-            		out.write(CLIENT_QUEUE + " " + queue);
+        			out.write(CLIENT_QUEUE + " " + queue);
             		while (!in.ready()) {
             			// Wait for an input from the server
+            			try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
             		}
             		response = in.readLine();
         		} else {
@@ -238,20 +250,20 @@ public class Client implements Runnable {
     
     public void gameStart() {
     	String input = "";
-		try {
-			input = in.readLine();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	if (input.startsWith(SERVER_GAMESTART)) {
-    		String[] in = input.substring(SERVER_GAMESTART.length() + 1).split(" ");
-    		for (String playerName : in) {
-    			Player player = new SocketPlayer(playerName, this);
-    			
-    		}
-    	} else {
-    		error(Error.INVALID_COMMAND);
-    	}
+		do {
+			try {
+				input = in.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} while (!input.startsWith(SERVER_GAMESTART));
+		
+		
+		String[] inputArray = input.substring(SERVER_GAMESTART.length() + 1).split(" ");
+		for (String playerName : inputArray) {
+			Player player = new SocketPlayer(playerName, this);
+		}	
     }
+
 }

@@ -128,7 +128,7 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
     }
-	    
+
     /**
      * Prints the message to the standard output.
      * @param message
