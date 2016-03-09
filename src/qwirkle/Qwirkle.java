@@ -76,8 +76,8 @@ public class Qwirkle implements Runnable {
 					  % players.size());
 			firstMove = false;
 		} while (!gameOver()); //other method name??
-		// TODO Show scores.
-		showScoresSP();
+		
+		showScoresSP(); // TODO Show scores.
 		
 	}
 	
