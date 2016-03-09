@@ -65,9 +65,11 @@ public class ClientHandler implements Runnable {
 					break;
 				}
 				if (input.startsWith(CLIENT_QUIT)) {
-					game.quit();
+					if (game != null) {
+						game.quit();
+					}
 					break;
-				} else if (input.startsWith(CLIENT_IDENTIFY) && clientName == null) {
+				} else if (input.startsWith(CLIENT_IDENTIFY) && game == null) {
 					if (input.length() <= CLIENT_IDENTIFY.length()) {
 						error(Error.INVALID_PARAMETER);						
 					} else {
