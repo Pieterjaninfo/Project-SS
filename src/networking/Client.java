@@ -10,9 +10,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import qwirkle.Tile;
+import qwirkle.Color;
 import qwirkle.Player;
 import qwirkle.SocketPlayer;
-
+import qwirkle.Qwirkle;
+import qwirkle.Shape;
 import ui.UI;
 
 /**
@@ -123,6 +126,8 @@ public class Client implements Runnable {
     		out.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("The connection has been lost.");
+			shutdown();
 		}	
 	}
     
@@ -229,18 +234,72 @@ public class Client implements Runnable {
     public void moves() {
     	String input;
     	try {
-			input = in.readLine();
-			if (input.startsWith(SERVER_MOVE_PUT)) {
+			
+    		while (running) {
+    			
+    			
+    			input = in.readLine();
+				
+				if (input.startsWith(SERVER_TURN) && input.endsWith(clientName)) {
+					//it is my turn
+					
+					
+					do {
+						input = in.readLine();
+						
+						//check if i did a MOVE_PUT or MOVE_TRADE
+						if (input.startsWith(CLIENT_MOVE_PUT)) {
+							//client move
+							
+						} else {
+							//client trade
+							
+						}
+					} while (input.startsWith(CLIENT_MOVE_PUT) 
+							  || input.startsWith(CLIENT_MOVE_TRADE) && !firstMove);
+					
+					
+					
+					
+					
+					
+				} else {
+					// wait until we can check again
+					Thread.sleep(500);
+				}
+    		}
+			
+			
+			
+			
+			
+			
+			
+			
+			/*if (input.startsWith(SERVER_MOVE_PUT)) {
 				
 			} else if (input.startsWith(SERVER_PASS)) {
 				
 			} else if (input.startsWith(SERVER_MOVE_TRADE)) {
 				
-			}
+			}*/
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
     	
     }
     
@@ -248,9 +307,14 @@ public class Client implements Runnable {
     	sendMessage(SERVER_ERROR + " " + error);
     }
     
+    /**
+     * Initiates all the players and gives the initial cards to the player.
+     */
     public void gameStart() {
     	String input = "";
-		do {
+		
+    	//Initiate all the players and add them to the players list
+    	do {
 			try {
 				input = in.readLine();
 			} catch (IOException e) {
@@ -263,7 +327,44 @@ public class Client implements Runnable {
 		String[] inputArray = input.substring(SERVER_GAMESTART.length() + 1).split(" ");
 		for (String playerName : inputArray) {
 			Player player = new SocketPlayer(playerName, this);
-		}	
+			players.add(player);
+		}
+		
+		
+		//Give the tiles to player belonging to the client
+		do {
+			try {
+				input = in.readLine();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} while (!input.startsWith(SERVER_DRAWTILE));
+		
+		String[] inputTiles = input.substring(SERVER_DRAWTILE.length() + 1).split(" ");
+		List<Tile> tilesList = new ArrayList<Tile>();
+		
+		for (String tileCode : inputTiles) {
+			Tile tile = codeToTile(tileCode);
+			tilesList.add(tile);
+		}
+		if (currentPlayer.getName().equals(clientName)) {
+			currentPlayer.setStartingHand(tilesList);
+		}
+		
     }
+    
+    /*
+     * Converts the tile-code as used in the protocol to a Tile.
+     */
+    private Tile codeToTile(String tile) {
+		int tileCode = Integer.parseInt(tile);
+		int shape = tileCode % 6;
+		int color = (tileCode - shape) / 6;
+		Shape shapeEnum = Shape.toEnum(shape);
+		Color colorEnum = Color.toEnum(color);
+		return new Tile(colorEnum, shapeEnum);
+	}
 
 }
