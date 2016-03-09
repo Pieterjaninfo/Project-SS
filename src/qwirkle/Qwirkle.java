@@ -229,7 +229,8 @@ public class Qwirkle implements Runnable {
 	 * Makes move for the current player.
 	 * @param move The move in the for of the string, as determined in the protocol.
 	 */
-	public void makeMove(String move) {
+	public boolean makeMove(String move) {
+		boolean result = false;
 		Move moves = new Move();
 		String[] moveArray = move.split(" ");
 		for (String move1 : moveArray) {
@@ -253,13 +254,17 @@ public class Qwirkle implements Runnable {
 			}
 			clientPlayerMap.get(currentPlayer).drawTile(drawString);
 			//object.notifyAll(); // TODO might not work test needed
+			result = true;
 		} else {
 			clientPlayerMap.get(currentPlayer).error(Error.MOVE_INVALID);
 		}
-		firstMove = false;
-		synchronized (object) {
-			object.notifyAll(); // TODO check
+		if (result) {
+			firstMove = false;
+			synchronized (object) {
+				object.notifyAll(); // TODO check
+			}	
 		}
+		return result;
 	}
 	
 	/**

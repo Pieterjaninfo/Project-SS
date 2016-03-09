@@ -89,8 +89,9 @@ public class ClientHandler implements Runnable {
 					if (input.length() <= CLIENT_MOVE_PUT.length()) {
 						error(Error.INVALID_PARAMETER);						
 					} else {
-						game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1));
-						moveExpected = false;
+						if (game.makeMove(input.substring(CLIENT_MOVE_PUT.length() + 1))) {
+							moveExpected = false;
+						}
 					}
 				} else if (input.startsWith(CLIENT_MOVE_TRADE) && moveExpected) {
 					if (input.length() <= CLIENT_MOVE_TRADE.length()) {
@@ -129,7 +130,8 @@ public class ClientHandler implements Runnable {
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Game stopped due to disconnect");
 		}
 	}
 	/**

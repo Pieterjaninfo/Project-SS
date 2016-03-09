@@ -23,10 +23,46 @@ public class Server implements Runnable {
 
 
 	/**
-	 * Start the server and wait for the user to type exit to exit the server.
+	 * Start the server and ask the user for the port number.
+	 * If the user types exit the server will exit.
 	 * @param args
 	 */
 	public static void main(String[] args) {
+    	System.out.println("to exit server type 'exit'");
+		String portnumber = "";
+		do {
+			try {
+				System.out.println("Please enter port number:");
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+		                System.in));
+				portnumber = in.readLine();
+				if (portnumber.matches("^[0-9]{0,4}$")) {
+					try {
+						Server server = new Server(Integer.parseInt(args[0]));
+						(new Thread(queue)).start();
+						(new Thread(server)).start();
+						server.exit();
+						server.shutdown();
+					} catch (NumberFormatException e) {
+						System.out.println(USAGE);
+						System.out.println("ERROR: port " + args[1]
+							 	  + " is not an invalid port");
+						//e.printStackTrace();
+					}
+				} else if (portnumber.equals("exit")) {
+					System.exit(0);
+				} else {
+				
+					System.out.println(USAGE);
+				}
+				
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} while (true);
+		
+		/*
 		if (args.length != 1) {
 			System.out.println(USAGE);
 			System.exit(0);
@@ -41,10 +77,10 @@ public class Server implements Runnable {
 			System.out.println(USAGE);
 			System.out.println("ERROR: port " + args[1]
 				 	  + " is not an integer");
-			e.printStackTrace();
+			//e.printStackTrace();
 
 			System.exit(0);
-		}
+		}*/
 	}
 
 	private int port;
@@ -73,7 +109,7 @@ public class Server implements Runnable {
      * if 'exit' is entered in the standard input the server will exit.
      */
     public void exit() {
-    	System.out.println("to exit server type 'exit'");
+    	//System.out.println("to exit server type 'exit'");
         String antw = null;
         while (running) {
         	try {
