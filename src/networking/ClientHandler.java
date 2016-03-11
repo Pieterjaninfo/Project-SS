@@ -64,7 +64,9 @@ public class ClientHandler implements Runnable {
 				if (input == null) {
 					break;
 				}
-				if (input.startsWith(CLIENT_QUIT)) {
+				if (!commandCheck(input)) {
+					error(Error.INVALID_COMMAND);
+				} else if (input.startsWith(CLIENT_QUIT)) {
 					if (game != null) {
 						game.quit();
 					}
@@ -115,6 +117,18 @@ public class ClientHandler implements Runnable {
 			e.printStackTrace();
 		}
 		shutdown();
+	}
+	
+	/**
+	 * Checks if the start of incoming connections have a valid parameter.
+	 * @return true if parameter is correct.
+	 */
+	public boolean commandCheck(String input) {
+		return input.startsWith(CLIENT_IDENTIFY) ||
+		  input.startsWith(CLIENT_QUIT) ||
+		  input.startsWith(CLIENT_QUEUE) ||
+		  input.startsWith(CLIENT_MOVE_PUT) ||
+		  input.startsWith(CLIENT_MOVE_TRADE);
 	}
 	
 	/**
