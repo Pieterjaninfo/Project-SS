@@ -41,6 +41,7 @@ public class Server implements Runnable {
 						Server server = new Server(Integer.parseInt(args[0]));
 						(new Thread(queue)).start();
 						(new Thread(server)).start();
+						System.out.println("Server started");
 						server.exit();
 						server.shutdown();
 					} catch (NumberFormatException e) {
@@ -52,7 +53,6 @@ public class Server implements Runnable {
 				} else if (portnumber.equals("exit")) {
 					System.exit(0);
 				} else {
-				
 					System.out.println(USAGE);
 				}
 				
