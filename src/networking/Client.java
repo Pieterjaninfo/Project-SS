@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qwirkle.Tile;
+import qwirkle.Board;
 import qwirkle.Color;
+import qwirkle.HumanPlayer;
 import qwirkle.Player;
-import qwirkle.SocketPlayer;
 import qwirkle.Qwirkle;
+import qwirkle.SocketPlayer;
+import qwirkle.Move;
 import qwirkle.Shape;
 import ui.UI;
 
@@ -23,7 +26,7 @@ import ui.UI;
  * @author Bart Meyers
  */
 
-public class Client implements Runnable {
+public class Client extends Qwirkle implements Runnable {
 	
 	// List of protocol commands.
     private static final String CLIENT_IDENTIFY = "IDENTIFY";
@@ -61,7 +64,9 @@ public class Client implements Runnable {
 	private UI ui;
 	private List<Player> players = new ArrayList<Player>();
 	private Player currentPlayer;
+	private HumanPlayer clientPlayer;
 	private Boolean firstMove = true;
+	private Board board;
     
     public Client(InetAddress host, int port)
 			throws IOException {
@@ -232,57 +237,66 @@ public class Client implements Runnable {
     }
     
     public void moves() {
-    	String input;
+    	String response;
+    	String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
+    	String tradeRegex = "^[tT][rR][aA][dD][eE]\\s.+$";
+    	
     	try {
 			
     		while (running) {
     			
+    			response = in.readLine();
     			
-    			input = in.readLine();
-				
-				if (input.startsWith(SERVER_TURN) && input.endsWith(clientName)) {
+    			
+				if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
 					//it is my turn
 					
+
+					ui.showBoard(board.getAllTiles());
+					ui.showHand(currentPlayer.getHand());
+					String move = ui.readLine("Make a move");
+					Move moves = clientPlayer.determineMove();
+
 					
 					do {
-						input = in.readLine();
-						
-						//check if i did a MOVE_PUT or MOVE_TRADE
-						if (input.startsWith(CLIENT_MOVE_PUT)) {
+						//check if user did a MOVE or TRADE
+						if (move.matches(moveRegex)) {
 							//client move
+							//String[] moves = move.substring(moveRegex.length() + 1).split(" ");
 							
-						} else {
+							out.write(CLIENT_MOVE_PUT + "move");
+							
+							
+							
+						} else if (move.matches(tradeRegex) && firstMove) {
+							//THROW CAN'T TRADE ON TURN ONE EXCEPTION
+							ui.showMessage("You can't trade on the first turn!");
+						} else if (move.matches(tradeRegex)) {
 							//client trade
 							
 						}
-					} while (input.startsWith(CLIENT_MOVE_PUT) 
-							  || input.startsWith(CLIENT_MOVE_TRADE) && !firstMove);
+					} while (!move.matches(moveRegex) 
+							  || !move.matches(tradeRegex) && !firstMove);
 					
-					
-					
-					
-					
-					
+
 				} else {
+					
+					if (response.startsWith(SERVER_MOVE_PUT)) {
+						firstMove = false;
+
+						Move moves = stringToMove(response.substring(SERVER_MOVE_PUT.length() + 1));
+						board.doMove(moves);
+						
+						
+						
+						
+					}
+					
 					// wait until we can check again
 					Thread.sleep(500);
 				}
     		}
-			
-			
-			
-			
-			
-			
-			
-			
-			/*if (input.startsWith(SERVER_MOVE_PUT)) {
-				
-			} else if (input.startsWith(SERVER_PASS)) {
-				
-			} else if (input.startsWith(SERVER_MOVE_TRADE)) {
-				
-			}*/
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -291,16 +305,29 @@ public class Client implements Runnable {
 			e.printStackTrace();
 		}
     	
+    }
+    
+    public boolean checkMoveClient(Move move) {
+    	if (move == null) {
+    		return false;
+    	}
     	
+
     	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
+    	return false;
+    }
+    
+    
+    public Move stringToMove(String move) {
+    	Move moves = new Move();
+		String[] moveArray = move.split(" ");
+		for (String move1 : moveArray) {
+			Tile tile = codeToTile(move1.split("@")[0]);
+			int x = Integer.parseInt(move1.split("@")[1].split(",")[0]);
+			int y = Integer.parseInt(move1.split("@")[1].split(",")[1]);
+			moves.addTile(tile, x, y);
+		}
+    	return moves;
     }
     
     public void error(Error error) {
@@ -323,13 +350,17 @@ public class Client implements Runnable {
 			}
 		} while (!input.startsWith(SERVER_GAMESTART));
 		
-		
 		String[] inputArray = input.substring(SERVER_GAMESTART.length() + 1).split(" ");
 		for (String playerName : inputArray) {
-			Player player = new SocketPlayer(playerName, this);
-			players.add(player);
+			Player player;
+			if (playerName.equals(clientName)) {
+				clientPlayer = new HumanPlayer(playerName, this);
+				players.add(clientPlayer);
+			} else {
+				player = new SocketPlayer(playerName, this);
+				players.add(player);
+			}
 		}
-		
 		
 		//Give the tiles to player belonging to the client
 		do {
@@ -353,18 +384,9 @@ public class Client implements Runnable {
 			currentPlayer.setStartingHand(tilesList);
 		}
 		
+		firstMove = true;
+		
     }
     
-    /*
-     * Converts the tile-code as used in the protocol to a Tile.
-     */
-    private Tile codeToTile(String tile) {
-		int tileCode = Integer.parseInt(tile);
-		int shape = tileCode % 6;
-		int color = (tileCode - shape) / 6;
-		Shape shapeEnum = Shape.toEnum(shape);
-		Color colorEnum = Color.toEnum(color);
-		return new Tile(colorEnum, shapeEnum);
-	}
 
 }
