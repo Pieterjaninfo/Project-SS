@@ -65,7 +65,6 @@ public class Client extends Qwirkle implements Runnable {
 	private List<Player> players = new ArrayList<Player>();
 	private Player currentPlayer;
 	private HumanPlayer clientPlayer;
-	private Boolean firstMove = true;
 	private Board board;
     
     public Client(InetAddress host, int port)
@@ -254,12 +253,36 @@ public class Client extends Qwirkle implements Runnable {
 
 					ui.showBoard(board.getAllTiles());
 					ui.showHand(currentPlayer.getHand());
-					String move = ui.readLine("Make a move");
+					//String move = ui.readLine("Make a move");
 					Move moves = clientPlayer.determineMove();
-
 					
-					do {
+					if (moves == null && firstMove) {
+						//TRADE ON FIRST TURN EXCEPTION
+					} else if (moves != null) {
+						if (!clientPlayer.tilesInHand(moves) && bag.canTradeTiles.getTileList()) {
+							
+						}
+					}
+				}
+					
+					
+					/*
+					 * else if (!currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
+				ui.showMessage("You don't have some of the tiles you tried to place!");
+					 */
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					/*do {
 						//check if user did a MOVE or TRADE
+						moves = clientPlayer.determineMove();
+						
 						if (move.matches(moveRegex)) {
 							//client move
 							//String[] moves = move.substring(moveRegex.length() + 1).split(" ");
@@ -279,7 +302,8 @@ public class Client extends Qwirkle implements Runnable {
 							  || !move.matches(tradeRegex) && !firstMove);
 					
 
-				} else {
+				} */	
+				else {
 					
 					if (response.startsWith(SERVER_MOVE_PUT)) {
 						firstMove = false;
@@ -293,21 +317,22 @@ public class Client extends Qwirkle implements Runnable {
 					}
 					
 					// wait until we can check again
-					Thread.sleep(500);
 				}
     		}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
     	
     }
     
-    public boolean checkMoveClient(Move move) {
+    /**
+     * CHeck first move might be deleted tho.
+     * @param move
+     * @return
+     */
+    public boolean checkMoveClient(Move move) {		//TODO check if this guy's USELESS
     	if (move == null) {
     		return false;
     	}
