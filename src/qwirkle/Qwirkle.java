@@ -168,10 +168,13 @@ public class Qwirkle implements Runnable {
 			currentPlayer = players.get((players.indexOf(currentPlayer) + 1) 
 					  % players.size());
 		} while (!gameOver()); 
-		String results = "";
-		//TODO send the scores for each player.
-
-		clientPlayerMap.get(currentPlayer).gameEnd(results);
+		String results = " ";
+		for (Player player: players) {
+			int score = player.getScore();
+			String name = player.getName();
+			results = String.format("%s%d,%s ", results, score, name);
+		}
+		clientPlayerMap.get(currentPlayer).gameEnd(results, false);
 	}
 	
 	
@@ -366,9 +369,14 @@ public class Qwirkle implements Runnable {
 	 */
 	public void quit() {
 		for (ClientHandler client : clients) {
-			client.gameEnd(null);
+			String results = " ";
+			for (Player player: players) {
+				int score = player.getScore();
+				String name = player.getName();
+				results = String.format("%s%d,%s ", results, score, name);
+			}
+			client.gameEnd(results, true);
 		}
-		
 	}
 	
 	/**
