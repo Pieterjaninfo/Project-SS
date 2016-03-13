@@ -182,6 +182,7 @@ public class Client extends Qwirkle implements Runnable {
 			do {
 		    	System.out.println(player);
 				out.write(CLIENT_IDENTIFY + " " + player);
+				out.newLine();
 		    	out.flush();
 		    	/*while (!in.ready()) {						//WHILE LOOP MAY NOT BE NEEDED
         			// Wait for an input from the server
@@ -197,7 +198,7 @@ public class Client extends Qwirkle implements Runnable {
 		    		int i = 0;
 		    		player = String.format("%s%s", player, i);
 		    		i++;
-		    	} else {
+		    	} else if (response.startsWith(SERVER_ERROR)) {
 		    		ui.showMessage("Name incorrect or already taken.");
 		    		player = ui.getPlayer(5);
 		    	}
@@ -217,6 +218,8 @@ public class Client extends Qwirkle implements Runnable {
           			  "\nPossible queues: 2, 3 and 4.");
         		if (queue.matches(LIST_REGEX)) {
         			out.write(CLIENT_QUEUE + " " + queue);
+        			out.newLine();
+        			out.flush();
             		while (!in.ready()) {
             			// Wait for an input from the server
             			try {
@@ -231,6 +234,7 @@ public class Client extends Qwirkle implements Runnable {
         			ui.showMessage("Incorrect queue format");
         		}
         	} while (!response.startsWith(SERVER_QUEUE));
+        	ui.showMessage("Entered the queue correctly.");
         } catch (IOException e) {
         	e.printStackTrace();
         	//TODO exception catch
@@ -238,37 +242,32 @@ public class Client extends Qwirkle implements Runnable {
     }
     
     /**
-     * Asks the client user for input and executes it, and receives commands 
+     * Asks the client user for input and executes it, and receives commands.
      */
     public void moves() {
     	String response = "";
-    	String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
-    	String tradeRegex = "^[tT][rR][aA][dD][eE]\\s.+$";
-    	
-    	
-			
+    	//String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
+    	//String tradeRegex = "^[tT][rR][aA][dD][eE]\\s.+$";
+    	String moves;
+	
 		while (running) {
-			
 			try {
 				response = in.readLine();		//TODO only execute when something new is written
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				ui.showMessage("Connection has been lost.");
 			}
 			
-			
-			if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
+			if (response.startsWith(SERVER_PASS)) {
+				ui.showMessage("Passing turn");
+			} else if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
 				//it is my turn
-				
-				
+				ui.showMessage("=====IT IS YOUR TURN=====");
 				ui.showBoard(board.getAllTiles());
 				ui.showHand(currentPlayer.getHand());
 				//String move = ui.readLine("Make a move");
 				
-				
 				while (true) {
-					String moves = clientPlayer.clientDetermineMove();
-					
-					
+					moves = clientPlayer.clientDetermineMove();
 					if (moves.startsWith("move")) {
 						//it was a move
 						//check if move is valid and send to the client
@@ -284,6 +283,8 @@ public class Client extends Qwirkle implements Runnable {
 							// send the move to the server
 							try {
 								out.write(CLIENT_MOVE_PUT + moves.substring(5));
+								out.newLine();
+								out.flush();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -299,73 +300,46 @@ public class Client extends Qwirkle implements Runnable {
 						} else {
 							try {
 								out.write(CLIENT_MOVE_TRADE + moves.substring(6));
+								out.newLine();
+								out.flush();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
 							break;
 						}
+						String tradeResponse = "";
+						try {
+							tradeResponse = in.readLine();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						if (tradeResponse.startsWith(SERVER_MOVE_TRADE)) {
+							clientPlayer.removeTile(stringToTiles(moves.substring(7)));
+							break;
+						}
+					} else {
+						try {
+							out.write(CLIENT_QUIT);
+							out.newLine();
+							out.flush();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						running = false;
 					}
 				}
-			}
-			if (response.startsWith(SERVER_MOVE_PUT)) {
+			} else if (response.startsWith(SERVER_MOVE_PUT)) {
 				// place the tiles on the board.
 				Move move = stringToMove(response.substring(SERVER_TURN.length() + 1));
 				board.doMove(move);
-			}
-			
-			if (response.startsWith(SERVER_GAMEEND)) {
+			} else if (response.startsWith(SERVER_GAMEEND)) {
 				running = false; //TODO CLOSE GAME INSTANCE, ASK FOR CONTINUATION
-			}
-			
-			if (response.startsWith(SERVER_DRAWTILE)) {
+			} else if (response.startsWith(SERVER_DRAWTILE)) {
 				List<Tile> tiles = stringToTiles(response.substring(SERVER_DRAWTILE.length() + 1));
 				clientPlayer.addTile(tiles);
 			}
-			
 		}
-					
-    		
-    		
-    		
-    		
-    		
-					/*
-					 * else if (!currentPlayer.tilesInHand(move) && 
-					 * bag.canTradeTiles(move.getTileList())) {
-				ui.showMessage("You don't have some of the tiles you tried to place!");
-					 */
-
-					/*do {
-						//check if user did a MOVE or TRADE
-						moves = clientPlayer.determineMove();
-						if (move.matches(moveRegex)) {
-							//client move
-							//String[] moves = move.substring(moveRegex.length() + 1).split(" ");
-							out.write(CLIENT_MOVE_PUT + "move");
-						} else if (move.matches(tradeRegex) && firstMove) {
-							//THROW CAN'T TRADE ON TURN ONE EXCEPTION
-							ui.showMessage("You can't trade on the first turn!");
-						} else if (move.matches(tradeRegex)) {
-							//client trade
-							
-						}
-					} while (!move.matches(moveRegex) 
-							  || !move.matches(tradeRegex) && !firstMove);
-				} else {
-					
-					if (response.startsWith(SERVER_MOVE_PUT)) {
-						firstMove = false;
-
-						Move moves = stringToMove(response.substring(SERVER_MOVE_PUT.length() + 1));
-						board.doMove(moves);
-					}
-					
-					// wait until we can check again
-				}
-    		}*/
-
-
-    	
     }
     
    /*
@@ -375,9 +349,7 @@ public class Client extends Qwirkle implements Runnable {
     	List<Tile> tilesList = new ArrayList<Tile>();
 		String[] tiles = tileString.split(" ");
 		for (String aTile : tiles) {
-			Shape shape = Shape.charToEnum(aTile.charAt(1));
-			Color color = Color.toEnum(Character.digit(aTile.charAt(0), 10));
-			Tile tile = new Tile(color, shape);
+			Tile tile = codeToTile(aTile);
 			tilesList.add(tile);
 		}
 		return tilesList;
@@ -398,9 +370,12 @@ public class Client extends Qwirkle implements Runnable {
     	return moves;
     }
     
-    
+    /**
+     * Displays the given error to the user.
+     * @param error The error which needs to be displayed
+     */
     public void error(Error error) {
-    	sendMessage(SERVER_ERROR + " " + error);
+    	ui.showMessage(error.toString());
     }
     
     /**
@@ -414,8 +389,8 @@ public class Client extends Qwirkle implements Runnable {
 			try {
 				input = in.readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ui.showMessage("The server disconnected.");
+				this.shutdown();
 			}
 		} while (!input.startsWith(SERVER_GAMESTART));
 		
@@ -442,13 +417,18 @@ public class Client extends Qwirkle implements Runnable {
 			}
 		} while (!input.startsWith(SERVER_DRAWTILE));
 		
-		String[] inputTiles = input.substring(SERVER_DRAWTILE.length() + 1).split(" ");
+		/*String[] inputTiles = input.substring(SERVER_DRAWTILE.length() + 1).split(" ");
 		List<Tile> tilesList = new ArrayList<Tile>();
 		
 		for (String tileCode : inputTiles) {
 			Tile tile = codeToTile(tileCode);
 			tilesList.add(tile);
-		}
+		}*/
+		System.out.println(input.substring(SERVER_DRAWTILE.length() + 1));
+
+		List<Tile> tilesList = stringToTiles(input.substring(SERVER_DRAWTILE.length() + 1));
+		System.out.println("finished making tiles list");
+		System.out.println(currentPlayer.getName());
 		if (currentPlayer.getName().equals(clientName)) {
 			currentPlayer.setStartingHand(tilesList);
 		}

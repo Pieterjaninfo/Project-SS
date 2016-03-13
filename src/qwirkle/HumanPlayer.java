@@ -100,7 +100,7 @@ public class HumanPlayer implements Player {
 				}
 				return "trade " + input;
 			} else if (firstInput.equals("exit")) {
-				System.exit(0);
+				return "exit";
 			}
 		}
 	}
