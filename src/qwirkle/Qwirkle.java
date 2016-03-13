@@ -19,7 +19,7 @@ public class Qwirkle implements Runnable {
 	private Map<Player, ClientHandler> clientPlayerMap = new HashMap<Player, ClientHandler>();
 	private List<ClientHandler> clients;
 	private Player currentPlayer;
-	private Boolean firstMove = true;
+	public Boolean firstMove = true;
 	private Object object = new Object();
 	
 	public Qwirkle() {

@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qwirkle.Tile;
+import qwirkle.Board;
 import qwirkle.Color;
+import qwirkle.HumanPlayer;
 import qwirkle.Player;
-import qwirkle.SocketPlayer;
 import qwirkle.Qwirkle;
+import qwirkle.SocketPlayer;
+import qwirkle.Move;
 import qwirkle.Shape;
 import ui.UI;
 
@@ -23,7 +26,7 @@ import ui.UI;
  * @author Bart Meyers
  */
 
-public class Client implements Runnable {
+public class Client extends Qwirkle implements Runnable {
 	
 	// List of protocol commands.
     private static final String CLIENT_IDENTIFY = "IDENTIFY";
@@ -61,7 +64,8 @@ public class Client implements Runnable {
 	private UI ui;
 	private List<Player> players = new ArrayList<Player>();
 	private Player currentPlayer;
-	private Boolean firstMove = true;
+	private HumanPlayer clientPlayer;
+	private Board board;
     
     public Client(InetAddress host, int port)
 			throws IOException {
@@ -232,76 +236,166 @@ public class Client implements Runnable {
     }
     
     public void moves() {
-    	String input;
-    	try {
+    	String response = "";
+    	String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
+    	String tradeRegex = "^[tT][rR][aA][dD][eE]\\s.+$";
+    	
+    	
 			
-    		while (running) {
-    			
-    			
-    			input = in.readLine();
+		while (running) {
+			
+			try {
+				response = in.readLine();		//TODO only execute when something new is written
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			
+			if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
+				//it is my turn
 				
-				if (input.startsWith(SERVER_TURN) && input.endsWith(clientName)) {
-					//it is my turn
+				
+				ui.showBoard(board.getAllTiles());
+				ui.showHand(currentPlayer.getHand());
+				//String move = ui.readLine("Make a move");
+				
+				
+				while (true) {
+					String moves = clientPlayer.clientDetermineMove();
 					
 					
-					do {
-						input = in.readLine();
+					if (moves.startsWith("move")) {
+						//it was a move
+						//check if move is valid and send to the client
+						Move move = stringToMove(moves.substring(6));
 						
-						//check if i did a MOVE_PUT or MOVE_TRADE
-						if (input.startsWith(CLIENT_MOVE_PUT)) {
-							//client move
-							
+						if (!clientPlayer.tilesInHand(move)) {
+							// ERROR TILES NOT OWNED
+							error(Error.MOVE_TILES_UNOWNED);
+						} else if (!board.checkMove(move)) {
+							// ERROR MOVE NOT VALID
+							error(Error.MOVE_INVALID);
 						} else {
+							// send the move to the server
+							try {
+								out.write(CLIENT_MOVE_PUT + moves.substring(5));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							break;
+						}
+					} else if (moves.startsWith("trade")) {
+						//it was a trade
+						if (!clientPlayer.tilesInHand(stringToTiles(moves.substring(7)))) {
+							// ERROR TILES NOT OWNED
+							error(Error.MOVE_TILES_UNOWNED);	
+						} else if (board.getBoardSize() == 0) {
+							error(Error.TRADE_FIRST_TURN);
+						} else {
+							try {
+								out.write(CLIENT_MOVE_TRADE + moves.substring(6));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							break;
+						}
+					}
+				}
+			}
+			if (response.startsWith(SERVER_MOVE_PUT)) {
+				// place the tiles on the board.
+				Move move = stringToMove(response.substring(SERVER_TURN.length() + 1));
+				board.doMove(move);
+			}
+			
+			if (response.startsWith(SERVER_GAMEEND)) {
+				running = false; //TODO CLOSE GAME INSTANCE, ASK FOR CONTINUATION
+			}
+			
+		}
+					
+    		
+    		
+    		
+    		
+    		
+					/*
+					 * else if (!currentPlayer.tilesInHand(move) && 
+					 * bag.canTradeTiles(move.getTileList())) {
+				ui.showMessage("You don't have some of the tiles you tried to place!");
+					 */
+
+					/*do {
+						//check if user did a MOVE or TRADE
+						moves = clientPlayer.determineMove();
+						if (move.matches(moveRegex)) {
+							//client move
+							//String[] moves = move.substring(moveRegex.length() + 1).split(" ");
+							out.write(CLIENT_MOVE_PUT + "move");
+						} else if (move.matches(tradeRegex) && firstMove) {
+							//THROW CAN'T TRADE ON TURN ONE EXCEPTION
+							ui.showMessage("You can't trade on the first turn!");
+						} else if (move.matches(tradeRegex)) {
 							//client trade
 							
 						}
-					} while (input.startsWith(CLIENT_MOVE_PUT) 
-							  || input.startsWith(CLIENT_MOVE_TRADE) && !firstMove);
-					
-					
-					
-					
-					
-					
+					} while (!move.matches(moveRegex) 
+							  || !move.matches(tradeRegex) && !firstMove);
 				} else {
+					
+					if (response.startsWith(SERVER_MOVE_PUT)) {
+						firstMove = false;
+
+						Move moves = stringToMove(response.substring(SERVER_MOVE_PUT.length() + 1));
+						board.doMove(moves);
+					}
+					
 					// wait until we can check again
-					Thread.sleep(500);
 				}
-    		}
-			
-			
-			
-			
-			
-			
-			
-			
-			/*if (input.startsWith(SERVER_MOVE_PUT)) {
-				
-			} else if (input.startsWith(SERVER_PASS)) {
-				
-			} else if (input.startsWith(SERVER_MOVE_TRADE)) {
-				
-			}*/
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
+    		}*/
+
+
     	
     }
+    
+    /**
+     * CHeck first move might be deleted tho.
+     * @param move
+     * @return
+     */
+    public boolean checkMoveClient(Move move) {		//TODO check if this guy's USELESS
+    	if (move == null) {
+    		return false;
+    	}
+    	return false;
+    }
+    
+    
+    public List<Tile> stringToTiles(String tileString) {
+    	List<Tile> tilesList = new ArrayList<Tile>();
+		String[] tiles = tileString.split(" ");
+		for (String aTile : tiles) {
+			Shape shape = Shape.charToEnum(aTile.charAt(1));
+			Color color = Color.toEnum(Character.digit(aTile.charAt(0), 10));
+			Tile tile = new Tile(color, shape);
+			tilesList.add(tile);
+		}
+		return tilesList;
+    }
+    
+    
+    public Move stringToMove(String move) {
+    	Move moves = new Move();
+		String[] moveArray = move.split(" ");
+		for (String move1 : moveArray) {
+			Tile tile = codeToTile(move1.split("@")[0]);
+			int x = Integer.parseInt(move1.split("@")[1].split(",")[0]);
+			int y = Integer.parseInt(move1.split("@")[1].split(",")[1]);
+			moves.addTile(tile, x, y);
+		}
+    	return moves;
+    }
+    
     
     public void error(Error error) {
     	sendMessage(SERVER_ERROR + " " + error);
@@ -323,13 +417,17 @@ public class Client implements Runnable {
 			}
 		} while (!input.startsWith(SERVER_GAMESTART));
 		
-		
 		String[] inputArray = input.substring(SERVER_GAMESTART.length() + 1).split(" ");
 		for (String playerName : inputArray) {
-			Player player = new SocketPlayer(playerName, this);
-			players.add(player);
+			Player player;
+			if (playerName.equals(clientName)) {
+				clientPlayer = new HumanPlayer(playerName, this);
+				players.add(clientPlayer);
+			} else {
+				player = new SocketPlayer(playerName, this);
+				players.add(player);
+			}
 		}
-		
 		
 		//Give the tiles to player belonging to the client
 		do {
@@ -353,18 +451,9 @@ public class Client implements Runnable {
 			currentPlayer.setStartingHand(tilesList);
 		}
 		
+		firstMove = true;
+		
     }
     
-    /*
-     * Converts the tile-code as used in the protocol to a Tile.
-     */
-    private Tile codeToTile(String tile) {
-		int tileCode = Integer.parseInt(tile);
-		int shape = tileCode % 6;
-		int color = (tileCode - shape) / 6;
-		Shape shapeEnum = Shape.toEnum(shape);
-		Color colorEnum = Color.toEnum(color);
-		return new Tile(colorEnum, shapeEnum);
-	}
 
 }
