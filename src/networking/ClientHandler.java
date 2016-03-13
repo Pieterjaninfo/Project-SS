@@ -67,9 +67,9 @@ public class ClientHandler implements Runnable {
 				if (!commandCheck(input)) {
 					error(Error.INVALID_COMMAND);
 				} else if (input.startsWith(CLIENT_QUIT)) {
-					if (game != null) {
+					/*if (game != null) {
 						game.quit();
-					}
+					}*/
 					break;
 				} else if (input.startsWith(CLIENT_IDENTIFY) && game == null) {
 					if (input.length() <= CLIENT_IDENTIFY.length()) {
@@ -249,13 +249,13 @@ public class ClientHandler implements Runnable {
     	gameBroadcast(gameClients, SERVER_MOVE_TRADE + ammount);
     }
     
-    public void gameEnd(String results) {
-    	if (results != null) {
-    		sendMessage(SERVER_GAMEEND + results);
+    public void gameEnd(String results, boolean error) {
+    	if (!error) {
+    		sendMessage(SERVER_GAMEEND + " WIN" + results);
     	} else {
-    		sendMessage(SERVER_GAMEEND + " ERROR");
+    		sendMessage(SERVER_GAMEEND + " ERROR" + results);
     	}
-    	
+    	this.game = null;
     }
     
     public void pass(List<ClientHandler> players) {
