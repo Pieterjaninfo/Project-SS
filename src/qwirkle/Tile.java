@@ -24,7 +24,7 @@ public class Tile {
 	 */
 	//@ requires tile != null;
 	public boolean equals(Tile tile) {
-		return tile.getShape() == shape && tile.getColor() == color; 
+		return tile.getShape() == shape && tile.getColor() == color;
 	}
 	
 	/**

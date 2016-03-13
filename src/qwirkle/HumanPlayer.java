@@ -126,13 +126,6 @@ public class HumanPlayer implements Player {
 				}
 			}
 		}
-		/*
-		for (Tile a : hand) {
-			System.out.println("hand: " + a.toString());
-		}
-		for (Tile b : list) {
-			System.out.println("list: " + b.toString());
-		}*/
 		int[] a = new int[12];
 		for (Tile tile : list) {
 			if (tile.getShape() == Shape.CROSS) {

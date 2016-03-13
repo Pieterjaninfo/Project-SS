@@ -263,7 +263,7 @@ public class Client extends Qwirkle implements Runnable {
 				//it is my turn
 				ui.showMessage("=====IT IS YOUR TURN=====");
 				ui.showBoard(board.getAllTiles());
-				ui.showHand(currentPlayer.getHand());
+				ui.showHand(clientPlayer.getHand());
 				//String move = ui.readLine("Make a move");
 				
 				while (true) {
@@ -271,8 +271,7 @@ public class Client extends Qwirkle implements Runnable {
 					if (moves.startsWith("move")) {
 						//it was a move
 						//check if move is valid and send to the client
-						Move move = stringToMove(moves.substring(6));
-						
+						Move move = stringcodeToMove(moves.substring(5));
 						if (!clientPlayer.tilesInHand(move)) {
 							// ERROR TILES NOT OWNED
 							error(Error.MOVE_TILES_UNOWNED);
@@ -282,42 +281,44 @@ public class Client extends Qwirkle implements Runnable {
 						} else {
 							// send the move to the server
 							try {
-								out.write(CLIENT_MOVE_PUT + moves.substring(5));
+								out.write(CLIENT_MOVE_PUT + stringToMoveString(moves.substring(4)));
 								out.newLine();
 								out.flush();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
+							clientPlayer.removeTile(move.getTileList());	  //TODO not correct fix
 							break;
 						}
 					} else if (moves.startsWith("trade")) {
 						//it was a trade
-						if (!clientPlayer.tilesInHand(stringToTiles(moves.substring(7)))) {
+						List<Tile> handTiles = inputTileToCode(moves.substring(6));
+						if (!clientPlayer.tilesInHand(handTiles)) {
 							// ERROR TILES NOT OWNED
 							error(Error.MOVE_TILES_UNOWNED);	
 						} else if (board.getBoardSize() == 0) {
 							error(Error.TRADE_FIRST_TURN);
 						} else {
 							try {
-								out.write(CLIENT_MOVE_TRADE + moves.substring(6));
+								out.write(CLIENT_MOVE_TRADE + " " + tilelistToCode(handTiles));
 								out.newLine();
 								out.flush();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
-							break;
-						}
-						String tradeResponse = "";
-						try {
-							tradeResponse = in.readLine();
-						} catch (IOException e) {
-							e.printStackTrace();
+							String tradeResponse = "";
+							try {
+								tradeResponse = in.readLine();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							
+							if (tradeResponse.startsWith(SERVER_MOVE_TRADE)) {
+								clientPlayer.removeTile(handTiles);
+								break;
+							}
 						}
 						
-						if (tradeResponse.startsWith(SERVER_MOVE_TRADE)) {
-							clientPlayer.removeTile(stringToTiles(moves.substring(7)));
-							break;
-						}
 					} else {
 						try {
 							out.write(CLIENT_QUIT);
@@ -331,10 +332,11 @@ public class Client extends Qwirkle implements Runnable {
 				}
 			} else if (response.startsWith(SERVER_MOVE_PUT)) {
 				// place the tiles on the board.
-				Move move = stringToMove(response.substring(SERVER_TURN.length() + 1));
+				Move move = stringToMove(response.substring(SERVER_MOVE_PUT.length() + 1));
 				board.doMove(move);
+				
 			} else if (response.startsWith(SERVER_GAMEEND)) {
-				running = false; //TODO CLOSE GAME INSTANCE, ASK FOR CONTINUATION
+				running = false; // TODO ask for continuation
 			} else if (response.startsWith(SERVER_DRAWTILE)) {
 				List<Tile> tiles = stringToTiles(response.substring(SERVER_DRAWTILE.length() + 1));
 				clientPlayer.addTile(tiles);
@@ -342,10 +344,41 @@ public class Client extends Qwirkle implements Runnable {
 		}
     }
     
+    
+    /*
+     * Converts the raw input tile string into a list of tiles.
+     */
+    private List<Tile> inputTileToCode(String input) {
+    	List<Tile> tileList = new ArrayList<Tile>();
+		String[] tiles = input.split(" ");
+		System.out.println(input);
+		for (String tileString : tiles) {
+			System.out.println(tileString);
+			Shape shape = Shape.charToEnum(tileString.charAt(1));
+			Color color = Color.toEnum(Character.digit(tileString.charAt(0), 10));
+			Tile tile = new Tile(color, shape);
+			tileList.add(tile);
+		}
+		return tileList;
+    }
+    
+    /*
+     * Converts all tiles in the list into a server code and puts it into one string.
+     */
+    private String tilelistToCode(List<Tile> tiles) {
+    	String result = "";
+    	for (Tile tile : tiles) {
+    		result = String.format("%s %d", result,
+    				tile.getColor().toInt() * 6 + tile.getShape().toInt());
+    	}
+    	System.out.println(result.trim());
+		return result.trim();
+	}
+    
    /*
     * Converts the string of tiles codes into a list of tiles of type Tile.
     */
-    private List<Tile> stringToTiles(String tileString) {
+    private List<Tile> stringToTiles(String tileString) {			//TODO irrelevant?
     	List<Tile> tilesList = new ArrayList<Tile>();
 		String[] tiles = tileString.split(" ");
 		for (String aTile : tiles) {
@@ -370,6 +403,38 @@ public class Client extends Qwirkle implements Runnable {
     	return moves;
     }
     
+    /*
+     * Converts the string of move codes into a move with type String.
+     */
+    private String stringToMoveString(String move) {
+		String result = "";
+    	String[] moveArray = move.trim().split(" ");
+    	System.out.println("move = " + move);
+		for (String move1 : moveArray) {
+			System.out.println("first move part = " + move1);
+			String tile = tileToCode(codeToTile(tilelistToCode(inputTileToCode(move1.split("@")[0])).trim()));
+			int x = Integer.parseInt(move1.split("@")[1].split(",")[0]);
+			int y = Integer.parseInt(move1.split("@")[1].split(",")[1]);
+			result = String.format("%s %s@%d,%d", result, tile, x, y);
+		}
+    	return result;
+    }
+    
+    /*
+     * Converts the raw string of move codes into a move with type Move.
+     */
+    private Move stringcodeToMove(String move) {
+    	Move moves = new Move();
+		String[] moveArray = move.split(" ");
+		for (String move1 : moveArray) {
+			Tile tile = codeToTile(tilelistToCode(inputTileToCode(move1.split("@")[0])).trim());
+			int x = Integer.parseInt(move1.split("@")[1].split(",")[0]);
+			int y = Integer.parseInt(move1.split("@")[1].split(",")[1]);
+			moves.addTile(tile, x, y);
+		}
+    	return moves;
+    }
+    
     /**
      * Displays the given error to the user.
      * @param error The error which needs to be displayed
@@ -382,6 +447,7 @@ public class Client extends Qwirkle implements Runnable {
      * Initiates all the players and gives the initial cards to the player.
      */
     public void gameStart() {
+    	board = new Board();
     	String input = "";
 		
     	//Initiate all the players and add them to the players list
@@ -417,25 +483,21 @@ public class Client extends Qwirkle implements Runnable {
 			}
 		} while (!input.startsWith(SERVER_DRAWTILE));
 		
-		/*String[] inputTiles = input.substring(SERVER_DRAWTILE.length() + 1).split(" ");
-		List<Tile> tilesList = new ArrayList<Tile>();
-		
-		for (String tileCode : inputTiles) {
-			Tile tile = codeToTile(tileCode);
-			tilesList.add(tile);
-		}*/
-		System.out.println(input.substring(SERVER_DRAWTILE.length() + 1));
+		System.out.println(input.substring(SERVER_DRAWTILE.length() + 1));		//TODO remove
 
 		List<Tile> tilesList = stringToTiles(input.substring(SERVER_DRAWTILE.length() + 1));
-		System.out.println("finished making tiles list");
-		System.out.println(currentPlayer.getName());
-		if (currentPlayer.getName().equals(clientName)) {
-			currentPlayer.setStartingHand(tilesList);
-		}
-		
+		System.out.println("finished making tiles list");						//TODO remove
+		clientPlayer.setStartingHand(tilesList);
+		System.out.printf("Player: %s with hand: %s ", clientPlayer.getName(), 	//TODO remove
+				  input.substring(SERVER_DRAWTILE.length() + 1));
 		firstMove = true;
 		
     }
     
 
 }
+
+
+
+
+
