@@ -236,7 +236,7 @@ public class Client extends Qwirkle implements Runnable {
     }
     
     public void moves() {
-    	String response;
+    	String response = "";
     	String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
     	String tradeRegex = "^[tT][rR][aA][dD][eE]\\s.+$";
     	
@@ -244,7 +244,11 @@ public class Client extends Qwirkle implements Runnable {
 			
 		while (running) {
 			
-			response = in.readLine();
+			try {
+				response = in.readLine();		//TODO only execute when something new is written
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			
 			
 			if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
@@ -302,6 +306,10 @@ public class Client extends Qwirkle implements Runnable {
 				// place the tiles on the board.
 				Move move = stringToMove(response.substring(SERVER_TURN.length() + 1));
 				board.doMove(move);
+			}
+			
+			if (response.startsWith(SERVER_GAMEEND)) {
+				running = false; //TODO CLOSE GAME INSTANCE, ASK FOR CONTINUATION
 			}
 			
 		}
