@@ -38,7 +38,7 @@ public class Server implements Runnable {
 				portnumber = in.readLine();
 				if (portnumber.matches("^[0-9]{0,4}$")) {
 					try {
-						Server server = new Server(Integer.parseInt(args[0]));
+						Server server = new Server(Integer.parseInt(portnumber));
 						(new Thread(queue)).start();
 						(new Thread(server)).start();
 						System.out.println("Server started");
@@ -46,7 +46,7 @@ public class Server implements Runnable {
 						server.shutdown();
 					} catch (NumberFormatException e) {
 						System.out.println(USAGE);
-						System.out.println("ERROR: port " + args[1]
+						System.out.println("ERROR: port " + portnumber
 							 	  + " is not an invalid port");
 						//e.printStackTrace();
 					}

@@ -180,8 +180,10 @@ public class Client extends Qwirkle implements Runnable {
 			String response = "";
 			String player = ui.getPlayer(5);
 			do {
-		    	out.write(CLIENT_IDENTIFY + " " + player);
-		    	while (!in.ready()) {						//WHILE LOOP MAY NOT BE NEEDED
+		    	System.out.println(player);
+				out.write(CLIENT_IDENTIFY + " " + player);
+		    	out.flush();
+		    	/*while (!in.ready()) {						//WHILE LOOP MAY NOT BE NEEDED
         			// Wait for an input from the server
 		    		try {
 						Thread.sleep(500);
@@ -189,7 +191,7 @@ public class Client extends Qwirkle implements Runnable {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-		    	}
+		    	}*/
 		    	response = in.readLine();
 		    	if (player.startsWith("AI") && response.startsWith(SERVER_ERROR)) {
 		    		int i = 0;
