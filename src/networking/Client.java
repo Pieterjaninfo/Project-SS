@@ -235,6 +235,9 @@ public class Client extends Qwirkle implements Runnable {
         }
     }
     
+    /**
+     * Asks the client user for input and executes it, and receives commands 
+     */
     public void moves() {
     	String response = "";
     	String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
@@ -312,6 +315,11 @@ public class Client extends Qwirkle implements Runnable {
 				running = false; //TODO CLOSE GAME INSTANCE, ASK FOR CONTINUATION
 			}
 			
+			if (response.startsWith(SERVER_DRAWTILE)) {
+				List<Tile> tiles = stringToTiles(response.substring(SERVER_DRAWTILE.length() + 1));
+				clientPlayer.addTile(tiles);
+			}
+			
 		}
 					
     		
@@ -358,20 +366,10 @@ public class Client extends Qwirkle implements Runnable {
     	
     }
     
-    /**
-     * CHeck first move might be deleted tho.
-     * @param move
-     * @return
-     */
-    public boolean checkMoveClient(Move move) {		//TODO check if this guy's USELESS
-    	if (move == null) {
-    		return false;
-    	}
-    	return false;
-    }
-    
-    
-    public List<Tile> stringToTiles(String tileString) {
+   /*
+    * Converts the string of tiles codes into a list of tiles of type Tile.
+    */
+    private List<Tile> stringToTiles(String tileString) {
     	List<Tile> tilesList = new ArrayList<Tile>();
 		String[] tiles = tileString.split(" ");
 		for (String aTile : tiles) {
@@ -383,8 +381,10 @@ public class Client extends Qwirkle implements Runnable {
 		return tilesList;
     }
     
-    
-    public Move stringToMove(String move) {
+    /*
+     * Converts the string of move codes into a move with type Move.
+     */
+    private Move stringToMove(String move) {
     	Move moves = new Move();
 		String[] moveArray = move.split(" ");
 		for (String move1 : moveArray) {
