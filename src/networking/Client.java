@@ -240,57 +240,90 @@ public class Client extends Qwirkle implements Runnable {
     	String moveRegex = "^[mM][oO][vV][eE]\\s.+$";
     	String tradeRegex = "^[tT][rR][aA][dD][eE]\\s.+$";
     	
-    	try {
+    	
 			
-    		while (running) {
-    			
-    			response = in.readLine();
-    			
-    			
-				if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
-					//it is my turn
+		while (running) {
+			
+			response = in.readLine();
+			
+			
+			if (response.startsWith(SERVER_TURN) && response.endsWith(clientName)) {
+				//it is my turn
+				
+				
+				ui.showBoard(board.getAllTiles());
+				ui.showHand(currentPlayer.getHand());
+				//String move = ui.readLine("Make a move");
+				
+				
+				while (true) {
+					String moves = clientPlayer.clientDetermineMove();
 					
-
-					ui.showBoard(board.getAllTiles());
-					ui.showHand(currentPlayer.getHand());
-					//String move = ui.readLine("Make a move");
-					Move moves = clientPlayer.determineMove();
 					
-					if (moves == null && firstMove) {
-						//TRADE ON FIRST TURN EXCEPTION
-					} else if (moves != null) {
-						if (!clientPlayer.tilesInHand(moves) && bag.canTradeTiles.getTileList()) {
-							
+					if (moves.startsWith("move")) {
+						//it was a move
+						//check if move is valid and send to the client
+						Move move = stringToMove(moves.substring(6));
+						
+						if (!clientPlayer.tilesInHand(move)) {
+							// ERROR TILES NOT OWNED
+							error(Error.MOVE_TILES_UNOWNED);
+						} else if (!board.checkMove(move)) {
+							// ERROR MOVE NOT VALID
+							error(Error.MOVE_INVALID);
+						} else {
+							// send the move to the server
+							try {
+								out.write(CLIENT_MOVE_PUT + moves.substring(5));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							break;
+						}
+					} else if (moves.startsWith("trade")) {
+						//it was a trade
+						if (!clientPlayer.tilesInHand(stringToTiles(moves.substring(7)))) {
+							// ERROR TILES NOT OWNED
+							error(Error.MOVE_TILES_UNOWNED);	
+						} else if (board.getBoardSize() == 0) {
+							error(Error.TRADE_FIRST_TURN);
+						} else {
+							try {
+								out.write(CLIENT_MOVE_TRADE + moves.substring(6));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							break;
 						}
 					}
 				}
+			}
+			if (response.startsWith(SERVER_MOVE_PUT)) {
+				// place the tiles on the board.
+				Move move = stringToMove(response.substring(SERVER_TURN.length() + 1));
+				board.doMove(move);
+			}
+			
+		}
 					
-					
+    		
+    		
+    		
+    		
+    		
 					/*
-					 * else if (!currentPlayer.tilesInHand(move) && bag.canTradeTiles(move.getTileList())) {
+					 * else if (!currentPlayer.tilesInHand(move) && 
+					 * bag.canTradeTiles(move.getTileList())) {
 				ui.showMessage("You don't have some of the tiles you tried to place!");
 					 */
-					
-					
-					
-					
-					
-					
-					
-					
-					
+
 					/*do {
 						//check if user did a MOVE or TRADE
 						moves = clientPlayer.determineMove();
-						
 						if (move.matches(moveRegex)) {
 							//client move
 							//String[] moves = move.substring(moveRegex.length() + 1).split(" ");
-							
 							out.write(CLIENT_MOVE_PUT + "move");
-							
-							
-							
 						} else if (move.matches(tradeRegex) && firstMove) {
 							//THROW CAN'T TRADE ON TURN ONE EXCEPTION
 							ui.showMessage("You can't trade on the first turn!");
@@ -300,30 +333,20 @@ public class Client extends Qwirkle implements Runnable {
 						}
 					} while (!move.matches(moveRegex) 
 							  || !move.matches(tradeRegex) && !firstMove);
-					
-
-				} */	
-				else {
+				} else {
 					
 					if (response.startsWith(SERVER_MOVE_PUT)) {
 						firstMove = false;
 
 						Move moves = stringToMove(response.substring(SERVER_MOVE_PUT.length() + 1));
 						board.doMove(moves);
-						
-						
-						
-						
 					}
 					
 					// wait until we can check again
 				}
-    		}
+    		}*/
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+
     	
     }
     
@@ -336,10 +359,20 @@ public class Client extends Qwirkle implements Runnable {
     	if (move == null) {
     		return false;
     	}
-    	
-
-    	
     	return false;
+    }
+    
+    
+    public List<Tile> stringToTiles(String tileString) {
+    	List<Tile> tilesList = new ArrayList<Tile>();
+		String[] tiles = tileString.split(" ");
+		for (String aTile : tiles) {
+			Shape shape = Shape.charToEnum(aTile.charAt(1));
+			Color color = Color.toEnum(Character.digit(aTile.charAt(0), 10));
+			Tile tile = new Tile(color, shape);
+			tilesList.add(tile);
+		}
+		return tilesList;
     }
     
     
@@ -354,6 +387,7 @@ public class Client extends Qwirkle implements Runnable {
 		}
     	return moves;
     }
+    
     
     public void error(Error error) {
     	sendMessage(SERVER_ERROR + " " + error);

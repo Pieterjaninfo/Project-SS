@@ -80,6 +80,30 @@ public class HumanPlayer implements Player {
 			}
 		}
 	}
+	
+	public String clientDetermineMove() {
+		while (true) {
+			String firstInput = game.readLine("Type 'move' to make a move.\n" +
+					  "Type 'trade' to trade tiles");
+			if (firstInput.equals("move")) {
+				String input = game.readLine("Enter the tiles and location you want to place\n" +
+						  " in the format tile@x,y tile@x,y etc.");
+				while (!input.matches(MOVE_REGEX)) {
+					input = game.readLine("Incorrect format, please try again!");
+				}
+				return "move " + input;
+			} else if (firstInput.equals("trade")) {
+				String input = game.readLine("Enter the tilecodes with a space between the codes.");
+				
+				while (!input.matches(TRADE_REGEX)) {
+					input = game.readLine("Incorrect trade format, please try again!");
+				}
+				return "trade " + input;
+			} else if (firstInput.equals("exit")) {
+				System.exit(0);
+			}
+		}
+	}
 
 	@Override
 	public int getScore() {
@@ -151,6 +175,22 @@ public class HumanPlayer implements Player {
 	@Override
 	public boolean tilesInHand(Move move) {
 		List<Tile> moveTiles = move.getTileList();
+		Vector<Tile> handV = new Vector<Tile>(getHand());
+		List<Tile> had = new ArrayList<Tile>();
+		int i = 0;
+		for (Tile moveTile : moveTiles) {
+			for (Tile handVTiles : handV) {
+				if (moveTile.equals(handVTiles) && !had.contains(handVTiles)) {
+					had.add(handVTiles);
+					i++;
+					break;
+				}
+			}
+		}
+		return i == moveTiles.size();
+	}
+	
+	public boolean tilesInHand(List<Tile> moveTiles) {
 		Vector<Tile> handV = new Vector<Tile>(getHand());
 		List<Tile> had = new ArrayList<Tile>();
 		int i = 0;
